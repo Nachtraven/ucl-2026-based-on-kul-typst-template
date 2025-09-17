@@ -1,4 +1,4 @@
-# The `kuleuven-engineering-science-thesis` Package
+# The `modern-kul-thesis` Package
 <div align="center">Version 0.1.0</div>
 
 This is an unofficial typst template for doing a thesis at the engineering science faculty at KU Leuven.
