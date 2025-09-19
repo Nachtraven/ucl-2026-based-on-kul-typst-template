@@ -1,14 +1,14 @@
-# The `modern-kul-thesis` Package
+# The `modern-se-kul-thesis` Package
 <div align="center">Version 0.1.0</div>
 
 This is an unofficial typst template for doing a thesis at the engineering science faculty at KU Leuven.
 This was made by trying to as closely follow the Latex template [here](https://eng.kuleuven.be/docs/kulemt).
 ## Usage
 
-You can use this template in the web editor by going to "start from template" and searching for "modern-kul-thesis".
+You can use this template in the web editor by going to "start from template" and searching for "modern-se-kul-thesis".
 Alternatively, you can use this template locally by running:
 ```typ
-typst init @preview/modern-kul-thesis
+typst init @preview/modern-se-kul-thesis
 ```
 This will then create a basic folder structure with some fields pre-filled.
 
@@ -35,7 +35,7 @@ This will then create a basic folder structure with some fields pre-filled.
 - `bibliography`: The bibliography of your thesis goes here.
 - `appendices`: The appendices of your thesis goes here.
 ```typ
-#import "@preview/modern-kul-thesis:0.1.0": template
+#import "@preview/modern-se-kul-thesis:0.1.0": template
 #show: template.with(
 title: [The main title],
 subtitle: [The subtitle],
