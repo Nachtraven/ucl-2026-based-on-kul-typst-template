@@ -2,7 +2,7 @@
 
 [package]
 name = "modern-se-kul-thesis"
-version = "0.1.0"
+version = "0.1.1"
 entrypoint = "src/lib.typ"
 authors = ["Benjamin Eeckhout <https://github.com/benjamineeckh>"]
 license = "MIT"
