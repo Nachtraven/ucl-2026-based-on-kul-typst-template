@@ -1,24 +1,25 @@
 #import "@preview/modern-se-kul-thesis:0.1.0": template
 #show: template.with(
-  title: "An example title",
+  title: "3D Tumor vascularization reconstruction from MicroCT imaging",
   // subtitle: "With a subtitle",
   academic-year: datetime.today().year(),
-  authors: ("A guy", "Another guy"),
-  promotors: ("Prof. dr. ir. Man",),
+  authors: ("Nachtrab Sean"),
+  promotors: ("Prof. Greet Kerckhofs","Prof. Sébastien Jodogne",),
   assessors: (
     "Assessor nr 1",
   ),
   supervisors: (
     "A supervisor",
   ),
+
   // Customize with your own faculty and degree (should be in dutch if you are doing the dutch master)
   degree: (
     elective: "Software engineering",
-    master: "Computerwetenschappen",
+    master: "SINF - Computer science",
     color: (0, 0, 1, 0),
   ),
   language: "en",
-  english-master: false,
+  english-master: true,
   font-size: 11pt,
   // set to true to remove extra title-page and have non-changing margins
   electronic-version: true,
@@ -26,7 +27,7 @@
   // BibTeX file, pass a .bib file instead (e.g. "works.bib")
   bibliography: bibliography("references.bib"),
   preface: include "sections/preface.typ",
-  // abstract: include "sections/main-text/abstract.typ",
+  abstract: include "sections/main-text/abstract.typ",
   // dutch-summary: include "sections/main-text/dutch-abstract.typ",
   list-of-figures: true,
   list-of-listings: false,
@@ -34,7 +35,8 @@
   symbols: none,
   // appendices: include "sections/appendix/appendix.typ",
   // Make sure that this is the correct logo for the correct master (en/nl)!
-  logo: [#text(size: 3em, fill: gradient.linear(..color.map.turbo))[Fix logo]],
+  logo: [#image("../resources/1024px-UCLouvain_logo.png")],//[#text(size: 3em, fill: gradient.linear(..color.map.turbo))[Fix logo]],
 )
 
-#include "sections/chapter-1.typ"
+#include "sections/introduction.typ"
+#include "sections/state-of-the-art.typ"

@@ -79,7 +79,7 @@
         }
         #v(40pt)
         #block(height: 67pt)[
-          #text(1.4em)[#authors.join("\n")]
+          #text(1.4em)[#authors].join("\n")]
 
         ]
 
