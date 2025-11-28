@@ -14,7 +14,7 @@
 
   // Customize with your own faculty and degree (should be in dutch if you are doing the dutch master)
   degree: (
-    elective: "Software engineering",
+    elective: "Medical informatics",
     master: "SINF - Computer science",
     color: (0, 0, 1, 0),
   ),

@@ -1,4 +1,19 @@
-= Introduction
+= Introduction (20-25pp)
+
+Feedback: Make it SMART (Specific, Measurable, Achievable, Relevant, Time-bound), eg:
+Develop a robust MicroCT vascular reconstruction pipeline that:
+- (1) handles vessels across 10-1000 µm scales, 
+- (2) extracts clinically relevant metrics (e.g., tortuosity, branching angles), and 
+- (3) integrates with existing tools (e.g., ImageJ, ITK)
+
+
+Key additions:
+- federated machine learning, better citations on the interpretable machine learning
+- better explanation of semantic and semantic segmentation, and its up and downsides
+- active phrasing for titles & subtitles
+- Link sections explicitly (e.g., "Having established the need for vascular reconstruction, we now compare imaging modalities...").
+- Focus on extracting problems in the intro
+
 
 The accurate reconstruction of vasculature for both qualitative and quantitative analysis is critical in evaluating new drug outcomes, planning surgery, and expanding scientific understanding. A qualitative improvement would allow surgeons a better view on the existing vasculature in patients, or researchers the opportunity to better evaluate the health outcomes and treatments for conditions such as troke. A quantitative improvement would enable more accurate comparison studies, expand our understanding of the evolution of vasculature through time and space, as well as enable downstream analysis such as evaluating flow rates.
 
@@ -30,6 +45,10 @@ what is the process of reconstruction, what are methods, why is it important, wh
 
 
 == Context - biology
+
+
+
+
 
 - Define tumor vascularization (blood vessel networks in tumors induced by the tumor to continue growing -> see wlodarski).
 - Role of vascularization: nutrient/oxygen supply to tumor, metastasis/spreading but can also allow treatment delivery
