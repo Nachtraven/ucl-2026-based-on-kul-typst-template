@@ -1,6 +1,7 @@
 #import "@preview/modern-se-kul-thesis:0.1.0": template
 #show: template.with(
-  title: "3D Tumor vascularization reconstruction from MicroCT imaging",
+  title: "Vascularization reconstruction using Contrast-Enhanced Micro CT for high-resolution X-ray based 3D histology
+",
   // subtitle: "With a subtitle",
   academic-year: datetime.today().year(),
   authors: ("Nachtrab Sean"),

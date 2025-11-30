@@ -1,10 +1,14 @@
-= Introduction (20-25pp)
+= Introduction (2-6pp)
 
-Feedback: Make it SMART (Specific, Measurable, Achievable, Relevant, Time-bound), eg:
-Develop a robust MicroCT vascular reconstruction pipeline that:
-- (1) handles vessels across 10-1000 µm scales, 
-- (2) extracts clinically relevant metrics (e.g., tortuosity, branching angles), and 
-- (3) integrates with existing tools (e.g., ImageJ, ITK)
+Goal: make it SMART (Specific, Measurable, Achievable, Relevant, Time-bound)
+Develop a re-usable, robust vascular reconstruction pipeline for MicroCT that:
+- 1. Handles vessels across 10-1000µm (*TO BE DEFINED SCALES THAT MATTER*) scales
+- 2. Represents vascularization in a method that allows extraction of clinically relevant metrics
+-- 2.0 Temporal evolution/change
+-- 2.1 Tortuosity
+-- 2.2 Branching angles
+-- 2.3 Branching ratio 
+- 3. Integrates with existing tools: Dragonfly, Avizo, Orthanc
 
 
 Key additions:
