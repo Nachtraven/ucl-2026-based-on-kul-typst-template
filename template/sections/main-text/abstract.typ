@@ -1,16 +1,24 @@
-== Notes:
-- Vascularization is unique due to being multiscale (within humans)
-- Metastatis is unique due to being multiscale
-- Vascularization is common amongst many lifeforms
+== Section should be 1pp max.
+=== Notes:
+- Vascularization is unique due to being multiscale (ie the same structure when zoomed in/out)
+- Metastatis is unique due to being a form of disease that is angiogenic 
+- Metastatis is unique due to being multiscale (somewhat - it does have differentiation)
+- Vascularization is common amongst many lifeforms (here research what ties this together?)
+- Vascularization is key to evolution/multicellular life (here - proper understanding: develop independently multiple times)
 - Vascularization is different in its requirements for understanding and evaluation due to being a supporting system. You must be able to have a structural understanding (think: tortuosity)
 ~
 ~
-- Analysis is challenging due to being multiscale
-- Analysis is challenging due to imaging technologies
-- Analysis is challenging due to requirement for structural reconstruction, which is a higher order of extraction of information than simple structural classification
+- Analysis of vasc. is challenging due to being multiscale
+- Analysis of vasc. is challenging due to imaging technologies
+- Analysis of vasc. is challenging due to requirement for structural reconstruction, which is a higher order of extraction of information than classification
 ~
-- Reconstruction is challenging due to imaging specificities
-- Reconstruction is challenging due to spatial relations
+- Reconstruction is challenging due to imaging specificities (discontinuities - paper here on CE agent use)
+- Reconstruction is challenging due to spatial relations (paper on the types of vessels and their shapes)
+
+=== Short pitch:
+
+I am working on reconstructing the vascularization network using microct, a method of ct or xray scanning that is of particularly high resolution. The raw images are generally not directly usable as the vascularization is discontinuous, and the way it appears in images varies is based on the size of the vasculature: for example more contrast agent can be present in larger vessels, and smaller vessels may not get much or any agent, but contrast in this case being due to the red blood cells. I use tumors as a target for analysis, with the goal of achieving cross organ (cross structure?) reconstruction and quantification. 
+
 
 == First try:
 
@@ -18,10 +26,8 @@ Soft tissue analysis presents multiple challenges relating to the required techn
 
 === Second try:
 
-The analysis and quantification of Vascularization in tissues is a generally   
+The analysis and quantification of Vascularization in tissues is a challenging task due to diversity and its multiscale nature: the vascular system is present in every organ of the human body, and varies from micrometers to millimeters or even centimeters in size. An imaging technique capable of this level of dynamic range is Micro-CT imaging, sometimes used with contrast agents to aid in differentiation and contrast. In this document, we explore the process of extracting higher level structures from MicroCT images of tumors, in order to enable efficacy analysis of antiangionetic treatments.
 
-
-#pagebreak()
 
 === Third(rough) try:
 
@@ -31,5 +37,3 @@ Most imaging techniques have the limitation that they don't extract structure, w
 One promising imaging method is (micro) CT, due to its ability to reconstruct in 3D without physical deformation, however this technique, like all techniques, does not allow direct extraction of structure.
 Here we propose a technique that takes into account the multiscale nature of vascularization to extract structure and enable analysis of vasculature changes as a component of treatment of tumors.
 
-=== Short pitch/explanation:
-I am working on reconstructing the vascularization network of tumors imaged using microct, a method of ct or xray scanning that is of particularly high resolution. The raw images are generally not directly usable as the vascularization is discontinuous, and the way it appears in images varies based on the size of the vasculature, due to more contrast agent being present in larger vessels, and smaller vessels not getting any agent, but contrast in this case being due to the red blood cells.

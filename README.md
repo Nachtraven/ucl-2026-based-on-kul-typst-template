@@ -1,3 +1,7 @@
+# Reuse of the bellow template for 2025-2026 MSc thesis, Sean Nachtrab
+
+Use: Open in VSCode for preview.
+
 # The `modern-se-kul-thesis` Package
 <div align="center">Version 0.1.0</div>
 
