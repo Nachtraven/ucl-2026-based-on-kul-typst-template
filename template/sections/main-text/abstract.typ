@@ -1,4 +1,16 @@
-== Section should be 1pp max.
+== 1PP max
+
+The accurate reconstruction of tissue vascularization in ex-vivo biopsies is essential to quantitative analysis of samples, to enable their comparison across various treatment profiles, and achieve the level of accuracy required for drug research, in our case for the analysis of antiangionetic drugs for cancer treatment. Classical histology methods such as 2D histology suffer from a lack of accuracy due to the slicing process, and when used for vascularization reconstruction, loose the ability to reconstruct its structucal nature. 3D MicroCT enables the acquisition of high resolution 3D images of ex-vivo samples, but does not enable the immediate extraction of the vasculature structure due to its low contrast and small features. In this document, a method for the reconstruction of vascularization from microct images is presented, and used to analyze the impact of antiangionetic drugs on the vascularization of tumors in mice.
+
+
+
+
+
+
+
+
+#hide[
+
 === Notes:
 - Vascularization is unique due to being multiscale (ie the same structure when zoomed in/out)
 - Metastatis is unique due to being a form of disease that is angiogenic 
@@ -37,3 +49,4 @@ Most imaging techniques have the limitation that they don't extract structure, w
 One promising imaging method is (micro) CT, due to its ability to reconstruct in 3D without physical deformation, however this technique, like all techniques, does not allow direct extraction of structure.
 Here we propose a technique that takes into account the multiscale nature of vascularization to extract structure and enable analysis of vasculature changes as a component of treatment of tumors.
 
+]
