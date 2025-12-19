@@ -1,9 +1,9 @@
-= Introduction (2-6pp)
+= Introduction (2-6pp) (does this overlap with state-of-the-art and should I remove the intro?)
 
-The analysis of soft tissue is foundational to modern medecine, it is used everywhere from clinical environments to laboratories, where samples are collected and imaged in order to obtain an understanding of the tissue. Classically, this sampling and subsequent analysis has been done in 2D, with the microscope being the catalyst for the development of the field [?Source comparing the evolution of the number of histological studies over time]. However, this form of histology presents multiple limitations that stem from its 2D nature: the loss of 3D understanding and structure, as well as very limited quantification capabilities. [Source limitations of 2D histology]
+The analysis of soft tissue is foundational to modern medecine, it is used everywhere from clinical environments to laboratories, where samples are collected and imaged in order to obtain an understanding of the tissue, called histology or histopathology in the case of diseased tissue. We use the term histology to refer to either interchangeably. Classically, this sampling and subsequent analysis has been done in 2D, with the microscope being the catalyst for the development of the field, and being the gold standard for this process. However, this form of histology presents multiple limitations that stem from its 2D nature: the loss of 3D understanding and structure, as well as very limited quantification capabilities. [Source limitations of 2D histology]
 
 #linebreak()
-As mentioned, histology is relevant in both clinical and laboratory environments. Clinically, the goal of a biopsy and subsequent analysis under the microscope is generally to identify a qualitative parameter in order to enable diagnosis and treatment: identifying the presence of a kind of cell, the phenotyping of a cell, or the estimation of a parameter, for example in cancerology the presence or absence of blood vessels in a tumor. [Source on looking for blood vessels to find severity of tumor advancement]
+Histology is relevant in both clinical and laboratory environments. Clinically, the goal of a biopsy and subsequent analysis under the microscope is generally to identify a qualitative parameter in order to enable diagnosis and treatment: identifying the presence of a kind of cell, the phenotyping of a cell, or the estimation of a parameter, for example in cancerology the presence or absence of blood vessels in a tumor. [Source on looking for blood vessels to find severity of tumor advancement]
 
 #linebreak()
 Such biopsies done in 2D present the distinct disadvantage of being unable to obtain information at the same granularity in all three axis: microscope slides in 2D may be stacked to construct a 3D understanding, but these stacked planes are separated by a dead space where no information is acquired [Source on reconstruction of 3D tissue from 2D samples]. This loss of accuracy is catastrophic for the reconstruction and quantification of structures that are small and where their structure is relevant to their function, such as blood vessels, on top of the deformation caused by the cutting process.
@@ -15,7 +15,8 @@ Blood vessel understanding and reconstruction has emerged over the past years as
 We will begin by diving into the current state of the art in histology for drug sreening, followed by the MicroCT methods used, and finish with an exploration of the methods of image understanding more broadly, 
 
 #linebreak()
-*Should this be extended? I intend to add images*
+
+*Should this be extended with the aetiology of cancer and angiogenesis?*
 
 
 
@@ -179,6 +180,6 @@ We will begin by diving into the current state of the art in histology for drug 
 // ~
 // * final presentation: make good visualization showing the differece with some ablation. Explain difference between typical evaluation with dice, and the real structural evaluation. Show that DICE being really high or low doesn't necessarily reflect the actual final output. Benefit from the area under the curve difference wrt classical methods *
 // ~
-// * use the tumor case as one case study to explain what I'm doing: briefly SOTA 3D histology for drug screening, the need for 3D histo is clear for companies developping drugs, I focus on antiangionetic drugs on tumor -> refer to Lisa thesis (effect of panopanib) *
+// * use the tumor case as one case study to explain what I'm doing: briefly SOTA 3D histology for drug screening, the need for 3D histo is clear for companies developping drugs, I focus on antiangionetic drugs on tumor -> refer to Lisa thesis (effect of pazopanib) *
 
 // ]
