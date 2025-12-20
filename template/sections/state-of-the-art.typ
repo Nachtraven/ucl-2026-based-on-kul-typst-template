@@ -62,10 +62,11 @@ _Not certain about if or how to place the quote, as it is specifically for cance
 
 ===== CECT Imaging
 
-Full section on the state of the art of CECT
+Full section on the state of the art of CECT - TODO
 
 
 == Structure reconstruction (or: Vascularization reconstruction, Interpretation methods of 3D imaging?)
+
 This section is leaning towards segmentation, as in survey [5.1]
 
 #linebreak()
@@ -78,14 +79,44 @@ With the goal of reconstructing vascularization in imaged tissue, we aim to take
 Image segmentation plays a central role in medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
 
 
-
 ==== Methods of Segmentation
 
-Segmentation methods have evolved over time, can broadly be separated into two categories of interest: computer vision and 
+Segmentation methods have evolved over time: from classical computer vision to machine learning and later deep learning methods 
 
-Vasculature reconstruction and segmentation of 3D images often requires human segmentation [1]. Alternative automated methods are less precice 
+TODO: Extend history to highlight the progression in complexity and the higher and higher levels of information extraction achieved
 
-- µCT visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study https://doi.org/10.1038/s41598-025-14452-8
+#figure(
+  image("../../resources/images/timeline_from_PanopticSegmentationAReview.png", width: 100%),
+  caption: [
+    From (6.1) Timeline evolution of image segmentation (better version to be found or created)
+  ],
+)
+
+
+==== Imaging and Segmentation of vasculature
+
+
+Vasculature reconstruction and segmentation of 3D images often requires human segmentation [6.2]. Alternative automated methods are less precice 
+
+
+
+Sources to be investigated and read:
+
++ 2013 Application of Micro-Computed Tomography With Iodine Staining to Cardiac Imaging, Segmentation, and Computational Model Development
++ 2010 Micro computed tomography for vascular exploration 
++ 2025 Micro-computed tomography to visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study
++ 2004 Micro-computed tomography of the vasculature in parenchymal organs and lung alveoli
+
+Non tomo:
++ 2021 Robust segmentation of vascular network using deeply cascaded AReN-UNet
++ 2023 Vessel Delineation Using U-Net: A Sparse Labeled Deep Learning Approach for Semantic Segmentation of Histological Images
++ 2015 Quantification of Microvascular Tortuosity during Tumor Evolution Using Acoustic Angiography
+
+Vasc references:
++ 1976 The Vascularization of Tumors 
++ 2013 Springer Nature, "Vascularization"
++ 1982 Vascularization of Tumors: A Review
+
 
 // == Interpretation methods of 3D imaging
 // === Methods of 3D imaging
@@ -99,6 +130,7 @@ Vasculature reconstruction and segmentation of 3D images often requires human se
 Sources, will be re-done once finalized:
 
 1.1 https://www.ema.europa.eu/en/human-regulatory-overview/research-development
+
 
 2.1 https://doi.org/10.1111/his.14099
 #linebreak()
@@ -141,7 +173,6 @@ Sources, will be re-done once finalized:
 4.8  Micro computed tomography for vascular exploration  https://doi.org/10.1186/2040-2384-2-7
 
 
-
 5.1 IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
 #linebreak()
 5.2 RANSAC https://doi.org/10.1145/358669.358692
@@ -153,6 +184,11 @@ Sources, will be re-done once finalized:
 5.5 Panoptic https://doi.org/10.48550/arXiv.1801.00868
 #linebreak()
 5.6 U-Net https://doi.org/10.48550/arXiv.1505.04597
+
+
+6.1 Panoptic Segmentation: A Review https://doi.org/10.48550/arXiv.2111.10250
+6.2 µCT visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study https://doi.org/10.1038/s41598-025-14452-8
+#linebreak()
 
 
 #pagebreak()
