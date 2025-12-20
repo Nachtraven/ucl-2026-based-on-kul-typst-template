@@ -82,16 +82,17 @@ Unmentioned above:
 
 ==== 3D histology
 
-3D histology is a method for increasing the amount of information available for analysis, and as a result discriminative power, when compared to 2D classical histology. In its most basic form, it involves taking multiple 2D slices and aligning then stacking them to create a virtual third axis [1] and is also relevant for tumor analysis [2], allowing for structural understanding of a tissue, such as in [2] enabling "the spread and infiltration of invasive carcinoma to be understood".
+3D histology is an evolution of 2D histology, increasing the amount of information available for analysis, and as a result improving discriminative power when compared to 2D classical histology. In its most basic form as an evolution of classical 2D histology, it involves taking multiple 2D slices and aligning then stacking them to create a virtual third axis [1]. 3D histology is relevant for tumor analysis [2], allowing for structural understanding of a tissue, such as in [2] enabling "the spread and infiltration of invasive carcinoma to be understood". This form of histology is often still done in the same methods as with 2D, where a human carries out interpretation, requiring common standards and communication, such as in [3]
 
 #linebreak()
 Other well known methods for 3D histology that do not require slicing and thus avoid sample damage and destruction are magnetic resonance imaging (MRI) and computed tomography (CT), each having a higher resolution variant, micro-MRI and microCT respectively. These techniques enable virtual slicing, allowing observation across any plane, and have resolutions of tens microns for micro-MRI down to sub-micrometer scale for MicroCT.
-MRI is interesting for tissue observation due to its high contrast on soft tissue, as opposed to CT that performs best on calcified tissue. Both methods however are able to make use of contrast-enhancing staining agents (CESAs) [3,4] resulting in the ability for microCT to be readily used for imaging soft tissue, and is termed contrast-enhanced microCT (CECT) and reviewed for ex-vivo data acquisition in [5]. CECT is of particular interest for ex-vivo 3D histology due to the wide variety of staining agents available, and has proven its use in canine heart analysis [6] and for vasculature exploration of small animals [7].
+MRI is interesting for tissue observation due to its high contrast on soft tissue, as opposed to CT that performs best on calcified tissue. Both methods however are able to make use of contrast-enhancing staining agents (CESAs) [4,5] resulting in the ability for microCT to be readily used for imaging soft tissue, and is termed contrast-enhanced microCT (CECT) and reviewed for ex-vivo data acquisition in [6]. CECT is of particular interest for ex-vivo 3D histology due to the wide variety of staining agents available, and has proven its use in canine heart analysis [7] and for vasculature exploration of small animals [8].
 
 #v(1cm)
 
 - https://doi.org/10.1016/j.ajpath.2012.01.033
 - https://doi.org/10.1136/jcp.2004.024794
+- Veterenary based? Not strongest article: Tseng LJ, Matsuyama A, MacDonald-Dickinson V. Histology: The gold standard for diagnosis? Can Vet J. 2023 Apr;64(4):389-391. PMID: 37008634; PMCID: PMC10031787
 - Single Ho 3+-doped upconversion nanoparticles for high-performance T2-weighted brain tumor diagnosis and MR/UCL/CT multimodal imaging: https://doi.org/10.1002/adfm.201401609
 - Three-dimensional non-destructive soft-tissue visualization with X-ray staining micro-tomography: https://doi.org/10.1038/srep14088
 - Review Greet: Contrast-Enhanced MicroCT for Virtual 3D Anatomical Pathology of Biological Tissues: A Literature Review https://doi.org/10.1155/2019/8617406
@@ -101,14 +102,45 @@ MRI is interesting for tissue observation due to its high contrast on soft tissu
 
 Not very sure about if or how to place the quote, as it is specifically for cancer.
 
-=== Vascularization reconstruction (or Interpretation methods of 3D imaging?)
+
+===== CECT Imaging
+
+
+
+== Structure reconstruction (or: Vascularization reconstruction, Interpretation methods of 3D imaging?)
+This section is leaning towards segmentation, as in survey [3]
+
+#linebreak()
+
+With the goal of reconstructing vascularization in imaged tissue, we aim to take in data from an imaging modality, process it through a software pipeline, and obtain at output a data structure with higher information density than the input. This process of reducing the amount of raw data, but increasing the utility or information content of the data, is explored widely in the field of computer science. It underlies concepts such model fitting to noisy data [5] or as more commonly carried out in a biological context and industry, image segmentation, where the goal is to separate regions of a 2D image into multiple segments and objects [4].
+
+#v(1cm)
+
+- OTSU https://doi.org/10.1109/TSMC.1979.4310076
+- U-Net https://doi.org/10.48550/arXiv.1505.04597
+- IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
+- FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
+- RANSAC https://doi.org/10.1145/358669.358692
+
+=== Segmentation
+
+Image segmentation plays a central role in medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [3]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [1], or more complex as in panoptic segmentation, only being posed in 2018 [6].
+
+- OTSU https://doi.org/10.1109/TSMC.1979.4310076
+- U-Net https://doi.org/10.48550/arXiv.1505.04597
+- IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
+- FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
+- RANSAC https://doi.org/10.1145/358669.358692
+- Panoptic https://doi.org/10.48550/arXiv.1801.00868
+
+
+==== Methods of Segmentation
+
+Segmentation methods have evolved over time, can broadly be separated into two categories of interest: computer vision and 
 
 Vasculature reconstruction and segmentation of 3D images often requires human segmentation [1]. Alternative automated methods are less precice 
 
-
-- https://doi.org/10.1038/s41598-025-14452-8
-
-
+- µCT visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study https://doi.org/10.1038/s41598-025-14452-8
 
 // == Interpretation methods of 3D imaging
 
@@ -124,9 +156,20 @@ Vasculature reconstruction and segmentation of 3D images often requires human se
 // === Structural reconstruction
 
 
-== Problem statement, aim and objectives (Scientific writing-tips and tricks_Deadlines.pdf):
+== Problem statement, aim and objectives 
+From (Scientific writing-tips and tricks_Deadlines.pdf):
 - ✓ Formulate again relevant, simple, measurable, and feasible research questions that are still remaining (should be clear after reading the SOTA)
 - ✓ State the research aim or hypothesis of the project, and formulate concrete objectives
+
+=== Connected papers
+
+#figure(
+  image("../../resources/images/Cryogenic contrast-enhanced microCT enables nondestructive 3D quantitative histopathology of soft biological tissues.png", width: 90%),
+  caption: [
+    Connected papers of Cryogenic contrast-enhanced microCT enables nondestructive 3D quantitative histopathology of soft biological tissues
+  ],
+)
+
 
 // #hide[
 
