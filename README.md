@@ -1,6 +1,21 @@
-# Reuse of the bellow template for 2025-2026 MSc thesis, Sean Nachtrab
+# Reuse and modification of [this template](https://github.com/benjamineeckh/kul-typst-template) for 2025-2026 MSc thesis, Sean Nachtrab
 
-Use: Open in VSCode for preview.
+The rendered thesis is under template > thesis.pdf [here](https://github.com/Nachtraven/ucl-2026-based-on-kul-typst-template/tree/main/template)
+
+Alternatively: Open the repository in VSCode with the typst extension, and open the preview
+![How to preview](resources/images/how_to_preview.png)
+
+--
+
+--
+
+--
+
+--
+
+
+
+# Bellow is the original README:
 
 # The `modern-se-kul-thesis` Package
 <div align="center">Version 0.1.0</div>
