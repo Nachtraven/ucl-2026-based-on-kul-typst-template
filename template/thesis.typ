@@ -3,7 +3,7 @@
   title: "Vascularization reconstruction using Contrast-Enhanced Micro CT for high-resolution X-ray based 3D histology
 ",
   // subtitle: "With a subtitle",
-  academic-year: datetime.today().year(),
+  academic-year: 2025, // datetime.today().year(),
   authors: ("Nachtrab Sean"),
   promotors: ("Prof. Greet Kerckhofs","Prof. Sébastien Jodogne",),
   assessors: (

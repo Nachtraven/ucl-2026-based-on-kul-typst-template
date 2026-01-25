@@ -19,15 +19,15 @@ We will begin by diving into the current state of the art in histology for drug 
 *Should this be extended with the aetiology of cancer and angiogenesis?*
 
 
-0.1 Appears interesting: Limitations of clinical and biological histology https://doi.org/10.1054/mehy.1999.0894"
+- 0.1 Appears interesting: Limitations of clinical and biological histology https://doi.org/10.1054/mehy.1999.0894"
 #linebreak()
-0.2 They speak of "presence of vascular or stromal invasion": Histology: The gold standard for diagnosis? https://pubmed.ncbi.nlm.nih.gov/37008634/
+- 0.2 They speak of "presence of vascular or stromal invasion": Histology: The gold standard for diagnosis? https://pubmed.ncbi.nlm.nih.gov/37008634/
 #linebreak()
-0.3 a. 3D reconstruction from 2D slices "Extending two-dimensional histology into the third dimension through conventional micro computed tomography" https://doi.org/10.1016/j.neuroimage.2016.06.005
+- 0.3 a. 3D reconstruction from 2D slices "Extending two-dimensional histology into the third dimension through conventional micro computed tomography" https://doi.org/10.1016/j.neuroimage.2016.06.005
 #linebreak()
-0.3 b. Other source for 3D reconstruction from 2D slices "A Survey of Methods for 3D Histology Reconstruction" https://doi.org/10.1016/j.media.2018.02.004
+- 0.3 b. Other source for 3D reconstruction from 2D slices "A Survey of Methods for 3D Histology Reconstruction" https://doi.org/10.1016/j.media.2018.02.004
 #linebreak()
-0.4 Sources on angiogenesis in tumors from Wlodarski
+- 0.4 Sources on angiogenesis in tumors from Wlodarski
 
 
 
