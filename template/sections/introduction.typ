@@ -1,6 +1,6 @@
-= Introduction (2-6pp) (does this overlap with state-of-the-art and should I remove the intro?)
+= Introduction
 
-The analysis of soft tissue is foundational to modern medecine, it is used everywhere from clinical environments to laboratories, where samples are collected and imaged in order to obtain an understanding of the tissue, called histology or histopathology in the case of diseased tissue. We use the term histology to refer to either interchangeably. Classically, this sampling and subsequent analysis has been done in 2D, with the microscope being the catalyst for the development of the field, and being the gold standard for this process. However, this form of histology presents multiple limitations that stem from its 2D nature: the loss of 3D understanding and structure, as well as very limited quantification capabilities. [0.1] [More detail to be added]
+The analysis of soft tissue is foundational to modern medecine, being used everywhere from clinical environments to laboratories. Tissue samples are collected and imaged in order to gain an understanding of their structure and composition, called histology or histopathology in the case of diseased tissue. We use the term histology to refer to either interchangeably. Classically, this sampling and subsequent analysis has been done in 2D, with the microscope being the catalyst for the development of the field, and being the gold standard for this process. However, this form of histology presents multiple limitations that stem from its 2D nature: the loss of 3D understanding and structure, as well as very limited quantification capabilities. [0.1]
 
 #linebreak()
 Histology is relevant in both clinical and laboratory environments. Clinically, the goal of a biopsy and subsequent analysis under the microscope is generally to identify a qualitative parameter in order to enable diagnosis and treatment: identifying the presence of a kind of cell, the phenotyping of a cell, or the estimation of a parameter, for example in cancerology the presence or absence of blood vessels in a tumor. [0.2]
@@ -9,7 +9,7 @@ Histology is relevant in both clinical and laboratory environments. Clinically, 
 Such biopsies done in 2D present the distinct disadvantage of being unable to obtain information at the same granularity in all three axis: microscope slides in 2D may be stacked to construct a 3D understanding, but these stacked planes are separated by a dead space where no information is acquired [0.3]. This loss of accuracy is catastrophic for the reconstruction and quantification of structures that are small and where their structure is relevant to their function, such as blood vessels, on top of the deformation caused by the cutting process.
 
 #linebreak()
-Blood vessel understanding and reconstruction has emerged over the past years as a critical element in understanding and pushing the boundaries in new drug research: angiogenesis, or the creation of new blood vessels, is a key step in the growth and spread of cancerous tumors. Classical methods, relevant for qualitative understanding and estimation, fall short in terms of accuracy for quantitative analysis for clinical trials [0.4]. The 2D reconstruction: its variability and lack of resolution being a limiting factor, the field is progressing towards the use of high resolution 3D data for these quantitative analysis tasks.
+Blood vessel understanding and reconstruction has emerged over the past years as a critical element in understanding and pushing the boundaries in new drug research: angiogenesis, or the creation of new blood vessels, is a key step in the growth and spread of cancerous tumors. Classical methods, relevant for qualitative understanding and estimation, fall short in terms of accuracy for quantitative analysis for clinical trials [0.4]. 2D reconstruction suffers due to its inherent variability resulting from the slicing process and lack of resolution, with the field is progressing towards the use of high resolution 3D data for these quantitative analysis tasks.
 
 #linebreak()
 We will begin by diving into the current state of the art in histology for drug sreening, followed by the MicroCT methods used, and finish with an exploration of the methods of image understanding more broadly, 
@@ -17,7 +17,6 @@ We will begin by diving into the current state of the art in histology for drug 
 #linebreak()
 
 *Should this be extended with the aetiology of cancer and angiogenesis?*
-
 
 - 0.1 Appears interesting: Limitations of clinical and biological histology https://doi.org/10.1054/mehy.1999.0894"
 #linebreak()
