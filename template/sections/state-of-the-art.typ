@@ -1,5 +1,8 @@
 = State of the art
 
+Viewers: 3D Slicer, OHIF, Dragonfly3D, Avizo
+
+
 State of the art from "Scientific writing-tips and tricks_Deadlines.pdf":
 #linebreak()
 In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. 

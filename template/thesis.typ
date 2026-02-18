@@ -1,6 +1,6 @@
 #import "@preview/modern-se-kul-thesis:0.1.0": template
 #show: template.with(
-  title: "Vascularization reconstruction using Contrast-Enhanced Micro CT for high-resolution X-ray based 3D histology
+  title: "Clinical tooling for vascularization reconstruction on Contrast-Enhanced Micro CT 3D images.
 ",
   // subtitle: "With a subtitle",
   academic-year: 2025, // datetime.today().year(),

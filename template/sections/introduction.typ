@@ -6,40 +6,46 @@ The analysis of soft tissue is foundational to modern medecine, due to the link 
 Histology is relevant in both clinical and laboratory environments. Clinically, histopathological analysis of tissue samples is extensively used such as for cancer detection and grading @histology_used_for_cancers_he2012histology where a sample is analysed manually or with computer assistance. In laboratories for tasks such as clinical trials, histopathologists carry out manual microscopic evaluation @pathology_in_clinical_trials_provenzano2015standardization. Classical 2D histology presents the distinct disadvantage of being unable to obtain information at the same granularity in all three axis: slices may be stacked to obtain a 3D result, but resolution in the third axis is limited to section thickness, with the stacked planes separated by a dead space where no information is acquired @methods_for_3d_histo_pichat2018survey, and the cutting process induces changes in tissue structure @extending2d_histo_to_3d. 
 
 #linebreak()
-For the purpose of evaluating the antiangiogenic drug Pazopanib, a cancer treatment drug of the antiangiogenic drug group, which block the creation of new blood vessels essential to tumor development, accurate 3d reconstruction of blood vessel vascularization is required, beyond simple volume estimate [source?]. This motivates the need for using µCT. (refer to sources from pdf Contrast-enhanced micro-CT for 3D X-ray based histology to assess the influence of antiangiogenic drugs on tumor vascularization and necrosis)
+For the purpose of evaluating the antiangiogenic drug Pazopanib, a tyrosine kinase inhibitor which blocks the creation of new blood vessels being investigated for cancer treatment, accurate 3d reconstruction of blood vessel vascularization is required, beyond simple volume estimate [SOURCE??]. The shortcomings of classical 2D histology make the asessment of highly heterogeneous tissues like vasculature, as well as quantification of their spatial spatial relationship challenging @litt_review_greet_debournonville2019contrast. 3D methods with high spatial resolution have the potential to fulfill these shortcomings.
 
 #linebreak()
-Here speak of 3d methods for histology and why they're relevant, especially µCT for panzopanib and blood vessel reconstruction. Talk about the time it takes to segment blood vessels, and the variability in between annotators (refer to pdf A literature review on segmentation methods for ex vivo contrast-enhanced microfocus computed tomography data).
+The analysis of high resolution 3D data is not possible in the same fashion as 2D histological slices: there are many more slices, often thousands, requiring software to assemble these into a 3D volume. Segmenting 3D space however remains challenging: µCT presents low contrast between soft tissues; techniques exist to increase contrast and improve visibility such as cryo-CT @cryoct_maes2022cryogenic or the utilization of contrast agents in contrast enhanced CT, called CECT. However, these techniques still do not enable sufficient differentiation for small vascular networks such as those found in the murine tumors collected for the evaluation of Pazopanib to allow threshold based segmentation, as is commonly used for bone or samples with good contrast agent presence @litt_review_greet_debournonville2019contrast.
 
 #linebreak()
-end with what we will work on, which is tools to aid in the laboratory/clinical trial process of analyzing vascularizaton of small tumors, with a particular focus on usability across multiple pieces of software: avizo, dragonfly3D and opensource DICOM viewers (ideas on which?)
-
-
-
-
-Native methods of 3D imaging have been developped to paliate the issues of 2D histology: microscopy methods such as confocal microscopy, 3D ultrasound imaging, magnetic resonnance and x-ray imaging. High resolution variants of the latter two exist in the form of micro-Magnetic Resonance Imaging (micro-MRI) and microfocus X-ray Computed Tomography (microCT), able to .
-
-
-In order to evaluate the efficacy of the drug Pazopanib, a cancer treatment drug of the antiangiogenic drug group, which block the creation of new blood vessels essential to tumor development
-
-accurate analysis of blood vessel characteristics beyond simple volume measurements are required  
-
+Alternatives to threshold based segmentation exist, however due to subjectivity and the annotation technique, these suffer from strong variance between annotators @variability_in_annotations_xray_lin2023pluribus. This variance comes from multiple sources: expertise difference, tool type and experience, available time, subjectivity and more [source this based on above two]. This high variance, combined with the time required to manually segment, means that small vascular networks remain difficult to obtain segmentations for.
 
 #linebreak()
-Blood vessel understanding and reconstruction has emerged over the past years as a critical element in understanding and pushing the boundaries in new drug research: angiogenesis, or the creation of new blood vessels, is a key step in the growth and spread of cancerous tumors. Classical methods, relevant for qualitative understanding and estimation, fall short in terms of accuracy for quantitative analysis for clinical trials [0.4]. 2D reconstruction suffers due to its inherent variability resulting from the slicing process and lack of resolution, with the field is progressing towards the use of high resolution 3D data for these quantitative analysis tasks.
-
-#linebreak()
-We will begin by diving into the current state of the art in histology for drug sreening, followed by the MicroCT methods used, and finish with an exploration of the methods of image understanding more broadly, 
-
-#linebreak()
-
-you should come with CECT being a new tool for
-3d biology but limitations = reconstruction of the
-vasculature network in 3d -> here is where the SOTA
-will continue on + thesis topic will work on
+In this thesis work will be carried out explore methods for obtaining clinically relevant vasculature characteristics from µCT data acquired in the context of the testing of Pazopanib, with a focus on the usability and real world implementation of the method into the pipelines and tools used by researchers. 
 
 
-- 0.4 Sources on angiogenesis in tumors from Wlodarski
+
+// Old comments from Round 1:
+
+// Native methods of 3D imaging have been developped to paliate the issues of 2D histology: microscopy methods such as confocal microscopy, 3D ultrasound imaging, magnetic resonnance and x-ray imaging. High resolution variants of the latter two exist in the form of micro-Magnetic Resonance Imaging (micro-MRI) and microfocus X-ray Computed Tomography (microCT), able to .
+
+
+// In order to evaluate the efficacy of the drug Pazopanib, a cancer treatment drug of the antiangiogenic drug group, which block the creation of new blood vessels essential to tumor development
+
+// accurate analysis of blood vessel characteristics beyond simple volume measurements are required  
+
+
+// #linebreak()
+// Blood vessel understanding and reconstruction has emerged over the past years as a critical element in understanding and pushing the boundaries in new drug research: angiogenesis, or the creation of new blood vessels, is a key step in the growth and spread of cancerous tumors. Classical methods, relevant for qualitative understanding and estimation, fall short in terms of accuracy for quantitative analysis for clinical trials [0.4]. 2D reconstruction suffers due to its inherent variability resulting from the slicing process and lack of resolution, with the field is progressing towards the use of high resolution 3D data for these quantitative analysis tasks.
+
+// #linebreak()
+// We will begin by diving into the current state of the art in histology for drug sreening, followed by the MicroCT methods used, and finish with an exploration of the methods of image understanding more broadly, 
+
+// #linebreak()
+
+// you should come with CECT being a new tool for
+// 3d biology but limitations = reconstruction of the
+// vasculature network in 3d -> here is where the SOTA
+// will continue on + thesis topic will work on
+
+
+// - 0.4 Sources on angiogenesis in tumors from Wlodarski
+
+// ------------------------------
 
 
 
