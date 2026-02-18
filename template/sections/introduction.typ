@@ -1,12 +1,29 @@
 = Introduction
 
-The analysis of soft tissue is foundational to modern medecine, being used everywhere from clinical environments to laboratories. Tissue samples are collected and imaged in order to gain an understanding of their structure and composition, called histology or histopathology in the case of diseased tissue. We use the term histology to refer to either interchangeably. Classically, this sampling and subsequent analysis has been done in 2D, with the microscope being the catalyst for the development of the field, and being the gold standard for this process. However, this form of histology presents multiple limitations that stem from its 2D nature: the loss of 3D understanding and structure, as well as very limited quantification capabilities. [0.1]
+The analysis of soft tissue is foundational to modern medecine, due to the link between tissue microstructure and its function, being used everywhere from clinical environments to laboratories. Tissue samples are collected and imaged in order to gain an understanding of their structure and composition, called histology or histopathology in the case of diseased tissue. We use the term histology to refer to either interchangeably. Classically, this sampling and subsequent analysis has been done _ex-vivo_ in 2D using a microscope, setting the gold standard for histology @2d_histo_sota_balcaen2023revealing. 
 
 #linebreak()
-Histology is relevant in both clinical and laboratory environments. Clinically, the goal of a biopsy and subsequent analysis under the microscope is generally to identify a qualitative parameter in order to enable diagnosis and treatment: identifying the presence of a kind of cell, the phenotyping of a cell, or the estimation of a parameter, for example in cancerology the presence or absence of blood vessels in a tumor. [0.2]
+Histology is relevant in both clinical and laboratory environments. Clinically, histopathological analysis of tissue samples is extensively used such as for cancer detection and grading @histology_used_for_cancers_he2012histology where a sample is analysed manually or with computer assistance. In laboratories for tasks such as clinical trials, histopathologists carry out manual microscopic evaluation @pathology_in_clinical_trials_provenzano2015standardization. Classical 2D histology presents the distinct disadvantage of being unable to obtain information at the same granularity in all three axis: slices may be stacked to obtain a 3D result, but resolution in the third axis is limited to section thickness, with the stacked planes separated by a dead space where no information is acquired @methods_for_3d_histo_pichat2018survey, and the cutting process induces changes in tissue structure @extending2d_histo_to_3d. 
 
 #linebreak()
-Such biopsies done in 2D present the distinct disadvantage of being unable to obtain information at the same granularity in all three axis: microscope slides in 2D may be stacked to construct a 3D understanding, but these stacked planes are separated by a dead space where no information is acquired [0.3]. This loss of accuracy is catastrophic for the reconstruction and quantification of structures that are small and where their structure is relevant to their function, such as blood vessels, on top of the deformation caused by the cutting process.
+For the purpose of evaluating the antiangiogenic drug Pazopanib, a cancer treatment drug of the antiangiogenic drug group, which block the creation of new blood vessels essential to tumor development, accurate 3d reconstruction of blood vessel vascularization is required, beyond simple volume estimate [source?]. This motivates the need for using µCT. (refer to sources from pdf Contrast-enhanced micro-CT for 3D X-ray based histology to assess the influence of antiangiogenic drugs on tumor vascularization and necrosis)
+
+#linebreak()
+Here speak of 3d methods for histology and why they're relevant, especially µCT for panzopanib and blood vessel reconstruction. Talk about the time it takes to segment blood vessels, and the variability in between annotators (refer to pdf A literature review on segmentation methods for ex vivo contrast-enhanced microfocus computed tomography data).
+
+#linebreak()
+end with what we will work on, which is tools to aid in the laboratory/clinical trial process of analyzing vascularizaton of small tumors, with a particular focus on usability across multiple pieces of software: avizo, dragonfly3D and opensource DICOM viewers (ideas on which?)
+
+
+
+
+Native methods of 3D imaging have been developped to paliate the issues of 2D histology: microscopy methods such as confocal microscopy, 3D ultrasound imaging, magnetic resonnance and x-ray imaging. High resolution variants of the latter two exist in the form of micro-Magnetic Resonance Imaging (micro-MRI) and microfocus X-ray Computed Tomography (microCT), able to .
+
+
+In order to evaluate the efficacy of the drug Pazopanib, a cancer treatment drug of the antiangiogenic drug group, which block the creation of new blood vessels essential to tumor development
+
+accurate analysis of blood vessel characteristics beyond simple volume measurements are required  
+
 
 #linebreak()
 Blood vessel understanding and reconstruction has emerged over the past years as a critical element in understanding and pushing the boundaries in new drug research: angiogenesis, or the creation of new blood vessels, is a key step in the growth and spread of cancerous tumors. Classical methods, relevant for qualitative understanding and estimation, fall short in terms of accuracy for quantitative analysis for clinical trials [0.4]. 2D reconstruction suffers due to its inherent variability resulting from the slicing process and lack of resolution, with the field is progressing towards the use of high resolution 3D data for these quantitative analysis tasks.
@@ -16,18 +33,13 @@ We will begin by diving into the current state of the art in histology for drug 
 
 #linebreak()
 
-*Should this be extended with the aetiology of cancer and angiogenesis?*
+you should come with CECT being a new tool for
+3d biology but limitations = reconstruction of the
+vasculature network in 3d -> here is where the SOTA
+will continue on + thesis topic will work on
 
-- 0.1 Appears interesting: Limitations of clinical and biological histology https://doi.org/10.1054/mehy.1999.0894"
-#linebreak()
-- 0.2 They speak of "presence of vascular or stromal invasion": Histology: The gold standard for diagnosis? https://pubmed.ncbi.nlm.nih.gov/37008634/
-#linebreak()
-- 0.3 a. 3D reconstruction from 2D slices "Extending two-dimensional histology into the third dimension through conventional micro computed tomography" https://doi.org/10.1016/j.neuroimage.2016.06.005
-#linebreak()
-- 0.3 b. Other source for 3D reconstruction from 2D slices "A Survey of Methods for 3D Histology Reconstruction" https://doi.org/10.1016/j.media.2018.02.004
-#linebreak()
+
 - 0.4 Sources on angiogenesis in tumors from Wlodarski
-
 
 
 
