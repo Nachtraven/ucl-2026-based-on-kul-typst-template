@@ -1,7 +1,119 @@
 = State of the art
 
+
+In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. This section contains:
+✓ The background of the study (= context);
+✓ Research that has been done in the frame of your thesis topic;
+✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
+➔ Make a fluent story of it, and not just a sum up of different papers or references.
+
+➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
+
+
+== Software in Research
+
+The kinds of software used in a research setting vary enormously in scope, purpose, availability, expense and licensing. Large research oriented organisations such as CERN (Source)[https://opensource.web.cern.ch/ospo-2024-event] make use of various types of software at different levels: proprietary software runs on the commercial hardware used to operate components such as networking gear, on top of which open source code is ran, or project specific code is written, such as with (CERN VM-FS)[https://opensource.web.cern.ch/cvmfs]. A piece of software developped initially as a research project can be re-used and extended to satisfy new or existing needs. 
+This is due to the layered and abstraction focused nature of software and associated hardware development. For most published research in biology, the relevant software to the research runs on top of a abstracted computational stack, and as a result we will focus on this "high level" software. Examples of such pieces of work include the medical image viewer (Orthanc)[https://doi.org/10.1007/s10278-018-0082-y], where the software relies on various pre-existing components such as the Lua language and the IP stack required to enable utilization in a web browser.
+
+#linebreak()
+The guiding principles of research dictate that Open, reproducible, and replicable practices are a fundamental part of science, it is common however that scientific research be carried out in part or fully using closed source or proprietary software, with licenses for certain pieces of software reaching into the multiple thousands, such as Avizo by Thermo Fisher Scientific, discussed later. Other pieces of paid license software underly the one actually used in the research setting, such as the operating system Windows, acting as an implicit cost to replication. These software are occasionally available under a "free for research" liencese, such as FreeD offered by (Dragonfly3D)[https://dragonfly.comet.tech/en/products/license-models/freed-license], another piece of software used in relevant research, discussed later.
+
+#linebreak()
+The standard for open and free software at the OS level is Linux, a kernel, on top of which various distributions are built such as Ubuntu as used in this thesis, or one of a variety of over (one thousand others) [https://en.wikipedia.org/wiki/List_of_Linux_distributions]. On the OS is run the software that is used during the various stages of scientific work. Of these stages, relevant to this thesis are the software required to process the outputs of a MicroCT machine: software able to reconstruct the 3D representation of the imaged target from the collection of 2D slices provided by the CT machine.
+
+=== Software for 3D analysis
+
+In order to process the 2D slices into 3D, various software are available. Bellow is a grid containing the pieces of software considered in the context of this thesis for the analysis of the micro-ct slices, separated by license type. For the sake of our analysis, any software not available free of charge without pre-requisites is considered commercial:
+
+[Based on Dragonfly3D's own list, in resources/software/dragonfly3Dsoftwarelist.jpg]
+
+Commercial software
+Amira Or Avizo
+Analyze by AnalyzeDirect
+CTAn and CTVol by Bruker
+Image Pro by Media Cybernetics
+Imaris by Oxford Instruments Bitplane
+MeVisLab
+Mimics by Materialise
+ScanIP by Simperware
+Octopus by inCT
+uCT
+VG Studio
+Zeiss Inspect
+Dragonfly3D
+
+Opensource or Freeware
+3D Slicer
+Chimera
+Blender
+Dream3D
+Drishti
+ImageJ
+FIJI
+IMOD
+Meshab
+OsiriX
+ParaView
+Visit
+
+
+
+== Tissue imaging
+
+
+
+=== CECT
+
+
+
+=== Tissue imaging uses
+
+
+
+== Tools  
+
+=== Open source
+
+=== Closed source
+
+== Segmentation
+
+=== Structure extraction
+
+
+
+
+#pagebreak()
+
 Viewers: 3D Slicer, OHIF, Dragonfly3D, Avizo
 
+Greet:
+1. Broad → it's a funnel
+2. Broad: blood vessels in tissues, important to charact, many imaging, ours is CECT, problems eixist
+    1. How do people do seg, not robust, not bla bla
+    2. Other alternatives
+        1. 3DSlicer available, discuss how it is used
+            1. Every section focuses more and more, describe main problems, the more you go down, the more you have well defined research questions. Very brief mentions of research questions
+3. After SOTA 2pp: problem statement, general goal, objectives
+    1. Based on the levels above, summarize points mentioned in SOTA
+        1. Important remaining research questions are etc etc etc, main goal is this, objectives are a b c
+
+Sébastien:
+2. SOTA (bio oriented, explain the pipeline, explain variability), (10pp)
+    
+  There is a review article that was incomplete, lots of the literature focused on ex-vivo
+  Focus on ex-vivo but get some algos from in-vivo. Data ex-vivo is much more complex.
+  Missing connections helps on the medical field → it’s the reconnection aspect that matters. ex-vivo it’s both the segmentation and the reconnection.
+  
+  Talk about the fact that clinical CT grey value does a good job, micro ct ex-vivo is a lot more difficult that’s why we focus on ex-vivo. There is transferability from ex to in vivo but the other way isn’t necessarily the case.
+
+// Comparing shortcomings of CECT with 2D histo
+// Another reason for the absence of these very small vessels on CECT is that CA
+// binds to blood cells such as red blood cells, so if there is no blood, there will be
+// no staining. On the other hand, CD31 binds to a transmembrane glycoprotein
+// expressed by endothelial cells and platelets [68]. It is therefore possible that CD31
+// could detect very small blood vessels even in the absence of blood, whereas CA
+// cannot.
 
 State of the art from "Scientific writing-tips and tricks_Deadlines.pdf":
 #linebreak()
