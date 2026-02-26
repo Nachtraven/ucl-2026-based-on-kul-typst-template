@@ -1,89 +1,138 @@
 = State of the art
 
+// In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. This section contains:
+// ✓ The background of the study (= context);
+// ✓ Research that has been done in the frame of your thesis topic;
+// ✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
+// ➔ Make a fluent story of it, and not just a sum up of different papers or references.
 
-In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. This section contains:
-✓ The background of the study (= context);
-✓ Research that has been done in the frame of your thesis topic;
-✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
-➔ Make a fluent story of it, and not just a sum up of different papers or references.
-
-➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
-
+// ➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
 
 == Software in Research
 
-The kinds of software used in a research setting vary enormously in scope, purpose, availability, expense and licensing. Large research oriented organisations such as CERN (Source)[https://opensource.web.cern.ch/ospo-2024-event] make use of various types of software at different levels: proprietary software runs on the commercial hardware used to operate components such as networking gear, on top of which open source code is ran, or project specific code is written, such as with (CERN VM-FS)[https://opensource.web.cern.ch/cvmfs]. A piece of software developped initially as a research project can be re-used and extended to satisfy new or existing needs. 
-This is due to the layered and abstraction focused nature of software and associated hardware development. For most published research in biology, the relevant software to the research runs on top of a abstracted computational stack, and as a result we will focus on this "high level" software. Examples of such pieces of work include the medical image viewer (Orthanc)[https://doi.org/10.1007/s10278-018-0082-y], where the software relies on various pre-existing components such as the Lua language and the IP stack required to enable utilization in a web browser.
+The kinds of software used in a research setting vary enormously by location, as well as in scope, purpose, availability, expense and licensing. At the UCLouvain faculty IMMC (Institute of Mechanics, Materials, and Civil Engineering), research is carried out on biological tissue samples using computed tomography techniques. During this research, a variety of software is used: both as explicit steps in the pipeline for tasks such as segmenting samples in 3D, using Avizo or Dragonfly3D, or implicitly as elements of the pipeline that lay before the steps done by researchers (software running on CT machines) or in the infrastructure, such as the OS used on computing devices.  
 
 #linebreak()
-The guiding principles of research dictate that Open, reproducible, and replicable practices are a fundamental part of science, it is common however that scientific research be carried out in part or fully using closed source or proprietary software, with licenses for certain pieces of software reaching into the multiple thousands, such as Avizo by Thermo Fisher Scientific, discussed later. Other pieces of paid license software underly the one actually used in the research setting, such as the operating system Windows, acting as an implicit cost to replication. These software are occasionally available under a "free for research" liencese, such as FreeD offered by (Dragonfly3D)[https://dragonfly.comet.tech/en/products/license-models/freed-license], another piece of software used in relevant research, discussed later.
+The guiding principles of research dictate that Open, reproducible, and replicable practices are a fundamental part of science, it is common however that scientific research be carried out in part or fully using closed source or proprietary software, with licenses for certain pieces of software reaching into the multiple thousands, such as is the case for Avizo by Thermo Fisher Scientific. Other pieces of paid software are part of the infrastructure such as the operating system Windows used throughout the lab, acting as an implicit cost to replication. These software are occasionally available under a "free for research" liencese, such as FreeD offered by (Dragonfly3D)[https://dragonfly.comet.tech/en/products/license-models/freed-license], another piece of software used in the lab, discussed later. For most published research in biology, the relevant software to the research runs on top of a abstracted computational stack, and as a result we will focus on this "high level" software. 
+
+=== Software Licenses 
+
+Software licenses govern the terms under which a piece of software may be used, modified, and redistributed. They broadly fall into two categories: proprietary (closed source) and open source. Proprietary software restricts access to its source code and is generally distributed under a paid license, although exceptions exist in the form of freeware: proprietary software made available at no cost, such as Dragonfly3D's FreED license. Open source software makes its source code publicly available and is in the vast majority of cases also free of charge, though commercial open source models exist such as red hat linux. Within open source licenses, meaningful distinctions exist between permissive licenses (such as MIT or BSD), which place few restrictions on reuse, and copyleft licenses (such as the GPL family), which require that derivative works remain open source.
+
+#linebreak()
+Open source software plays a particularly important role in scientific research for two reasons: First, being free removes a significant barrier to entry: any researcher, regardless of institutional resources, can access, run, and reproduce a pipeline built on open source tools. This is a prerequisite for replicability, one of the foundational principles of science. Secondly open source software is extensible: prior work can be built upon by accessing, studying and modifying its source code. This capacity for incremental improvement mirrors the broader scientific process itself, where each work builds upon prior results. An example of this is (Orthanc)[https://doi.org/10.1007/s10278-018-0082-y], a medical image viewer whose architecture deliberately relies on pre-existing open components such as the Lua scripting language and standard networking protocols, enabling the community to extend its functionality without duplicating prior effort.
 
 #linebreak()
 The standard for open and free software at the OS level is Linux, a kernel, on top of which various distributions are built such as Ubuntu as used in this thesis, or one of a variety of over (one thousand others) [https://en.wikipedia.org/wiki/List_of_Linux_distributions]. On the OS is run the software that is used during the various stages of scientific work. Of these stages, relevant to this thesis are the software required to process the outputs of a MicroCT machine: software able to reconstruct the 3D representation of the imaged target from the collection of 2D slices provided by the CT machine.
 
 === Software for 3D analysis
 
-In order to process the 2D slices into 3D, various software are available. Bellow is a grid containing the pieces of software considered in the context of this thesis for the analysis of the micro-ct slices, separated by license type. For the sake of our analysis, any software not available free of charge without pre-requisites is considered commercial:
+The outputs, after reconstruction, of a CT scan are in the form of slice-by-slice files. These 2D slice outputs are then combined into a 3D representation by dedicated software, of which many exist. Drawing from Dragonfly3D's own comparative software list, the tools relevant to this thesis can be divided along the same axis introduced in the previous section: commercial and open source or freeware. On the commercial side, the main options include (Bold indicating those actively used in the UCLouvain IMMC) #text(weight: "bold")[Dragonfly3D, Avizo, CTAn], Amira, Analyze and CTVol (by Bruker), Image Pro, Imaris, MeVisLab, Mimics, ScanIP, Octopus, VG Studio, Zeiss Inspect. On the open source and freeware side, the principal options are 3D Slicer, Chimera, Blender, Dream3D, Drishti, ImageJ, FIJI, IMOD, MeshLab, OsiriX, ParaView, and VisIt. 
 
-[Based on Dragonfly3D's own list, in resources/software/dragonfly3Dsoftwarelist.jpg]
+#linebreak()
+Additionally, more specialised and focused tools, made in a research context exist such as SPROUT and nnU-Net, the latter being a deep learning framework for medical image segmentation.
+For the purposes of this thesis, candidate software was evaluated against a set of technical criteria, ordered by importance:
+1. Import a 3D scan from individual 2D slices in standard formats such as TIFF, PNG, JPEG, BMP, or DICOM. 
+2. Export data to non-proprietary formats to ensure data portability
+3. Allow the development and implementation of plugins
+4. Ability to (manually or automatically) segment parts of a scan, especially of blood vessels and availability of external tools specifically designed for vascular segmentation.
 
-Commercial software
-Amira Or Avizo
-Analyze by AnalyzeDirect
-CTAn and CTVol by Bruker
-Image Pro by Media Cybernetics
-Imaris by Oxford Instruments Bitplane
-MeVisLab
-Mimics by Materialise
-ScanIP by Simperware
-Octopus by inCT
-uCT
-VG Studio
-Zeiss Inspect
-Dragonfly3D
+Due to the goal of developing software for practical real world use, the following aspects were also weighed:
+1. Availability of dedicated support forums & tutorial videos
+2. Active development
+3. Prior use by the lab researchers, and by researchers of the field more broadly.
+4. Ease of installation and barrier to entry
 
-Opensource or Freeware
-3D Slicer
-Chimera
-Blender
-Dream3D
-Drishti
-ImageJ
-FIJI
-IMOD
-Meshab
-OsiriX
-ParaView
-Visit
+#linebreak()
+Due to these criteria, especially the practical aspects, standalone software such as (DeepVesselNet)[https://arxiv.org/abs/1803.09340] and (SPROUT)[https://www.biorxiv.org/content/10.1101/2024.11.22.624847v2.abstract] were discarded as candidates and focus was set to comparing the commercial tools actively in use in the laboratory for blood vessel segmentation (Avizo, Dragonfly3D) to open source alternatives 3D Slicer and ImageJ/FIJI. ImageJ and its distribution FIJI have a rich history in biological image analysis with an extensive plugin ecosystem relevant for this work, such as the (Frangi vesselness)[https://imagej.net/plugins/frangi] algorithm, but their handling of large 3D volumes and native support for vascular network extraction is limited. 3D Slicer emerged as the most suitable tool for this thesis, due to its pre-existing plugin intended specifically for advanced vessel segmentation: (The Vascular Modeling Toolkit)[http://www.vmtk.org/] Beyond satisfying the core technical criteria of importing 3D scans as stacks of 2D slices, as well as import and export of open formats such as DICOM, 3D slicer also has extensive instructions and prior work in manual and semi-automatic segmentation. The Extension Manager is particularly relevant to this work: the proprietary pieces of software studied also had available plugins/extensions, however these are usually expensive. For 3D Slicer, the VMTK (the Vascular Modelling Toolkit) mentioned above, with its open code enabling modification, enables working on an existing proven basis. The recent project (R-Vessel-X)[https://arxiv.org/pdf/2501.10068]: especially developed for the segmentation of blood vessel trees from medical images, was also retained as relevant. 
+
+#linebreak()
+The combination of a stable, widely adopted platform with active community support and specialised vascular tooling makes 3D Slicer the most appropriate choice for extracting and analysing the vasculature from CECT µCT data in a reproducible and extensible manner.
 
 
+// In order to process the 2D slices into 3D, various software are available. Bellow is a grid containing the pieces of software considered in the context of this thesis for the analysis of the micro-ct slices, separated by license type. For the sake of our analysis, any software not available free of charge without pre-requisites is considered commercial:
+
+// Based on Dragonfly3D's own list, in resources/software/dragonfly3Dsoftwarelist.jpg
+
+// Commercial software
+// Amira Or Avizo
+// Analyze by AnalyzeDirect
+// CTAn and CTVol by Bruker
+// Image Pro by Media Cybernetics
+// Imaris by Oxford Instruments Bitplane
+// MeVisLab 
+// Mimics by Materialise
+// ScanIP by Simperware
+// Octopus by inCT
+// uCT
+// VG Studio
+// Zeiss Inspect
+// Dragonfly3D
+
+// Opensource or Freeware
+// 3D Slicer
+// Chimera
+// Blender
+// Dream3D
+// Drishti
+// ImageJ
+// FIJI
+// IMOD
+// Meshab
+// OsiriX
+// ParaView
+// Visit
+
+// Other software includes:
+// SPROUT 
+// nnU-Net
+
+
+// When comparing these pieces of software for potential use in this thesis, the following technical criteria were considered, from most to least important:
+// - Ability to import 3D scan from individual 2D slices of JPEG/PNG/TIFF/BMP/DICOM format
+// - Ability to segment blood vessels
+// - Ability to export data to non proprietary formats: JPEG/PNG/TIFF/BMP/DICOM or other
+// - Ability to add software plugins to extend capabilities
+// - Availability of external software intended for blood vessel segmentation
+// - Ability to manually segment areas of the 3D scan
+
+// User friendliness was also considered:
+// - Availability of instructions online in the form of dedicated support forums
+// - Availability of youtube videos
+// - Prior use of the software by people with a background in biology for other tasks
+// - Ease of installation
+
+// By default, three proprietary pieces of software were retained for the following comparison, due to their prior use in the research team carrying out the work: Dragonfly3D, CTAnn and Avizo. From the parameters laid out above, 3DSlicer, SPROUT and ImageJ/Fiji were retained for deeper comparison.
+
+// Compare them, 3DSlicer comes out above due to having VMTK and R-Vessel-X.
 
 == Tissue imaging
 
-
+Tissue imaging methods can be characterized by multiple factors such as dimensionality (1D, 2D, 3D, 4D), invasiveness (ex-vivo vs in-vivo ability) as well as destructiveness (requiring irreversible modification or not of the sample). From these
 
 === CECT
 
-
+Heavily based on the Greet work
 
 === Tissue imaging uses
 
+Heavily based on the Wlodarski work
 
+==== Tissue imaging workflow
 
-== Tools  
-
-=== Open source
-
-=== Closed source
+It is easy to go from exvivo to invivo but not the other way with seg methods
 
 == Segmentation
 
+How is segmentation done? 
+
 === Structure extraction
 
-
-
+How does structural extraction improve segmentation? How does the prior of knowing we are looking for a blood vessel help?
 
 #pagebreak()
+
+
 
 Viewers: 3D Slicer, OHIF, Dragonfly3D, Avizo
 
@@ -100,12 +149,12 @@ Greet:
 
 Sébastien:
 2. SOTA (bio oriented, explain the pipeline, explain variability), (10pp)
-    
-  There is a review article that was incomplete, lots of the literature focused on ex-vivo
-  Focus on ex-vivo but get some algos from in-vivo. Data ex-vivo is much more complex.
-  Missing connections helps on the medical field → it’s the reconnection aspect that matters. ex-vivo it’s both the segmentation and the reconnection.
   
-  Talk about the fact that clinical CT grey value does a good job, micro ct ex-vivo is a lot more difficult that’s why we focus on ex-vivo. There is transferability from ex to in vivo but the other way isn’t necessarily the case.
+There is a review article that was incomplete, lots of the literature focused on ex-vivo
+Focus on ex-vivo but get some algos from in-vivo. Data ex-vivo is much more complex.
+Missing connections helps on the medical field → it’s the reconnection aspect that matters. ex-vivo it’s both the segmentation and the reconnection.
+
+Talk about the fact that clinical CT grey value does a good job, micro ct ex-vivo is a lot more difficult that’s why we focus on ex-vivo. There is transferability from ex to in vivo but the other way isn’t necessarily the case.
 
 // Comparing shortcomings of CECT with 2D histo
 // Another reason for the absence of these very small vessels on CECT is that CA
@@ -114,19 +163,6 @@ Sébastien:
 // expressed by endothelial cells and platelets [68]. It is therefore possible that CD31
 // could detect very small blood vessels even in the absence of blood, whereas CA
 // cannot.
-
-State of the art from "Scientific writing-tips and tricks_Deadlines.pdf":
-#linebreak()
-In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. 
-#linebreak()
-This section contains:
-- ✓ The background of the study (= context);
-- ✓ Research that has been done in the frame of your thesis topic;
-- ✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
-#linebreak()
-➔ Make a fluent story of it, and not just a sum up of different papers or references.
-#linebreak()
-➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives.
 
 // briefly SOTA 3D histology for drug screening, the need for 3D histo is clear for companies developping drugs, I focus on antiangionetic drugs on tumor -> refer to Lisa thesis (effect of pazopanib)
 
@@ -233,13 +269,6 @@ Vasc references:
 + 1982 Vascularization of Tumors: A Review
 
 
-// == Interpretation methods of 3D imaging
-// === Methods of 3D imaging
-// === MicroCT imaging
-// == Structural Extraction
-// === Semantic segmentation
-// === Structural reconstruction
-
 #pagebreak()
 
 Sources, will be re-done once finalized:
@@ -308,19 +337,15 @@ Sources, will be re-done once finalized:
 
 #pagebreak()
 
-== Problem statement, aim and objectives 
-From (Scientific writing-tips and tricks_Deadlines.pdf):
-- ✓ Formulate again relevant, simple, measurable, and feasible research questions that are still remaining (should be clear after reading the SOTA)
-- ✓ State the research aim or hypothesis of the project, and formulate concrete objectives
 
-=== Connected papers
+// === Connected papers
 
-#figure(
-  image("../../resources/images/Cryogenic contrast-enhanced microCT enables nondestructive 3D quantitative histopathology of soft biological tissues.png", width: 90%),
-  caption: [
-    Connected papers of Cryogenic contrast-enhanced microCT enables nondestructive 3D quantitative histopathology of soft biological tissues
-  ],
-)
+// #figure(
+//   image("../../resources/images/Cryogenic contrast-enhanced microCT enables nondestructive 3D quantitative histopathology of soft biological tissues.png", width: 90%),
+//   caption: [
+//     Connected papers of Cryogenic contrast-enhanced microCT enables nondestructive 3D quantitative histopathology of soft biological tissues
+//   ],
+// )
 
 
 // #hide[
