@@ -49,6 +49,22 @@ Due to these criteria, especially the practical aspects, standalone software suc
 #linebreak()
 The combination of a stable, widely adopted platform with active community support and specialised vascular tooling makes 3D Slicer the most appropriate choice for extracting and analysing the vasculature from CECT µCT data in a reproducible and extensible manner.
 
+_*Problem 1.* In an extensive and diverse software landscape, users stick to what is familiar and easy to use, regardless of the impact on scientific rigor. Our software must thus be based on an open platform: 3DSlicer, be easy to use: click only installation and use, and have ample, clear documentation._
+
+
+
+#pagebreak()
+== Tissue imaging
+
+Tissue imaging is a critical step in both clinical and research contexts, where it is used to acquire a better understanding of the organism being examined than is possible with indirect measurements. Tissue imaging methods can be characterized by multiple factors, of relevance in this document: dimensionality (1D, 2D, 3D, 4D) and invasiveness (ex-vivo / in-vivo). Ex-vivo imaging requires the removal (and generally destruction or alteration) of the tissue to be imaged, whereas in-vivo can be done in a live organism, offering the distinct advantage of being able to measure the same tissue at multiple points in time.
+
+#linebreak()
+Tissue imaging enables the extraction of parameters that are qualitative  and/or quantitative: in clinical and research settings, it is common to extract simple qualitative measurements, such as a difference in size, due to it both being easier and quantification not being required. However, for tasks such as comparing the impact of a drug on a structure, quantification becomes relevant: Understanding the three-dimensional structure of biological tissue is a prerequisite for the analysis of structure-altering drugs such as Pazopanib, where changes in tumor vascularization are inherently spatial and quantifiable across multiple parameters. Classical 2D histology remains the gold standard for analysis of biological tissues, valued for its high discriminative power, the wide range of available stains, and its compatibility with immunohistochemistry (Source)[https://onlinelibrary.wiley.com/doi/10.1155/2019/8617406]. Despite this, it suffers from fundamental limitations when the target of analysis is a spatially complex 3D structure. Physical sectioning of the sample is destructive, is not orientation-agnostic, and introduces deformation artifacts that are difficult to compensate even with embedding techniques (Source)[https://www.researchgate.net/publication/283490690](tomo specific source)[https://pubmed.ncbi.nlm.nih.gov/26404036/]. Samples undergo structural changes over time during preparation: they dry out, and certain elements oxydize, although techniques exist to mitigate this. (Source) [https://doi.org/10.1155/2019/8617406]
+
+
+#linebreak()
+To achieve 3D imaging from 2D histology, 2D slices are stacked across a virtual axis (Source)[https://doi.org/10.1016/j.ajpath.2012.01.033]. The resolution achievable when stacking 2D slices to reconstruct a virtual third dimension is limited by slice thickness and inter-slice registration errors. Certain optical techniques making use of slices allow partial recovery of 3D information from 2D acquisitions, such as confocal microscopy, light sheet microscopy, and optical coherence tomography (Source)[https://doi.org/10.1038/s41467-022-34048-4], they are limited in sample penetration depth and volume. When the target structure to be imaged and understood does not follow a single preferred axis, as is fundamentally the case for vascular networks and especially those of tumors, the limitations of slice-based histology make proper reliable quantification of blood vessel parameters impossible.
+
 
 // In order to process the 2D slices into 3D, various software are available. Bellow is a grid containing the pieces of software considered in the context of this thesis for the analysis of the micro-ct slices, separated by license type. For the sake of our analysis, any software not available free of charge without pre-requisites is considered commercial:
 
@@ -106,236 +122,216 @@ The combination of a stable, widely adopted platform with active community suppo
 
 // Compare them, 3DSlicer comes out above due to having VMTK and R-Vessel-X.
 
-== Tissue imaging
 
-Tissue imaging methods can be characterized by multiple factors such as dimensionality (1D, 2D, 3D, 4D), invasiveness (ex-vivo vs in-vivo ability) as well as destructiveness (requiring irreversible modification or not of the sample). From these
-
-=== CECT
-
-Heavily based on the Greet work
-
-=== Tissue imaging uses
-
-Heavily based on the Wlodarski work
-
-==== Tissue imaging workflow
-
-It is easy to go from exvivo to invivo but not the other way with seg methods
-
-== Segmentation
-
-How is segmentation done? 
-
-=== Structure extraction
-
-How does structural extraction improve segmentation? How does the prior of knowing we are looking for a blood vessel help?
-
-#pagebreak()
+// ----------------------- Commented 26-02-26
 
 
 
-Viewers: 3D Slicer, OHIF, Dragonfly3D, Avizo
+// Greet:
+// 1. Broad → it's a funnel
+// 2. Broad: blood vessels in tissues, important to charact, many imaging, ours is CECT, problems eixist
+//     1. How do people do seg, not robust, not bla bla
+//     2. Other alternatives
+//         1. 3DSlicer available, discuss how it is used
+//             1. Every section focuses more and more, describe main problems, the more you go down, the more you have well defined research questions. Very brief mentions of research questions
+// 3. After SOTA 2pp: problem statement, general goal, objectives
+//     1. Based on the levels above, summarize points mentioned in SOTA
+//         1. Important remaining research questions are etc etc etc, main goal is this, objectives are a b c
 
-Greet:
-1. Broad → it's a funnel
-2. Broad: blood vessels in tissues, important to charact, many imaging, ours is CECT, problems eixist
-    1. How do people do seg, not robust, not bla bla
-    2. Other alternatives
-        1. 3DSlicer available, discuss how it is used
-            1. Every section focuses more and more, describe main problems, the more you go down, the more you have well defined research questions. Very brief mentions of research questions
-3. After SOTA 2pp: problem statement, general goal, objectives
-    1. Based on the levels above, summarize points mentioned in SOTA
-        1. Important remaining research questions are etc etc etc, main goal is this, objectives are a b c
-
-Sébastien:
-2. SOTA (bio oriented, explain the pipeline, explain variability), (10pp)
+// Sébastien:
+// 2. SOTA (bio oriented, explain the pipeline, explain variability), (10pp)
   
-There is a review article that was incomplete, lots of the literature focused on ex-vivo
-Focus on ex-vivo but get some algos from in-vivo. Data ex-vivo is much more complex.
-Missing connections helps on the medical field → it’s the reconnection aspect that matters. ex-vivo it’s both the segmentation and the reconnection.
+// There is a review article that was incomplete, lots of the literature focused on ex-vivo
+// Focus on ex-vivo but get some algos from in-vivo. Data ex-vivo is much more complex.
+// Missing connections helps on the medical field → it’s the reconnection aspect that matters. ex-vivo it’s both the segmentation and the reconnection.
 
-Talk about the fact that clinical CT grey value does a good job, micro ct ex-vivo is a lot more difficult that’s why we focus on ex-vivo. There is transferability from ex to in vivo but the other way isn’t necessarily the case.
+// Talk about the fact that clinical CT grey value does a good job, micro ct ex-vivo is a lot more difficult that’s why we focus on ex-vivo. There is transferability from ex to in vivo but the other way isn’t necessarily the case.
 
-// Comparing shortcomings of CECT with 2D histo
-// Another reason for the absence of these very small vessels on CECT is that CA
-// binds to blood cells such as red blood cells, so if there is no blood, there will be
-// no staining. On the other hand, CD31 binds to a transmembrane glycoprotein
-// expressed by endothelial cells and platelets [68]. It is therefore possible that CD31
-// could detect very small blood vessels even in the absence of blood, whereas CA
-// cannot.
+// // Comparing shortcomings of CECT with 2D histo
+// // Another reason for the absence of these very small vessels on CECT is that CA
+// // binds to blood cells such as red blood cells, so if there is no blood, there will be
+// // no staining. On the other hand, CD31 binds to a transmembrane glycoprotein
+// // expressed by endothelial cells and platelets [68]. It is therefore possible that CD31
+// // could detect very small blood vessels even in the absence of blood, whereas CA
+// // cannot.
 
-// briefly SOTA 3D histology for drug screening, the need for 3D histo is clear for companies developping drugs, I focus on antiangionetic drugs on tumor -> refer to Lisa thesis (effect of pazopanib)
+// // briefly SOTA 3D histology for drug screening, the need for 3D histo is clear for companies developping drugs, I focus on antiangionetic drugs on tumor -> refer to Lisa thesis (effect of pazopanib)
 
-#pagebreak()
+// #pagebreak()
 
-With the goal of reconstructing tumor vascularization for the analysis of the antiangionetic drug Pazopanib in the context of cancer treatment, we begin by exploring the use of histology for drug sreening, followed by imaging methods, more specifically contrast-enhanced Micro CT, and finish with an exploration of the methods of structure extraction from images.
+// With the goal of reconstructing tumor vascularization for the analysis of the antiangionetic drug Pazopanib in the context of cancer treatment, we begin by exploring the use of histology for drug sreening, followed by imaging methods, more specifically contrast-enhanced Micro CT, and finish with an exploration of the methods of structure extraction from images.
 
 
-== Histology for drug screening 
+// == Histology for drug screening 
 
-In order to bring new drugs to market, a set of steps must be followed that are established by organisations such as the European Medical Association in the European Union, or the Food and Drug Administration in the U.S [1.1]. One of the key steps is collecting data on the effectiveness of the drug, done through clinical trials. These trials, before taking place in humans, are done on animals in a controlled lab environment, where collected data is analyzed for the outcomes and side effects of the drug. In the analysis process for Pazopanib, tumors are sampled and analysed ex-vivo, the histology of these tumors is critical in identifying the impact of treatment when compared to a control. 
+// In order to bring new drugs to market, a set of steps must be followed that are established by organisations such as the European Medical Association in the European Union, or the Food and Drug Administration in the U.S [1.1]. One of the key steps is collecting data on the effectiveness of the drug, done through clinical trials. These trials, before taking place in humans, are done on animals in a controlled lab environment, where collected data is analyzed for the outcomes and side effects of the drug. In the analysis process for Pazopanib, tumors are sampled and analysed ex-vivo, the histology of these tumors is critical in identifying the impact of treatment when compared to a control. 
 
-The conclusions taken from each step in the clinical trial decide if the trial moves on, meaning that a more accurate prediction with tighter confidence intervals enables a better discriminative power and reduces the amount of effective drugs discarded due to uncertainty from process limitations. 
+// The conclusions taken from each step in the clinical trial decide if the trial moves on, meaning that a more accurate prediction with tighter confidence intervals enables a better discriminative power and reduces the amount of effective drugs discarded due to uncertainty from process limitations. 
 
 
-=== Histology in industry
+// === Histology in industry
 
-Histology is in use in industry for clinical trials amongst other tasks, and the field is growing [2.1]. Histology is used due to its large amounts of qualitative data and high discriminative power, and is interpreted by experts during the process of drug research. It is used in clinical trials of structure altering drugs, or where the effect of interest is expected to be visible, and is generally done by specialized histopathologists [2.1]. Clinical trials vary widely in their design, as well as have a large variety of possible targets, in oncology specifically, 2D histology remains the most widely used technique [2.3], [2.27, 2.60] for the histology of human biopsies. For the analysis of Pazopanib, 2D histology is the reference method used to evaluate tumors. 
+// Histology is in use in industry for clinical trials amongst other tasks, and the field is growing [2.1]. Histology is used due to its large amounts of qualitative data and high discriminative power, and is interpreted by experts during the process of drug research. It is used in clinical trials of structure altering drugs, or where the effect of interest is expected to be visible, and is generally done by specialized histopathologists [2.1]. Clinical trials vary widely in their design, as well as have a large variety of possible targets, in oncology specifically, 2D histology remains the most widely used technique [2.3], [2.27, 2.60] for the histology of human biopsies. For the analysis of Pazopanib, 2D histology is the reference method used to evaluate tumors. 
 
 
-==== 2D histology
+// ==== 2D histology
 
-The field of histology is born from 2D histology of tissue under microscope magnification. 2D microscope slice histology, known as "classical histology", takes the form of tissue sample collection, often embedding of the tissue, followed by staining with various agents, applied to increase contrast or highlight certain structures, and ending in investigation using optical or electron microscopy [3.1]. This technique is used due to its delivery of a large amount of relevant quanlitative data imediately interpretable by experts, and high discriminative power, although it is time consuming and is costly as a result [3.2]. As a technique it has evolved in multiple directions, from the utilization of advanced staining agents [3.2] allowing the staining of a broad range of classes (DNA, proteins, lipids, or carbohydrates), to different lighting wavelenghts, ranging from ultraviolet [3.3] to infrared [3.4]. 
+// The field of histology is born from 2D histology of tissue under microscope magnification. 2D microscope slice histology, known as "classical histology", takes the form of tissue sample collection, often embedding of the tissue, followed by staining with various agents, applied to increase contrast or highlight certain structures, and ending in investigation using optical or electron microscopy [3.1]. This technique is used due to its delivery of a large amount of relevant quanlitative data imediately interpretable by experts, and high discriminative power, although it is time consuming and is costly as a result [3.2]. As a technique it has evolved in multiple directions, from the utilization of advanced staining agents [3.2] allowing the staining of a broad range of classes (DNA, proteins, lipids, or carbohydrates), to different lighting wavelenghts, ranging from ultraviolet [3.3] to infrared [3.4]. 
 
-#linebreak()
-2D histology is limited by its requirement to slice the target tissue before analysis, resulting in destructive modification of the sample. This slicing has the potential of deforming the tissue, with various techniques developped to conteract this [3.5] such as embedding in a wide variety of mediums. Slicing is also not orientation agnostic, and a large number of slices might be required for a sufficient spatial analysis of the sample, especially in situations where the observation target does not follow a particular axis, as with vascularization.
+// #linebreak()
+// 2D histology is limited by its requirement to slice the target tissue before analysis, resulting in destructive modification of the sample. This slicing has the potential of deforming the tissue, with various techniques developped to conteract this [3.5] such as embedding in a wide variety of mediums. Slicing is also not orientation agnostic, and a large number of slices might be required for a sufficient spatial analysis of the sample, especially in situations where the observation target does not follow a particular axis, as with vascularization.
 
-#linebreak()
-The limitations of pure 2D histology are now resulting in quantitative histology moving in the direction of 3D analysis, especially when 3D structure of the tissue is relevant. 
+// #linebreak()
+// The limitations of pure 2D histology are now resulting in quantitative histology moving in the direction of 3D analysis, especially when 3D structure of the tissue is relevant. 
 
-#linebreak()
-Unmentioned above: 
-- samples dry out in classical histo, 
-- the resolution is limited when stacking
-- there are methods for extracting some 3D info from the 2D slices ex:"confocal microscopy light sheet microscopy or optical coherence tomography" https://doi.org/10.1038/s41467-022-34048-4
+// #linebreak()
+// Unmentioned above: 
+// - samples dry out in classical histo, 
+// - the resolution is limited when stacking
+// - there are methods for extracting some 3D info from the 2D slices ex:"confocal microscopy light sheet microscopy or optical coherence tomography" https://doi.org/10.1038/s41467-022-34048-4
 
 
-==== 3D histology
+// ==== 3D histology
 
-3D histology is an evolution of 2D histology, increasing the amount of information available for analysis, and as a result improving discriminative power when compared to 2D classical histology. In its most basic form as an evolution of classical 2D histology, it involves taking multiple 2D slices and aligning then stacking them to create a virtual third axis [4.1]. 3D histology is relevant for tumor analysis [4.2], allowing for structural understanding of a tissue, such as in [4.2] enabling "the spread and infiltration of invasive carcinoma to be understood". This form of histology is often still done in the same methods as with 2D, where a human carries out interpretation, requiring common standards and communication, such as in [4.3]
+// 3D histology is an evolution of 2D histology, increasing the amount of information available for analysis, and as a result improving discriminative power when compared to 2D classical histology. In its most basic form as an evolution of classical 2D histology, it involves taking multiple 2D slices and aligning then stacking them to create a virtual third axis [4.1]. 3D histology is relevant for tumor analysis [4.2], allowing for structural understanding of a tissue, such as in [4.2] enabling "the spread and infiltration of invasive carcinoma to be understood". This form of histology is often still done in the same methods as with 2D, where a human carries out interpretation, requiring common standards and communication, such as in [4.3]
 
-#linebreak()
-Other well known methods for 3D histology that do not require slicing and thus avoid sample damage and destruction are magnetic resonance imaging (MRI) and computed tomography (CT), each having a higher resolution variant, micro-MRI and microCT respectively. These techniques enable virtual slicing, allowing observation across any plane, and have resolutions of tens microns for micro-MRI down to sub-micrometer scale for MicroCT.
-MRI is interesting for tissue observation due to its high contrast on soft tissue, as opposed to CT that performs best on calcified tissue. Both methods however are able to make use of contrast-enhancing staining agents (CESAs) [4.4,4.5] resulting in the ability for microCT to be readily used for imaging soft tissue, and is termed contrast-enhanced microCT (CECT) and reviewed for ex-vivo data acquisition in [4.6]. CECT is of particular interest for ex-vivo 3D histology due to the wide variety of staining agents available, and has proven its use in canine heart analysis [4.7] and for vasculature exploration of small animals [4.8].
+// #linebreak()
+// Other well known methods for 3D histology that do not require slicing and thus avoid sample damage and destruction are magnetic resonance imaging (MRI) and computed tomography (CT), each having a higher resolution variant, micro-MRI and microCT respectively. These techniques enable virtual slicing, allowing observation across any plane, and have resolutions of tens microns for micro-MRI down to sub-micrometer scale for MicroCT.
+// MRI is interesting for tissue observation due to its high contrast on soft tissue, as opposed to CT that performs best on calcified tissue. Both methods however are able to make use of contrast-enhancing staining agents (CESAs) [4.4,4.5] resulting in the ability for microCT to be readily used for imaging soft tissue, and is termed contrast-enhanced microCT (CECT) and reviewed for ex-vivo data acquisition in [4.6]. CECT is of particular interest for ex-vivo 3D histology due to the wide variety of staining agents available, and has proven its use in canine heart analysis [4.7] and for vasculature exploration of small animals [4.8].
 
-_Not certain about if or how to place the quote, as it is specifically for cancer._
+// _Not certain about if or how to place the quote, as it is specifically for cancer._
 
 
-===== CECT Imaging
+// ===== CECT Imaging
 
-Full section on the state of the art of CECT - TODO
+// Full section on the state of the art of CECT - TODO
 
 
-== Structure reconstruction (or: Vascularization reconstruction, Interpretation methods of 3D imaging?)
+// == Structure reconstruction (or: Vascularization reconstruction, Interpretation methods of 3D imaging?)
 
-This section is leaning towards segmentation, as in survey [5.1]
+// This section is leaning towards segmentation, as in survey [5.1]
 
-#linebreak()
+// #linebreak()
 
-With the goal of reconstructing vascularization in imaged tissue, we aim to take in data from an imaging modality, process it through a software pipeline, and obtain at output a data structure with higher information density than the input. This process of reducing the amount of raw data, but increasing the utility or information content of the data, is explored widely in the field of computer science. It underlies concepts such model fitting to noisy data [5.2] or as more commonly carried out in a biological context and industry, image segmentation, where the goal is to separate regions of a 2D image into multiple segments and objects [5.3].
+// With the goal of reconstructing vascularization in imaged tissue, we aim to take in data from an imaging modality, process it through a software pipeline, and obtain at output a data structure with higher information density than the input. This process of reducing the amount of raw data, but increasing the utility or information content of the data, is explored widely in the field of computer science. It underlies concepts such model fitting to noisy data [5.2] or as more commonly carried out in a biological context and industry, image segmentation, where the goal is to separate regions of a 2D image into multiple segments and objects [5.3].
 
 
-=== Segmentation
+// === Segmentation
 
-Image segmentation plays a central role in medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
+// Image segmentation plays a central role in medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
 
 
-==== Methods of Segmentation
+// ==== Methods of Segmentation
 
-Segmentation methods have evolved over time: from classical computer vision to machine learning and later deep learning methods 
+// Segmentation methods have evolved over time: from classical computer vision to machine learning and later deep learning methods 
 
-TODO: Extend history to highlight the progression in complexity and the higher and higher levels of information extraction achieved
+// TODO: Extend history to highlight the progression in complexity and the higher and higher levels of information extraction achieved
 
-#figure(
-  image("../../resources/images/timeline_from_PanopticSegmentationAReview.png", width: 100%),
-  caption: [
-    From (6.1) Timeline evolution of image segmentation (better version to be found or created)
-  ],
-)
+// #figure(
+//   image("../../resources/images/timeline_from_PanopticSegmentationAReview.png", width: 100%),
+//   caption: [
+//     From (6.1) Timeline evolution of image segmentation (better version to be found or created)
+//   ],
+// )
 
 
-==== Imaging and Segmentation of vasculature
+// ==== Imaging and Segmentation of vasculature
 
 
-Vasculature reconstruction and segmentation of 3D images often requires human segmentation [6.2]. Alternative automated methods are less precice 
+// Vasculature reconstruction and segmentation of 3D images often requires human segmentation [6.2]. Alternative automated methods are less precice 
 
 
 
-Sources to be investigated and read:
-
-+ 2013 Application of Micro-Computed Tomography With Iodine Staining to Cardiac Imaging, Segmentation, and Computational Model Development
-+ 2010 Micro computed tomography for vascular exploration 
-+ 2025 Micro-computed tomography to visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study
-+ 2004 Micro-computed tomography of the vasculature in parenchymal organs and lung alveoli
-
-Non tomo:
-+ 2021 Robust segmentation of vascular network using deeply cascaded AReN-UNet
-+ 2023 Vessel Delineation Using U-Net: A Sparse Labeled Deep Learning Approach for Semantic Segmentation of Histological Images
-+ 2015 Quantification of Microvascular Tortuosity during Tumor Evolution Using Acoustic Angiography
-
-Vasc references:
-+ 1976 The Vascularization of Tumors 
-+ 2013 Springer Nature, "Vascularization"
-+ 1982 Vascularization of Tumors: A Review
-
-
-#pagebreak()
-
-Sources, will be re-done once finalized:
-
-1.1 https://www.ema.europa.eu/en/human-regulatory-overview/research-development
-
-
-2.1 https://doi.org/10.1111/his.14099
-#linebreak()
-2.2 Not great, behind paywall "Challenges Faced by Cross-sectional Imaging and Histological Endpoints in Clinical Trials" https://doi.org/10.1093/ecco-jcc/jjw161
-#linebreak()
-2.3 not the best source "The dream and reality of histology agnostic cancer clinical trials" https://doi.org/10.1016/j.molonc.2014.06.002
-#linebreak()
-2.27 Wlodarski 27: https://pubmed.ncbi.nlm.nih.gov/32445458/
-#linebreak()
-2.60 Wlodarski 60: https://pubmed.ncbi.nlm.nih.gov/37008634/
-
-
-3.0 Section partially inspired from https://doi.org/10.1155/2019/8617406
-#linebreak()
-3.1 Source from [0], Mescher, L. A. Junqueira's basic histology. Text and atlas 14th ed. (McGraw-Hill, 2016).
-#linebreak()
-3.2 https://www.ncbi.nlm.nih.gov/books/NBK557663/
-#linebreak()
-3.3 https://pmc.ncbi.nlm.nih.gov/articles/PMC6223324/
-#linebreak()
-3.4 https://pmc.ncbi.nlm.nih.gov/articles/PMC10408309/
-#linebreak()
-3.5 Source from [3.0]: https://doi.org/10.1155/2019/8617406
-
-
-4.1 https://doi.org/10.1016/j.ajpath.2012.01.033
-#linebreak()
-4.2 https://doi.org/10.1136/jcp.2004.024794
-#linebreak()
-4.3 Veterenary based? Not strongest article: Tseng LJ, Matsuyama A, MacDonald-Dickinson V. Histology: The gold standard for diagnosis? Can Vet J. 2023 Apr;64(4):389-391. PMID: 37008634; PMCID: PMC10031787
-#linebreak()
-4.4 Single Ho 3+-doped upconversion nanoparticles for high-performance T2-weighted brain tumor diagnosis and MR/UCL/CT multimodal imaging: https://doi.org/10.1002/adfm.201401609
-#linebreak()
-4.5 Three-dimensional non-destructive soft-tissue visualization with X-ray staining micro-tomography: https://doi.org/10.1038/srep14088
-#linebreak()
-4.6 Review Greet: Contrast-Enhanced MicroCT for Virtual 3D Anatomical Pathology of Biological Tissues: A Literature Review https://doi.org/10.1155/2019/8617406
-#linebreak()
-4.7 Application of Micro-Computed Tomography With Iodine Staining to Cardiac Imaging, Segmentation, and Computational Model Development https://doi.org/10.1109/tmi.2012.2209183
-#linebreak()
-4.8  Micro computed tomography for vascular exploration  https://doi.org/10.1186/2040-2384-2-7
-
-
-5.1 IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
-#linebreak()
-5.2 RANSAC https://doi.org/10.1145/358669.358692
-#linebreak()
-5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
-#linebreak()
-5.4 OTSU https://doi.org/10.1109/TSMC.1979.4310076
-#linebreak()
-5.5 Panoptic https://doi.org/10.48550/arXiv.1801.00868
-#linebreak()
-5.6 U-Net https://doi.org/10.48550/arXiv.1505.04597
-
-
-6.1 Panoptic Segmentation: A Review https://doi.org/10.48550/arXiv.2111.10250
-6.2 µCT visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study https://doi.org/10.1038/s41598-025-14452-8
-#linebreak()
-
-
-#pagebreak()
+// Sources to be investigated and read:
+
+// + 2013 Application of Micro-Computed Tomography With Iodine Staining to Cardiac Imaging, Segmentation, and Computational Model Development
+// + 2010 Micro computed tomography for vascular exploration 
+// + 2025 Micro-computed tomography to visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study
+// + 2004 Micro-computed tomography of the vasculature in parenchymal organs and lung alveoli
+
+// Non tomo:
+// + 2021 Robust segmentation of vascular network using deeply cascaded AReN-UNet
+// + 2023 Vessel Delineation Using U-Net: A Sparse Labeled Deep Learning Approach for Semantic Segmentation of Histological Images
+// + 2015 Quantification of Microvascular Tortuosity during Tumor Evolution Using Acoustic Angiography
+
+// Vasc references:
+// + 1976 The Vascularization of Tumors 
+// + 2013 Springer Nature, "Vascularization"
+// + 1982 Vascularization of Tumors: A Review
+
+
+// #pagebreak()
+
+// Sources, will be re-done once finalized:
+
+// 1.1 https://www.ema.europa.eu/en/human-regulatory-overview/research-development
+
+
+// 2.1 https://doi.org/10.1111/his.14099
+// #linebreak()
+// 2.2 Not great, behind paywall "Challenges Faced by Cross-sectional Imaging and Histological Endpoints in Clinical Trials" https://doi.org/10.1093/ecco-jcc/jjw161
+// #linebreak()
+// 2.3 not the best source "The dream and reality of histology agnostic cancer clinical trials" https://doi.org/10.1016/j.molonc.2014.06.002
+// #linebreak()
+// 2.27 Wlodarski 27: https://pubmed.ncbi.nlm.nih.gov/32445458/
+// #linebreak()
+// 2.60 Wlodarski 60: https://pubmed.ncbi.nlm.nih.gov/37008634/
+
+
+// 3.0 Section partially inspired from https://doi.org/10.1155/2019/8617406
+// #linebreak()
+// 3.1 Source from [0], Mescher, L. A. Junqueira's basic histology. Text and atlas 14th ed. (McGraw-Hill, 2016).
+// #linebreak()
+// 3.2 https://www.ncbi.nlm.nih.gov/books/NBK557663/
+// #linebreak()
+// 3.3 https://pmc.ncbi.nlm.nih.gov/articles/PMC6223324/
+// #linebreak()
+// 3.4 https://pmc.ncbi.nlm.nih.gov/articles/PMC10408309/
+// #linebreak()
+// 3.5 Source from [3.0]: https://doi.org/10.1155/2019/8617406
+
+
+// 4.1 https://doi.org/10.1016/j.ajpath.2012.01.033
+// #linebreak()
+// 4.2 https://doi.org/10.1136/jcp.2004.024794
+// #linebreak()
+// 4.3 Veterenary based? Not strongest article: Tseng LJ, Matsuyama A, MacDonald-Dickinson V. Histology: The gold standard for diagnosis? Can Vet J. 2023 Apr;64(4):389-391. PMID: 37008634; PMCID: PMC10031787
+// #linebreak()
+// 4.4 Single Ho 3+-doped upconversion nanoparticles for high-performance T2-weighted brain tumor diagnosis and MR/UCL/CT multimodal imaging: https://doi.org/10.1002/adfm.201401609
+// #linebreak()
+// 4.5 Three-dimensional non-destructive soft-tissue visualization with X-ray staining micro-tomography: https://doi.org/10.1038/srep14088
+// #linebreak()
+// 4.6 Review Greet: Contrast-Enhanced MicroCT for Virtual 3D Anatomical Pathology of Biological Tissues: A Literature Review https://doi.org/10.1155/2019/8617406
+// #linebreak()
+// 4.7 Application of Micro-Computed Tomography With Iodine Staining to Cardiac Imaging, Segmentation, and Computational Model Development https://doi.org/10.1109/tmi.2012.2209183
+// #linebreak()
+// 4.8  Micro computed tomography for vascular exploration  https://doi.org/10.1186/2040-2384-2-7
+
+
+// 5.1 IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
+// #linebreak()
+// 5.2 RANSAC https://doi.org/10.1145/358669.358692
+// #linebreak()
+// 5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
+// #linebreak()
+// 5.4 OTSU https://doi.org/10.1109/TSMC.1979.4310076
+// #linebreak()
+// 5.5 Panoptic https://doi.org/10.48550/arXiv.1801.00868
+// #linebreak()
+// 5.6 U-Net https://doi.org/10.48550/arXiv.1505.04597
+
+
+// 6.1 Panoptic Segmentation: A Review https://doi.org/10.48550/arXiv.2111.10250
+// 6.2 µCT visualize preserved vascular architecture in decellularized human vaginal tissue: explorative study https://doi.org/10.1038/s41598-025-14452-8
+// #linebreak()
+
+
+// #pagebreak()
+
+
+
+// ----------------------- Commented 26-02-26
+
 
 
 // === Connected papers
