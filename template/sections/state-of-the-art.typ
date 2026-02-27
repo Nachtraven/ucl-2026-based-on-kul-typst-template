@@ -105,10 +105,26 @@ _*Problem 2.* The the wide diversity of available modalities for 3D imaging: µM
 // ➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
 
 
+
+
+// With the goal of reconstructing vascularization in imaged tissue, we aim to take in data from an imaging modality, process it through a software pipeline, and obtain at output a data structure with higher information density than the input. This process of reducing the amount of raw data, but increasing the utility or information content of the data, is explored widely in the field of computer science. It underlies concepts such model fitting to noisy data [5.2] or as more commonly carried out in a biological context and industry, image segmentation, where the goal is to separate regions of a 2D image into multiple segments and objects [5.3].
+
+// Image segmentation plays a central role in accelerating, standardizing medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades @OTSU_segmentation, or more complex as in panoptic segmentation, only being posed in 2018 [5.5]. In the context of volumetric biological imaging, segmentation extends naturally into three dimensions, where voxel-wise labeling must account for spatial continuity across image slices and the complex, branching topology of structures such as blood vessel networks.
+
+// 5.1 IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
+// Better and free: Image Segmentation Using Deep Learning: A Survey https://arxiv.org/pdf/2001.05566
+// 5.2 RANSAC https://doi.org/10.1145/358669.358692
+// 5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
+// 5.5 Panoptic https://doi.org/10.48550/arXiv.1801.00868
+
+
+
+// Here I want to talk about priors: we used to want to encode the human expertise with expert models and a lot of parameters to tune, then we started to have FCNs which were difficult to train, we moved on the CNNs which worked with the tech we had due to being more data efficient by having the locality prior of the convolution, then we moved to transformers that removed that prior, enabled longer range dependencies and modeled the compression decompression process more explicitly, however requiring lots of data.
+
 #pagebreak()
 == Information extraction from images
 
-The purpose of imaging a tissue is to generate a fixed, deterministic representation at a given point in time. After imaging information is obtained from the data using one of a variety of processing methods. Classically, this information extraction was carried out by trained professonals: for medical image analysis, an expert in cancerous tissues is capable of identifying and evaluating qualitative and quantitative metrics for a given sample. This process of information extraction can be seen as a form of data compression: only the relevant conclusions from the image are kept and represented in multiple fashions: a simple aggregated conclusion of the form "cancer" or "no cancer", a classification of areas in the image into a certain class or type, or at a higher level, the reconstruction of a structured output, such as a network or skeleton, as is seen in machine learning based pose estimation from camera images (Source this). Computers lend themselves well to information extraction and processing, especially compression. Different techniques or algorithms exist to extract information of interest from an image, ranging from simple classical methods such as the OTSU method for edge detection @OTSU_segmentation to more computationally expensive, complex and inscrutable deep learning. Deep learning algorithms are known to act as a form of information compression algorithm, starting from a data source with many individual data points, such as an image, and ending with as little as a single output @alexnet_og_deeplearning.
+The purpose of imaging a tissue is to generate a fixed, deterministic representation at a given point in time. After imaging, information is obtained from the data using one of a variety of processing methods. Classically, this information extraction was carried out by trained professonals: for medical image analysis, an expert in cancerous tissues is capable of identifying and evaluating qualitative and quantitative metrics for a given sample. This process of information extraction can be seen as a form of data compression: only the relevant conclusions from the image are kept and represented in multiple fashions: a simple aggregated conclusion of the form "cancer" or "no cancer", a classification of areas in the image into a certain class or type, or at a higher level, the reconstruction of a structured output, such as a network or skeleton, as is seen in machine learning based pose estimation from camera images (Source this). Computers lend themselves well to information extraction and processing, especially compression. Different techniques or algorithms exist to extract information of interest from an image, ranging from simple classical methods such as the OTSU method for edge detection @OTSU_segmentation to more computationally expensive, complex and inscrutable deep learning. Deep learning algorithms are known to act as a form of information compression algorithm @ml_is_compression, starting from a data source with many individual data points, such as an image, and ending with as little as a single output @alexnet_og_deeplearning.
 
 
 === Methods of Segmentation
@@ -122,11 +138,18 @@ At the simplest end, intensity-based thresholding methods such as Otsu's method 
 Classical machine learning approaches introduced feature engineering as an intermediate step: handcrafted descriptors such as Gabor filters, Hessian-based vesselness filters or particularly relevant: Frangi's multiscale vessel enhancement filter @frangi_og_paper. Frangi's vesselness measure is _derived from the eigenvalues of the Hessian matrix of image intensities at multiple scales_, has been particularly influential in vessel segmentation tasks, as it explicitly models the prior of tubular geometry inherent in blood vessels. These methods offer greater robustness than simple thresholding but depend heavily on the quality of the engineered features, requiring much intervention to achieve good performance, and as a result of this feature engineering, fail to generalize across imaging conditions. (*Source for lots of work to get frangi good*)
 
 
-==== Imaging and Segmentation of vasculature
-
-
 === Machine learning in biology
 
+*Not super happy with this yet*
+
+#linebreak()
+Deep learning methods, and in particular the paradigm of fully convolutional encoder-decoder architectures such as U-Net @unet_og_paper, represented a major revolution in image segmentation and dominated benchmarks, with as many as (REFIND THE SOURCE SPEAKING OF 8/10 LEADERS BEING UNET). U-Net presneted a breakthrough in imaging due to its ability to do segmentation on large images, with high compute and data efficiency, and across multiple scales by introducing skip connections between encoder and decoder pathways, allowing the network to combine low-level spatial detail with high-level semantic context. This enabled the segmentation of thin structures that require context, such as cells and as relevant here, capillaries. However as mentioned previously, 2D imaging and by extension 2D segmentation present limitations for blood vessels; variants of U-Net extending into the third dimension exist to palliate this, such as 3D U-Net @3d_unet. 
+
+#linebreak()
+Transformer-based architectures have come to the forefront of predictive performance by their more general computation model: they remove the locality prior of convolutions, and thereby have the ability to model long-range spatial dependencies. Transformers function as learned compression functions where the encoder progressively distills the input volume into a compact latent representation encoding the most task-relevant features, which the decoder then maps back into a dense prediction @ml_is_compression. Due to their more general structure lacking the prior of locality, they require more data to train than convolutional networks: complicating their use in medical imaging due to the associated costs and barriers to data collection.
+
+
+==== Imaging and Segmentation of vasculature
 
 #linebreak()
 _*Problem 3.1.* Current methods for segmentation often ignore the structural priors that underly the data generation process. An effective, robust and transferrable method for blood vessel segmentation must thus encode the relevant structural priors, namely connectedness, shape, and branching structure_
