@@ -77,38 +77,48 @@ As mentionned, standard X-ray microfocus computed tomography (microCT) suffers f
 
 The most practical method enabling the collection of multiple scans of different tissues, in our case tumors, is the use of contrast-enhancing staining agents (CESAs). Contrast-enhanced computed tomography (CECT) is particularly favored for its ability to simultaneously visualize soft and mineralized tissue types through the use of contrast agents, making it suitable for laboratory-based microCT devices. CECT is of particular relevance for imaging vascular networks because of the ability to inject the CE agent into the vasculature. In tumors, the microvasculature present a challenge though: small blood vessels are frequently partially or entirely devoid of residual hemoglobin, preventing or reducing the action of CESAs and thereby reducing contrast. 
 
+#linebreak()
 Diffusion based contrast-enhacing agents add an extra dimension of complexity when used for imaging: the diffusion of CE agents throughout the tissue happens from the outside in, resulting in a gradient of the amount of CESA and as a result a gradient in contrast, as opposed to perfusion CESAs that follow the blood vessels. CESA via perfusion is an option for vasculature that is larger in scale and more resistant to the pressure change of perfusion, but due to the nature of the microscopic vessels in the tumors being imaged, such methods are innappropriate. @exvivo_cardioct
 
 // "Too-high pressures can lead to tissue damage, whereas too-low pressures might result in incomplete filling of the desired vessels. Viscosity is also an important factor to consider for reaching the smaller capillaries and for keeping the perfusion pressure low" from @exvivo_cardioct
 
-_*Challenge 2.* The the wide diversity of available modalities for 3D imaging: µMRI and µCT, with their subtypes: cryo-CECT, phase-contrast CT, Contrast-Enhanced CT, the different machines and their acquisition parameters, variability in samples and their preparation: fixation methods, staining agents and methods, staining duration, tissue types, means that the challege of creating a method that is re-usable, even across different tissues within the same lab, is huge. Any method used for the segmentation of small blood vessels should be robust to the gradients caused by diffusion CECT, and able to handle variable contrast levels._
+#linebreak()
+_*Problem 2.* The the wide diversity of available modalities for 3D imaging: µMRI and µCT, with their subtypes: cryo-CECT, phase-contrast CT, Contrast-Enhanced CT, the different machines and their acquisition parameters, variability in samples and their preparation: fixation methods, staining agents and methods, staining duration, tissue types, means that the challege of creating a method that is re-usable, even across different tissues within the same lab, is huge. Any method used for the segmentation of small blood vessels should be robust to the gradients caused by diffusion CECT, and able to handle variable contrast levels._
 
 
 #pagebreak()
-
-WORK IN PROGRESS HERE
-
 == Information extraction from images
 
-The purpose of imaging a tissue is to generate a fixed, deterministic representation at a given point in time, enabling downstream tasks. After imaging, to extract information from the data, a method of processing the data into useful information must be used. Classically, this information extraction was carried out by trained professonals: for medical image analysis, an expert in cancerous tissues is capable of identifying and evaluating quantitative metrics for a given sample. The extracted information is represented in multiple fashions: an aggregate output of the form "cancer" or "no cancer", for example when examining lymph nodes, a segmentation into different areas or at a higher level, the reconstruction of a structured output, such as a network or skeleton, as is seen in machine learning based pose estimation from camera images.
+The purpose of imaging a tissue is to generate a fixed, deterministic representation at a given point in time. After imaging information is obtained from the data using one of a variety of processing methods. Classically, this information extraction was carried out by trained professonals: for medical image analysis, an expert in cancerous tissues is capable of identifying and evaluating qualitative and quantitative metrics for a given sample. This process of information extraction can be seen as a form of data compression: only the relevant conclusions from the image are kept and represented in multiple fashions: a simple aggregated conclusion of the form "cancer" or "no cancer", a classification of areas in the image into a certain class or type, or at a higher level, the reconstruction of a structured output, such as a network or skeleton, as is seen in machine learning based pose estimation from camera images (Source this). Computers lend themselves well to information extraction and processing, especially compression. Different techniques or algorithms exist to extract information from an image, ranging from the most computationally expensive and complex Machine learning: known to act as a form of information compression algorithm (source this, based on machine learning as a method of compression, and on u-net) to simpler methods such as OTSU for edge detection, or RANSAC for plane fitting.
+
+
+// With the goal of reconstructing vascularization in imaged tissue, we aim to take in data from an imaging modality, process it through a software pipeline, and obtain at output a data structure with higher information density than the input. This process of reducing the amount of raw data, but increasing the utility or information content of the data, is explored widely in the field of computer science. It underlies concepts such model fitting to noisy data [5.2] or as more commonly carried out in a biological context and industry, image segmentation, where the goal is to separate regions of a 2D image into multiple segments and objects [5.3].
+// 5.2 RANSAC https://doi.org/10.1145/358669.358692
+// 5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
+
+
+// Image segmentation plays a central role in medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
+// 5.1 IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
+// 5.2 RANSAC https://doi.org/10.1145/358669.358692
+// 5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
+// 5.4 OTSU https://doi.org/10.1109/TSMC.1979.4310076
+// 5.5 Panoptic https://doi.org/10.48550/arXiv.1801.00868
+// 5.6 U-Net https://doi.org/10.48550/arXiv.1505.04597
+
 
 === Methods of Segmentation
 
 Of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
 
-Segmentation methods have evolved over time: from classical computer vision to machine learning and later deep learning methods 
-
-TODO: Extend history to highlight the progression in complexity and the higher and higher levels of information extraction achieved
-
-// #figure(
-//   image("../../resources/images/timeline_from_PanopticSegmentationAReview.png", width: 100%),
-//   caption: [
-//     From (6.1) Timeline evolution of image segmentation (better version to be found or created)
-//   ],
-)
-
-
 ==== Imaging and Segmentation of vasculature
+
+=== Machine learning in biology
+
+#linebreak()
+_*Problem 3.1.* Current methods for segmentation often ignore the structural priors that underly the data generation process. An effective, robust and transferrable method for blood vessel segmentation must thus encode the relevant structural priors, namely connectedness, shape, and branching structure_
+
+#linebreak()
+_*Problem 3.2.* Deep learning based segmentation methods that rely on a large corpus of similar images, and suffer when the domain shifts due to changes in imaging methodology or methodology variance, are not robust enough, nor trasnferrable enough to enable replicable work across multiple datasets. Any algorithm to extract blood vessels from tumors must contain user adjustable hyper parameters to enable customization, as well as avoid the need for training data beyond a single example._
 
 
 
