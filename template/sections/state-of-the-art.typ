@@ -1,5 +1,17 @@
 = State of the art
 
+// TODO: Add SimVascular, InVesalius (https://invesalius.github.io/), ITKTubeTK, 
+
+// Add papers: 
+
+// Frangi "Multiscale vessel enhancement filtering" https://link.springer.com/chapter/10.1007/BFb0056195
+// Three-dimensional multi-scale line filter for segmentation and visualization of curvilinear structures in medical images https://www.sciencedirect.com/science/article/abs/pii/S1361841598800091
+// Beyond Frangi: an improved multiscale vesselness filter https://www.researchgate.net/publication/283558933_Beyond_Frangi_An_improved_multiscale_vesselness_filter
+// skeletonization algorithm in scikit-image: Building Skeleton Models via 3-D Medial Surface Axis Thinning Algorithms https://www.sciencedirect.com/science/article/abs/pii/S104996528471042X
+
+// Angiogenesis, µCT: Novel multimodal MRI and MicroCT imaging approach to quantify angiogenesis and 3D vascular architecture of biomaterials https://www.nature.com/articles/s41598-019-55411-4
+
+
 == Software in Research
 
 The kinds of software used in a research setting vary enormously by location, as well as in scope, purpose, availability, expense and licensing. At the UCLouvain faculty IMMC (Institute of Mechanics, Materials, and Civil Engineering), research is carried out on biological tissue samples using computed tomography techniques. During this research, a variety of software is used: both as explicit steps in the pipeline for tasks such as segmenting samples in 3D, using Avizo or Dragonfly3D, or implicitly as elements of the pipeline that lay before the steps done by researchers (software running on CT machines) or in the infrastructure, such as the OS used on computing devices.  
@@ -44,13 +56,9 @@ The combination of a stable, widely adopted platform with active community suppo
 #linebreak()
 _*Problem 1.* In an extensive and diverse software landscape, users stick to what is familiar and easy to use, regardless of the impact on scientific rigor. Our software must thus be based on an open platform: 3DSlicer, be easy to use: click only installation and use, and have ample, clear documentation._
 
-// In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. This section contains:
-// ✓ The background of the study (= context);
-// ✓ Research that has been done in the frame of your thesis topic;
-// ✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
-// ➔ Make a fluent story of it, and not just a sum up of different papers or references.
 
-// ➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
+// -----------------------------------------
+
 
 #pagebreak()
 == Tissue imaging
@@ -86,39 +94,45 @@ Diffusion based contrast-enhacing agents add an extra dimension of complexity wh
 _*Problem 2.* The the wide diversity of available modalities for 3D imaging: µMRI and µCT, with their subtypes: cryo-CECT, phase-contrast CT, Contrast-Enhanced CT, the different machines and their acquisition parameters, variability in samples and their preparation: fixation methods, staining agents and methods, staining duration, tissue types, means that the challege of creating a method that is re-usable, even across different tissues within the same lab, is huge. Any method used for the segmentation of small blood vessels should be robust to the gradients caused by diffusion CECT, and able to handle variable contrast levels._
 
 
+// ----------------------
+
+// In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. This section contains:
+// ✓ The background of the study (= context);
+// ✓ Research that has been done in the frame of your thesis topic;
+// ✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
+// ➔ Make a fluent story of it, and not just a sum up of different papers or references.
+
+// ➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
+
+
 #pagebreak()
 == Information extraction from images
 
-The purpose of imaging a tissue is to generate a fixed, deterministic representation at a given point in time. After imaging information is obtained from the data using one of a variety of processing methods. Classically, this information extraction was carried out by trained professonals: for medical image analysis, an expert in cancerous tissues is capable of identifying and evaluating qualitative and quantitative metrics for a given sample. This process of information extraction can be seen as a form of data compression: only the relevant conclusions from the image are kept and represented in multiple fashions: a simple aggregated conclusion of the form "cancer" or "no cancer", a classification of areas in the image into a certain class or type, or at a higher level, the reconstruction of a structured output, such as a network or skeleton, as is seen in machine learning based pose estimation from camera images (Source this). Computers lend themselves well to information extraction and processing, especially compression. Different techniques or algorithms exist to extract information from an image, ranging from the most computationally expensive and complex Machine learning: known to act as a form of information compression algorithm (source this, based on machine learning as a method of compression, and on u-net) to simpler methods such as OTSU for edge detection, or RANSAC for plane fitting.
-
-
-// With the goal of reconstructing vascularization in imaged tissue, we aim to take in data from an imaging modality, process it through a software pipeline, and obtain at output a data structure with higher information density than the input. This process of reducing the amount of raw data, but increasing the utility or information content of the data, is explored widely in the field of computer science. It underlies concepts such model fitting to noisy data [5.2] or as more commonly carried out in a biological context and industry, image segmentation, where the goal is to separate regions of a 2D image into multiple segments and objects [5.3].
-// 5.2 RANSAC https://doi.org/10.1145/358669.358692
-// 5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
-
-
-// Image segmentation plays a central role in medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
-// 5.1 IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
-// 5.2 RANSAC https://doi.org/10.1145/358669.358692
-// 5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
-// 5.4 OTSU https://doi.org/10.1109/TSMC.1979.4310076
-// 5.5 Panoptic https://doi.org/10.48550/arXiv.1801.00868
-// 5.6 U-Net https://doi.org/10.48550/arXiv.1505.04597
+The purpose of imaging a tissue is to generate a fixed, deterministic representation at a given point in time. After imaging information is obtained from the data using one of a variety of processing methods. Classically, this information extraction was carried out by trained professonals: for medical image analysis, an expert in cancerous tissues is capable of identifying and evaluating qualitative and quantitative metrics for a given sample. This process of information extraction can be seen as a form of data compression: only the relevant conclusions from the image are kept and represented in multiple fashions: a simple aggregated conclusion of the form "cancer" or "no cancer", a classification of areas in the image into a certain class or type, or at a higher level, the reconstruction of a structured output, such as a network or skeleton, as is seen in machine learning based pose estimation from camera images (Source this). Computers lend themselves well to information extraction and processing, especially compression. Different techniques or algorithms exist to extract information of interest from an image, ranging from simple classical methods such as the OTSU method for edge detection @OTSU_segmentation to more computationally expensive, complex and inscrutable deep learning. Deep learning algorithms are known to act as a form of information compression algorithm, starting from a data source with many individual data points, such as an image, and ending with as little as a single output @alexnet_og_deeplearning.
 
 
 === Methods of Segmentation
 
-Of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
+Image segmentation methods span a wide spectrum of complexity, from classical signal processing approaches to modern deep learning architectures, and vary in output format from pixel wise annotation and single class prediction to higher-order structural extraction methods that reason about the topology of extracted objects, such as skeletonization.
+
+#linebreak()
+At the simplest end, intensity-based thresholding methods such as Otsu's method @OTSU_segmentation operate by iteratively finding an optimal intensity threshold that separates foreground from background by minimizing intra-class variance. Such methods are computationally inexpensive and interpretable, but are sensitive to noise, imaging artifacts, and intensity inhomogeneities. This is particularly problematic in the context of µCT imaging, where algorithms that reason globally over an entire image can fail due to gradients across the image from phenomena such as beam hardening, or as mentioned previously when contrast enhancing agents are used, the diffusion gradient. Region-growing and watershed algorithms extend this idea by incorporating spatial connectivity, iteratively expanding labeled regions from seed points according to local intensity gradients, making them more robust to global intensity variation, however remaining susceptible to over- or under-segmentation in complex structures and discontinuities due to not integrating the connectivity prior of a blood vessel.
+
+#linebreak()
+Classical machine learning approaches introduced feature engineering as an intermediate step: handcrafted descriptors such as Gabor filters, Hessian-based vesselness filters or particularly relevant: Frangi's multiscale vessel enhancement filter @frangi_og_paper. Frangi's vesselness measure is _derived from the eigenvalues of the Hessian matrix of image intensities at multiple scales_, has been particularly influential in vessel segmentation tasks, as it explicitly models the prior of tubular geometry inherent in blood vessels. These methods offer greater robustness than simple thresholding but depend heavily on the quality of the engineered features, requiring much intervention to achieve good performance, and as a result of this feature engineering, fail to generalize across imaging conditions. (*Source for lots of work to get frangi good*)
+
 
 ==== Imaging and Segmentation of vasculature
 
+
 === Machine learning in biology
+
 
 #linebreak()
 _*Problem 3.1.* Current methods for segmentation often ignore the structural priors that underly the data generation process. An effective, robust and transferrable method for blood vessel segmentation must thus encode the relevant structural priors, namely connectedness, shape, and branching structure_
 
 #linebreak()
-_*Problem 3.2.* Deep learning based segmentation methods that rely on a large corpus of similar images, and suffer when the domain shifts due to changes in imaging methodology or methodology variance, are not robust enough, nor trasnferrable enough to enable replicable work across multiple datasets. Any algorithm to extract blood vessels from tumors must contain user adjustable hyper parameters to enable customization, as well as avoid the need for training data beyond a single example._
+_*Problem 3.2.* Deep learning based segmentation methods that rely on a large corpus of similar images, and suffer when the domain shifts due to changes in imaging methodology or methodology variance, are not robust enough, nor trasnferrable enough to enable replicable work across multiple datasets. Any algorithm to extract blood vessels from tumors must contain user adjustable hyper parameters to enable fitting to the parameters of their data, as well as avoid the need for training data beyond a single test example._
 
 
 
