@@ -66,6 +66,53 @@ Tissue imaging enables the extraction of parameters that are qualitative  and/or
 To achieve 3D imaging from 2D histology, 2D slices are stacked across a virtual axis (Source)[https://doi.org/10.1016/j.ajpath.2012.01.033]. The resolution achievable when stacking 2D slices to reconstruct a virtual third dimension is limited by slice thickness and inter-slice registration errors. Certain optical techniques making use of slices allow partial recovery of 3D information from 2D acquisitions, such as confocal microscopy, light sheet microscopy, and optical coherence tomography (Source)[https://doi.org/10.1038/s41467-022-34048-4], they are limited in sample penetration depth and volume. When the target structure to be imaged and understood does not follow a single preferred axis, as is fundamentally the case for vascular networks and especially those of tumors, the limitations of slice-based histology make proper reliable quantification of blood vessel parameters impossible.
 
 
+=== 3D imaging techniques for histology
+
+Non-destructive 3D volumetric imaging methods overcome many of the limitations of 2D slice based histology by collecting data uniformly across dimensions, enabling virtual slicing across any plane without requiring physically sectioning the sample. Techniques for 3D imaging range from the aformentioned microscopy techniques using visible or near infrared light, to techniques utilizing magnetic fields such as magnetic resonnance imaging (MRI) or X-Ray imaging in the form of X-ray microfocus computed tomography (CT). These digital techniques allows qualitative and quantitative 3D microstructural analysis of tissues and of their constituents: analysis is not restricted to a single orientation and does nott require sample destruction. They also have associated high resolution variants more commonly used for research, allowing micrometer level imaging: µMRI and µCT, with µCT reaching higher resolutions (smaller voxel sizes). These techniques are the most relevant for ex-vivo tissue histology at the scale of small animal models. µMRI provides fully resolved 3D images non-invasively and non-destructively, and has an inherently high-contrast for soft tissues, though resolution is limited to the range of tens of micrometers. MicroCT reaches higher resolutions, but suffers from low contrast when imaging soft tissue, when extra technques are not used. *(Source this part on the greet work)*
+
+=== Contrast-enhanced µCT
+
+As mentionned, standard X-ray microfocus computed tomography (microCT) suffers from low contrast between soft tissues making the visualization of blood vessels difficult. To improve contrast, imaging techniques exist such as phase-contrast microCT (PC-CT), which encodes contrast through differences in the phase shift of the X-ray beam rather than its absorption alone, enhancing soft tissue edge detection at the cost of requiring a complex imaging machine *Source*. Alternatives to imaging technique changes are techniques that modify the target tissue to increase contrast, such as the use of various Contrast Enhancing agents termed CECT, having some distinct disadvantages *List the disadvantages of CE*. Contrast can also be increased using the novel Cryogenic contrast-enhanced microCT (cryo-CECT) which preserves tissue microstructure with reduced deformation compared to room-temperature protocols (Cryoct)[https://doi.org/10.1038/s41467-022-34048-4]. 
+
+=== Contrast-enhanced µCT (CECT) for vascular imaging
+
+The most practical method enabling the collection of multiple scans of different tissues, in our case tumors, is the use of contrast-enhancing staining agents (CESAs). Contrast-enhanced computed tomography (CECT) is particularly favored for its ability to simultaneously visualize soft and mineralized tissue types through the use of contrast agents, making it suitable for laboratory-based microCT devices. CECT is of particular relevance for imaging vascular networks because of the ability to inject the CE agent into the vasculature. In tumors, the microvasculature present a challenge though: small blood vessels are frequently partially or entirely devoid of residual hemoglobin, preventing or reducing the action of CESAs and thereby reducing contrast. 
+
+Paragraph about CESAs and their limitations: passive diffusion in tumors means they don't have uniform spread meaning there is a gradient (difficult for global methods to segment).
+
+_*Challenge 2.* The the wide diversity of available modalities for 3D imaging: µMRI and µCT, with their subtypes: cryo-CECT, phase-contrast CT, Contrast-Enhanced CT, the different machines and their acquisition parameters, variability in samples and their preparation: fixation methods, staining agents, staining duration, tissue types, means that the challege of creating a method that is re-usable, even across different tissues within the same lab, is huge._
+
+
+#pagebreak()
+
+== Information extraction from images
+
+The purpose of imaging a tissue is to generate a fixed, deterministic representation at a given point in time, enabling downstream tasks. After imaging, to extract information from the data, a method of processing the data into useful information must be used. Classically, this information extraction was carried out by trained professonals: for medical image analysis, an expert in cancerous tissues is capable of identifying and evaluating quantitative metrics for a given sample. The extracted information is represented in multiple fashions: an aggregate output of the form "cancer" or "no cancer", for example when examining lymph nodes, a segmentation into different areas or at a higher level, the reconstruction of a structured output, such as a network or skeleton, as is seen in machine learning based pose estimation from camera images.
+
+
+
+=== Methods of Segmentation
+
+Of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades [5.4], or more complex as in panoptic segmentation, only being posed in 2018 [5.5].
+
+Segmentation methods have evolved over time: from classical computer vision to machine learning and later deep learning methods 
+
+TODO: Extend history to highlight the progression in complexity and the higher and higher levels of information extraction achieved
+
+#figure(
+  image("../../resources/images/timeline_from_PanopticSegmentationAReview.png", width: 100%),
+  caption: [
+    From (6.1) Timeline evolution of image segmentation (better version to be found or created)
+  ],
+)
+
+
+==== Imaging and Segmentation of vasculature
+
+
+
+
+
 // In order to process the 2D slices into 3D, various software are available. Bellow is a grid containing the pieces of software considered in the context of this thesis for the analysis of the micro-ct slices, separated by license type. For the sake of our analysis, any software not available free of charge without pre-requisites is considered commercial:
 
 // Based on Dragonfly3D's own list, in resources/software/dragonfly3Dsoftwarelist.jpg
