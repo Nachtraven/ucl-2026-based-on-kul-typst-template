@@ -11,9 +11,13 @@ Based on "A literature review on segmentation methods for ex vivo"
 
 GScholar "2D histology standard"
 @article{extending2d_histo_to_3d,
-  author = {},
+  author = {Anna K., Hans D., Georg S., Gabriel S., Jürgen H., Natalia C., Christos B., Simone E. H., Bert M.},
   title = {Extending two-dimensional histology into the third dimension through conventional micro computed tomography},
-  doi = {http://dx.doi.org/10.1016/j.neuroimage.2016.06.005}
+  journal = {NeuroImage},
+  volume = {139},
+  pages = {26-36},
+  year = {2016},
+  doi = {http://dx.doi.org/10.1016/j.neuroimage.2016.06.005},
 }
 
 GScholar "clinical histology"
@@ -41,6 +45,7 @@ Found by going to source 4 of https://onlinelibrary.wiley.com/doi/epdf/10.1111/h
   doi      = {10.1038/modpathol.2015.74},
 }
 
+
 @article{methods_for_3d_histo_pichat2018survey,
   author   = {Pichat, Jonas and Iglesias, Juan Eugenio and Yousry, Tarek and Ourselin, Sébastien and Modat, Marc},
   title    = {A Survey of Methods for {3D} Histology Reconstruction},
@@ -51,6 +56,7 @@ Found by going to source 4 of https://onlinelibrary.wiley.com/doi/epdf/10.1111/h
   doi      = {10.1016/j.media.2018.02.004},
 }
 
+litterature review on hiso
 @article{litt_review_greet_debournonville2019contrast,
   author   = {de Bournonville, Sébastien and Vangrunderbeeck, Sarah and Kerckhofs, Greet},
   title    = {Contrast-Enhanced {MicroCT} for Virtual {3D} Anatomical Pathology of Biological Tissues: A Literature Review},
@@ -61,6 +67,7 @@ Found by going to source 4 of https://onlinelibrary.wiley.com/doi/epdf/10.1111/h
   doi      = {10.1155/2019/8617406},
 }
 
+CryoCT
 @article{cryoct_maes2022cryogenic,
   author    = {Maes, Arne and Pestiaux, Camille and Marino, Alice and Balcaen, Tim and Leyssens, Lisa and Vangrunderbeeck, Sarah and Pyka, Grzegorz and De Borggraeve, Wim M. and Bertrand, Luce and Beauloye, Christophe and Horman, Sandrine and Wevers, Martine and Kerckhofs, Greet},
   journal   = {Nature Communications},
@@ -74,7 +81,7 @@ Found by going to source 4 of https://onlinelibrary.wiley.com/doi/epdf/10.1111/h
   month     = oct,
 }
 
-
+Variability in annotations of 3D/xray
 @article{variability_in_annotations_xray_lin2023pluribus,
   author    = {Lin, Diana and Wahid, Kareem A. and Nelms, Benjamin E. and He, Renjie and Naser, Mohammed A. and Duke, Simon and Sherer, Michael V. and Christodouleas, John P. and Mohamed, Abdallah S. R. and Cislo, Michael and Murphy, James D. and Fuller, Clifton D. and Gillespie, Erin F.},
   journal   = {Journal of Medical Imaging},
@@ -89,10 +96,6 @@ Found by going to source 4 of https://onlinelibrary.wiley.com/doi/epdf/10.1111/h
 }
 
 -------------------- End of sources in intro --------------------
-
-
-
-
 
 --------- UNUSED BUT INTERESTING: ---------
 Based on "A literature review on segmentation methods for ex vivo"
@@ -120,3 +123,111 @@ Reference from "A Survey of Methods for 3D Histology Reconstruction"
   doi      = {10.1167/iovs.02-1333},
 }
 
+
+
+-------------------- Sources for SOTA --------------------
+
+-------------------- Sources for Software in Research --------------------
+
+TODO: VALIDATE CONTENT!!
+
+Dragonfly FreeD License
+@misc{dragonfly_freed_license,
+  author       = {Comet Technologies Canada Inc.},
+  title        = {FreeD License for Non-Commercial Use -- Dragonfly},
+  howpublished = {\url{https://dragonfly.comet.tech/en/products/license-models/freed-license}},
+  note         = {Accessed: Feb. 27, 2026},
+}
+
+Orthanc Ecosystem for Medical Imaging
+@article{orthanc_paper_jodogne,
+  author   = {Jodogne, Sébastien},
+  title    = {The {Orthanc} Ecosystem for Medical Imaging},
+  journal  = {Journal of Digital Imaging},
+  volume   = {31},
+  number   = {3},
+  pages    = {341--352},
+  year     = {2018},
+  doi      = {10.1007/s10278-018-0082-y},
+}
+
+List of Linux distros Wikipedia
+Not really sure how to credit this
+@misc{wikipedia_linux_distributions,
+  author       = {Wikipedia contributors},
+  title        = {List of {Linux} Distributions},
+  howpublished = {\url{https://en.wikipedia.org/wiki/List_of_Linux_distributions}},
+  note         = {Accessed: Feb. 27, 2026},
+}
+
+DeepVesselNet
+@article{tetteh2020deepvesselnet,
+  author   = {Tetteh, Giles and Efber, Velizar and Duc, Nils D. and Paetzold, Johannes C. and Sekuboyina, Anjany and Menze, Bjoern H. and Lippert, Christoph},
+  title    = {{DeepVesselNet}: Vessel Segmentation, Centerline Prediction, and Bifurcation Detection in {3-D} Angiographic Volumes},
+  journal  = {Frontiers in Neuroscience},
+  volume   = {14},
+  pages    = {592352},
+  year     = {2020},
+  doi      = {10.3389/fnins.2020.592352},
+  note     = {arXiv: 1803.09340},
+}
+
+SPROUT
+@article{sprout_segmentation_volumetric,
+  author   = {He, Yichen and Camaiti, Marco and Roberts, Laura E. and Mulqueeney, Jack M. and Ioannou, Eirini and Didziokas, Marius and Goswami, Anjali},
+  title    = {{SPROUT}: A User-friendly, Scalable Toolkit for Multi-class Segmentation of Volumetric Images},
+  journal  = {bioRxiv},
+  year     = {2024},
+  doi      = {10.1101/2024.11.22.624847},
+  note     = {Preprint},
+}
+
+Frangi Vesselness (ImageJ plugin page)
+@misc{imagej_frangi,
+  author       = {{ImageJ} Ops team},
+  title        = {Frangi Vesselness -- {ImageJ}},
+  howpublished = {\url{https://imagej.net/plugins/frangi}},
+  note         = {Based on: Frangi, A. F., Niessen, W. J., Vincken, K. L., & Viergever, M. A. (1998). 
+  Multiscale vessel enhancement filtering. In Lecture Notes in Computer Science (pp. 130-137). Springer Berlin Heidelberg. doi:10.1007/bfb0056195
+  Accessed: Feb. 27, 2026},
+}
+
+The Vascular Modelling Toolkit
+@misc{vmtk,
+  author   = {Izzo, Richard and Steinman, David and Manini, Simone and Antiga, Luca},
+  title    = {The Vascular Modeling Toolkit: A {Python} Library for the Analysis of Tubular Structures in Medical Images},
+  journal  = {Journal of Open Source Software},
+  volume   = {3},
+  number   = {25},
+  pages    = {745},
+  year     = {2018},
+  doi      = {10.21105/joss.00745},
+}
+
+R-Vessel-X
+@article{affane2025rvesselx,
+  author   = {Affane, Abir and Chetoui, Mohamed Amine and Lamy, Jonas and Lienemann, Guillaume and Peron, Raphaèl and Beaurepaire, P. and Dollé, Guillaume and L{\`e}bre, Marie-Ange and Magnin, Benoit and Merveille, Odyssée and Morvan, Mathilde and Ngo, Phuc and Pelletier, Thibault and Rositi, Hugo and Salmon, Stéphanie and Finet, Julien and Kerautret, Bertrand and Passat, Nicolas and Vacavant, Antoine},
+  title    = {The {R-Vessel-X} Project},
+  journal  = {arXiv preprint},
+  year     = {2025},
+  note     = {arXiv: 2501.10068},
+}
+
+
+-------------------- Sources for Tissue imaging --------------------
+
+TODO: VALIDATE CONTENT!!
+
+@article{3dnondestructive_softtissue_µtomo,
+  author   = {Juliana Martins de S. e Silva, Irene Zanette, Peter B. Noël, Mateus B. Cardoso, Melanie A. Kimm & Franz Pfeiffer},
+  title    = {Three-dimensional non-destructive soft-tissue visualization with X-ray staining micro-tomography},
+  journal  = {},
+  year     = {2015},
+}
+ 
+@article{exvivo_cardioct,
+  author   = {Lisa Leyssens, Camille Pestiaux, Greet Kerckhofs},
+  title    = {A Review of Ex Vivo X-ray Microfocus Computed Tomography-Based Characterization of the Cardiovascular System},
+  journal  = {},
+  year     = {2021},
+}
