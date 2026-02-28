@@ -4,12 +4,13 @@
 
 // Add papers: 
 
-// Frangi "Multiscale vessel enhancement filtering" https://link.springer.com/chapter/10.1007/BFb0056195
 // Three-dimensional multi-scale line filter for segmentation and visualization of curvilinear structures in medical images https://www.sciencedirect.com/science/article/abs/pii/S1361841598800091
 // Beyond Frangi: an improved multiscale vesselness filter https://www.researchgate.net/publication/283558933_Beyond_Frangi_An_improved_multiscale_vesselness_filter
 // skeletonization algorithm in scikit-image: Building Skeleton Models via 3-D Medial Surface Axis Thinning Algorithms https://www.sciencedirect.com/science/article/abs/pii/S104996528471042X
-
 // Angiogenesis, µCT: Novel multimodal MRI and MicroCT imaging approach to quantify angiogenesis and 3D vascular architecture of biomaterials https://www.nature.com/articles/s41598-019-55411-4
+// Volumetric ML V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation https://ieeexplore.ieee.org/document/7785132
+// Image Segmentation Using Deep Learning: A Survey https://arxiv.org/pdf/2001.05566
+// Tubular Structure Segmentation Based on Minimal Path Method and Anisotropic Enhancement https://www.ceremade.dauphine.fr/~cohen/mypapers/FethIJCV10.pdf
 
 
 == Software in Research
@@ -96,26 +97,13 @@ _*Problem 2.* The the wide diversity of available modalities for 3D imaging: µM
 
 // ----------------------
 
-// In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. This section contains:
-// ✓ The background of the study (= context);
-// ✓ Research that has been done in the frame of your thesis topic;
-// ✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
-// ➔ Make a fluent story of it, and not just a sum up of different papers or references.
-
-// ➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
-
-
-
-
 // With the goal of reconstructing vascularization in imaged tissue, we aim to take in data from an imaging modality, process it through a software pipeline, and obtain at output a data structure with higher information density than the input. This process of reducing the amount of raw data, but increasing the utility or information content of the data, is explored widely in the field of computer science. It underlies concepts such model fitting to noisy data [5.2] or as more commonly carried out in a biological context and industry, image segmentation, where the goal is to separate regions of a 2D image into multiple segments and objects [5.3].
 
-// Image segmentation plays a central role in accelerating, standardizing medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades @OTSU_segmentation, or more complex as in panoptic segmentation, only being posed in 2018 [5.5]. In the context of volumetric biological imaging, segmentation extends naturally into three dimensions, where voxel-wise labeling must account for spatial continuity across image slices and the complex, branching topology of structures such as blood vessel networks.
+// Image segmentation plays a central role in accelerating, standardizing medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) [5.1]. The task can be as simple and as old as separating objects from a background, a problem that has been explored in computer science for multiple decades @OTSU_segmentation, or more complex as in panoptic segmentation, only being posed in 2018 @panoptic_seg_og. In the context of volumetric biological imaging, segmentation extends naturally into three dimensions, where voxel-wise labeling must account for spatial continuity across image slices and the complex, branching topology of structures such as blood vessel networks.
 
-// 5.1 IEEE Image Segmentation Using Deep Learning: A Survey https://doi.org/10.1109/TPAMI.2021.3059968
-// Better and free: Image Segmentation Using Deep Learning: A Survey https://arxiv.org/pdf/2001.05566
+// 5.1 Image Segmentation Using Deep Learning: A Survey
 // 5.2 RANSAC https://doi.org/10.1145/358669.358692
 // 5.3 FIRST EDITION! Computer Vision: Algorithms and Applications. Berlin, Germany
-// 5.5 Panoptic https://doi.org/10.48550/arXiv.1801.00868
 
 
 
@@ -142,6 +130,7 @@ Classical machine learning approaches introduced feature engineering as an inter
 
 *Not super happy with this yet*
 
+==== Forms of Machine Learning
 #linebreak()
 Deep learning methods, and in particular the paradigm of fully convolutional encoder-decoder architectures such as U-Net @unet_og_paper, represented a major revolution in image segmentation and dominated benchmarks, with as many as (REFIND THE SOURCE SPEAKING OF 8/10 LEADERS BEING UNET). U-Net presneted a breakthrough in imaging due to its ability to do segmentation on large images, with high compute and data efficiency, and across multiple scales by introducing skip connections between encoder and decoder pathways, allowing the network to combine low-level spatial detail with high-level semantic context. This enabled the segmentation of thin structures that require context, such as cells and as relevant here, capillaries. However as mentioned previously, 2D imaging and by extension 2D segmentation present limitations for blood vessels; variants of U-Net extending into the third dimension exist to palliate this, such as 3D U-Net @3d_unet. 
 
@@ -149,13 +138,57 @@ Deep learning methods, and in particular the paradigm of fully convolutional enc
 Transformer-based architectures have come to the forefront of predictive performance by their more general computation model: they remove the locality prior of convolutions, and thereby have the ability to model long-range spatial dependencies. Transformers function as learned compression functions where the encoder progressively distills the input volume into a compact latent representation encoding the most task-relevant features, which the decoder then maps back into a dense prediction @ml_is_compression. Due to their more general structure lacking the prior of locality, they require more data to train than convolutional networks: complicating their use in medical imaging due to the associated costs and barriers to data collection.
 
 
-==== Imaging and Segmentation of vasculature
+==== Classification techniques
+
+The two most well known forms of machine learning applied to medical images are classification and segmentation. Classification is the process of outputing a single unified class given an input piece of data, such as classifying an x-ray of a bone as "broken" or "not broken". Its simplicity and ease of collecting training data means classification models formed the first widely used machine learning models (*Source this*). Segmentation plays a central role in accelerating and standardizing medical image analysis by enabling quantitative analysis of different kinds: by classifying pixels with semantic labels (semantic segmentation), partitioning of objects (instance segmentation) or a combination of both across the entire image space (panoptic segmentation) @panoptic_seg_og. In the context of volumetric biological imaging, segmentation extends naturally into three dimensions, with the paradigm of convolutional neural networks naturally extending into the third dimension by making use of 3D convolutions in the place of 2D.
+
+#linebreak()
+Beyond classification and pixel or voxel-wise labeling, methods exist that aim to extract higher-order structural constructs. For tree and network-like structures such as vascular networks, skeletonization algorithms abstract a binary segmentation mask to a centerline representation that preserves the branching topology of the original structure (*Source: structural skelentonization/thinning*). In order to have centerline extraction be an output of a deep learning model, it can be formulated directly as an optimization problem. Optimizing using minimal path methods or tubular graph-tracing approaches that track vessel centerlines through the image volume without requiring a complete prior segmentation (*Source: path vessel tracing*). At the highest level of abstraction, graph-based representations encode the vascular network as a set of nodes (bifurcation points and endpoints) connected by edges (vessel segments), each annotated with attributes such as radius, length, and tortuosity. Abstract representations offer the highest quality downstream quantitative analysisincluding branching order, fractal dimension, or inter-vessel spacing, impossible to derive from a raw segmentation mask alone (*Source: vessel graphs*), as well as enable simulations with tools such as (*Source: vasculature simulator*), 
+
+// #linebreak()
+// Navigating between these levels of representation involves a trade-off between information fidelity, robustness to segmentation errors, and the specificity of the downstream analysis task.
+// where voxel-wise labeling must account for spatial continuity across image slices and the complex, branching topology of structures such as blood vessel networks.
+
+== Imaging and Segmentation of vasculature
+
+// SOTA vasculature seg:
+// 2010 Tubular Structure Segmentation Based on Minimal Path Method and Anisotropic Enhancement
+// 2020 Cardiac multi-scale investigation of the right and left ventricle ex vivo: a review
+// 2018 A Survey of Methods for 3D Histology Reconstruction
+
+// Vasc & µCT
+// Optimization of MicroCT Imaging and Blood Vessel Diameter Quantitation of Preclinical Specimen Vasculature with Radiopaque Polymer Injection Medium
+
+// ML
+// 2018 ML DeepVesselNet: Vessel Segmentation, Centerline Prediction, and Bifurcation Detection in 3-D Angiographic Volumes
+
+// Tools
+// The Vascular Modeling Toolkit
+// SKAN skeleton-analysis
+// ImageJ/builtin tools for it: https://imagej.net/plugins/frangi
+
+
+// For cancers/tumors/small vasc
+// 2003 Three-Dimensional Reconstruction of Extravascular Matrix Patterns and Blood Vessels in Human Uveal Melanoma Tissue: Techniques and Preliminary Findings
+// 2023 on the variability of annot: E pluribus unum: prospective acceptability benchmarking from the Contouring Collaborative for Consensus in Radiation Oncology crowdsourced initiative for multiobserver segmentation
+
 
 #linebreak()
 _*Problem 3.1.* Current methods for segmentation often ignore the structural priors that underly the data generation process. An effective, robust and transferrable method for blood vessel segmentation must thus encode the relevant structural priors, namely connectedness, shape, and branching structure_
 
 #linebreak()
-_*Problem 3.2.* Deep learning based segmentation methods that rely on a large corpus of similar images, and suffer when the domain shifts due to changes in imaging methodology or methodology variance, are not robust enough, nor trasnferrable enough to enable replicable work across multiple datasets. Any algorithm to extract blood vessels from tumors must contain user adjustable hyper parameters to enable fitting to the parameters of their data, as well as avoid the need for training data beyond a single test example._
+_*Problem 3.2.* Deep learning based segmentation methods that rely on a large corpus of images fit to the distribution on which they are trained, that suffer when the domain shifts due to changes in imaging methodology or sample variance, are not robust enough, nor transferrable enough to enable replicable work across multiple datasets. Any algorithm to extract blood vessels from tumors must contain user adjustable hyper parameters to enable fitting to the parameters of their data, as well as avoid the need for training data beyond a single test example._
+
+
+
+
+// In the state of the art, you indicate what has been studied, why it has been studied, and, in general terms, how it has been studied. This section contains:
+// ✓ The background of the study (= context);
+// ✓ Research that has been done in the frame of your thesis topic;
+// ✓ Information that is needed for the reader to understand your topic and the remaining scientific issues/problems.
+// ➔ Make a fluent story of it, and not just a sum up of different papers or references.
+
+// ➔ The context (per paragraph or section) usually ends with a conclusion or problem statement that sets the scene for your specific research questions and project aim + objectives
 
 
 
