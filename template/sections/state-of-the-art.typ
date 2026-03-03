@@ -207,12 +207,27 @@ A major and difficult to circumvent limitation of (supervised) deep learning app
 
 // Variability in machine params, and data collection
 
+=== Existing pipelines
+
+// InVesalius: open-source platform for volume reconstruction and segmentation from medical imaging data
+
+ISeveral software tools and pipelines have been developed to support vascular segmentation and analysis workflows.TKTubeTK @ITKTubeTK_paper_github offers a library of algorithms for tubular structure segmentation and graph extraction built on the ITK framework. The Vascular Modeling Toolkit (VMTK) @vmtk integrates in 3DSlicer and provides a user friendly comprehensive suite of tools for vascular segmentation and vascular extraction: centerline extraction, surface reconstruction, and hemodynamic simulation. The recent VesselKnife @vesselknife provides an integrated pipeline targeting vessel segmentation, skeletonization, and graph extraction from µCT data. For analysis, SKAN @skan provides a well documented Python library for the quantitative analysis of skeleton graphs extracted from binary segmentation masks, enabling computation of branch length distributions, tortuosity, and network connectivity. The SimVascular @simvascular software extends vascular extraction into simulation, enabling downstream modeling of blood flow within reconstructed vascular geometries.
+
+// Revisit ^
+
+#linebreak()
+The landscape of vascular segmentation tools reflects a broader conflict throughout bio-informatics, medical informatics and bioimagery: general-purpose deep learning segmentation frameworks offer good performance on the datasets they are trained on, but require large annotated datasets and offer limited interpretability or controllability as well as generally basic existing implementations into existing tools; classical model-based methods such as Frangi filtering are more transparent and adjustable, built into existing tools and easy to use, but require manual parameter tuning and struggle with complex vascular geometries. Methods that explicitly encode the structural priors of vascular networks: connectivity, vessel geometry and branching topology represent a middle ground that remains underutilized in laboratory settings, particularly for the specific setting of small tumor µCT imaging with small amounts of data and variable imaging conditions (*Problem 3.1, Problem 3.2*).
+
+
 
 #linebreak()
 _*Problem 3.1.* Current methods for segmentation often ignore the structural priors that underly the data generation process. An effective, robust and transferrable method for blood vessel segmentation must thus encode the relevant structural priors, namely connectedness, shape, and branching structure_
 
 #linebreak()
 _*Problem 3.2.* Deep learning based segmentation methods that rely on a large corpus of images fit to the distribution on which they are trained, that suffer when the domain shifts due to changes in imaging methodology or sample variance, are not robust enough, nor transferrable enough to enable replicable work across multiple datasets. Any algorithm to extract blood vessels from tumors must contain user adjustable hyper parameters to enable fitting to the parameters of their data, as well as avoid the need for training data beyond a single test example._
+
+#linebreak()
+_*Problem 3.3.* Existing vascular segmentation pipelines are typically designed and validated for a single imaging modality, contrast strategy, or tissue type. The lack of modular pipelines with adjustable parameters that can be adapted to the specific imaging characteristics of small tumor µCT (non uniform contrast agent diffusion, limited sample size, low contrast and tumor vessel specificities) means that no off-the-shelf solution currently offers robust, reproducible vascular reconstruction usable for quantifying the vasculature network with an accuracy sufficient for clinical and research applications. A robust pipeline must expose interpretable parameters that allow domain experts to adapt extraction behavior to their specific imaging contexts, without requiring retraining or re-annotation._
 
 
 
