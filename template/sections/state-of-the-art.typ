@@ -93,7 +93,7 @@ CECT is of particular relevance for imaging large vascular networks because of t
 #v(1cm)
 
 #linebreak()
-_*Problem 2.* The the wide diversity of available modalities for 3D imaging: µMRI and µCT, with their subtypes: cryo-CECT, phase-contrast CT, Contrast-Enhanced CT, the different machines and their acquisition parameters, variability in samples and their preparation: fixation methods, staining agents and methods, staining duration, tissue types, means that the challege of creating a method that is re-usable, even across different tissues within the same lab, is huge. Any method used for the segmentation of small blood vessels should be robust to the gradients caused by diffusion CECT, and able to handle variable contrast levels._
+_*Problem 2.* The the wide diversity of available modalities for 3D imaging: µMRI and µCT, with their subtypes: cryo-CECT, phase-contrast CT, Contrast-Enhanced CT, the different machines and their acquisition parameters, variability in samples and their preparation: fixation methods, staining agents and methods, staining duration, tissue types, presents the challege of creating a method that is re-usable, even across different tissues within the same lab. Any method used for the segmentation of small blood vessels should be robust to the gradients caused by diffusion CECT, and able to handle variable contrast levels._
 
 
 
@@ -177,16 +177,30 @@ Sequential pipelines have the weakness that errors propagate and compound across
 
 ==== Loss functions
 
-Machine learning models are optimized by minimizing a loss function that quantifies the discrepancy between model predictions and ground truth annotations. The choice of loss function central to the performance of a model as it implicitly encodes priors about the structure of the problem. Types of prediction errors are weighted differently and the geometric or topological properties that predictions should satisfy change. For usecases such as vascular segmentation it is particularly consequential due to the severe class imbalance, or differene in amount of the "target class" vessels when compared to the "background class", and topological sensitivity.
+Machine learning models are optimized by minimizing a loss function that quantifies the discrepancy between model predictions and ground truth annotations. The choice of loss function central to the performance of a model as it implicitly encodes priors about the structure of the problem. Types of prediction errors are weighted differently and the geometric or topological properties that predictions should satisfy change. For usecases such as vascular segmentation it is particularly consequential due to the severe class imbalance, or differene in amount of the "target class" vessel pixels when compared to the "background class", as well as for connectedness.
+
+// Improve explanation of BCE
+#linebreak()
+Loss functions such as cross-entropy used for binary classification calculate the loss on a pixel by pixel basis, based on the predicted distribution. It can be used for segmentation @unet_og_paper, however it is important to recall that our prediction task carries a heavy imbalance due to many more pixels being the background class. With cross-entropy loss, each prediction is independent, meaning for our biased distribution there is a prior of predicting background and producing fragmented or incomplete vessel predictions. There exist loss functions created that integrate the class imbalance explicitly, such as @og_dice_loss however these do not integrate the prior of connectivity or any spatial relatedness: each prediction is treated as independent.
+
+// DICE loss: from the overlap coefficient of prediction and ground truth on the entire space. It is a ratio of IoU, intersection to union and the absolute count of background voxels does not dominate -> robust to class imbalance vs BCE
 
 #linebreak()
-This will be extended, and maybe should be part of the problem
+For blood vessels specifically, breaks in connectedness can be difficult to reconnect downstream, and purpose made loss functions such as center-lineDice (clDice) @clDice_loss_func exist. clDice makes use of the aformentioned skeletonization techniques, that integrate the prior of connectedness, and build it into the loss function for predictions. Using clDice loss for a model thus encodes the prior that blood vessels are connected tubular structures into the model structure itself, avoiding the need for separate skeletonization and repair steps.
+
+#linebreak()
+Optimizing for even higher order parameters is also possible, such as clinically relevant parameters. CF-Loss @CFLoss_loss_func optimizes the loss function for retinal multi-class vessel segmentation and vascular feature measurement, focusing on improving the performance on clinically relevant metrics. clDice and CF-Loss can be used in conjunction with other loss functions such as the lower order DICS, and act as a complimentary extra constraint for network training.
+
+#linebreak()
+The selection of a loss function or combination of functions through weighing amounts to choosing which structural priors to encode in the optimization objective. For our case of vascular segmentation in small tumor µCT volumes with heavy class imbalance and the goal of extracting clinically relevant metrics that are topological correct, a compound loss will be used that combines the imbalance prior, as seen in DICE, and a structurally oriented loss function (*Problem 3.2.*).
 
 #v(1cm)
 
 #linebreak()
-_*Problem 3.* Methods for extracting blood vessels can do so at different levels of abstraction. It is important to be able to select the level of abstraction desired in the software, and for any method used to export to have adjustable parameters for this purpose._
+_*Problem 3.1.* Methods for extracting blood vessels can do so at different levels of abstraction. It is important to be able to select the level of abstraction desired in the software, and for any method used to export to have adjustable parameters for this purpose._
 
+#linebreak()
+_*Problem 3.2.* The selected evaluation method should encode the structure of blood vessels as a prior in some form, in order to ensure that quantified prediction performance matches with qualified performance as experienced by the user._
 
 
 
