@@ -5,6 +5,69 @@ The rendered thesis is under template > thesis.pdf [here](https://github.com/Nac
 Alternatively: Open the repository in VSCode with the typst extension, and open the preview
 ![How to preview](resources/images/how_to_preview.png)
 
+
+Generic SOTA -> keep it specific to what you’re doing
+~ 5-10-10-10-5
+Intro 5 pp
+SOTA 10pp
+Technologie/technique 10pp
+Methodologie 10pp
+Resultats 10pp
+Conclusion 3-5 pages (discussion et repossitionner le travail)
+
+
+# Thesis Goals (instructions) - From "Scientific writing/Master thesis: tips and tricks"
+
+Master thesis objectives
+The master thesis is
+• the opportunity to acquire transversal competencies
+• a project aiming at solving a complex engineering problem
+An EPL master thesis may have
+• a major “research” component                  -- Both dimensions are possible
+• a major “technological development” component --^
+These objectives are translated into learning outcomes (LO's) derived from the EPL competency framework.
+
+Learning outcomes
+1. ... to demonstrate he-she masters a body of knowledge and basic skills in science and/or engineering sciences, bound about his/her thesis.
+2. ... to lead to completion a major, in amplitude and spent time, engineering approach applied to the development of a product, service
+or facility referred to the thesis.
+3. ... to lead to completion a major, in amplitude and spent time, research work aiming at the understanding and the contribution to the resolution of an original scientific question of theoretical or physical type.
+4. ... to organise and plan the master thesis work on the basis of allocated resources and time constraints, of security (if applicable) and of available competencies.
+5. ... to efficiently communicate both orally and in writing to realise the master thesis.
+6. ... to take into account the societal impact of his/her master thesis (possible economical recovery and/or ethical impact and/or environmental and/or social impact).
+
+A dissertation realized by one student should be approximately 40 pages in length, and not exceed 60 pages (excluding annexes).
+
+## Instructions:
+
+Problem statement, aim and objectives:
+✓ Formulate again relevant, simple, measurable, and feasible research questions that are still remaining (should be clear after reading the SOTA)
+✓ State the research aim or hypothesis of the project, and formulate concrete objectives
+
+## Words to use
+
+Illustration: as shown by, e.g., especially, for example, for instance, in particular, namely, particularly, specifically, such as, that is, to illustrate.
+Addition: again, and, also, besides, equally important, first (second, etc.), further, furthermore, in addition, in the first place, moreover, next.
+Comparison: also, in the same manner, likewise, similarly.
+Contrast: although, and yet, at the same time, but, despite, even though, except, however, in contrast, in spite of, nevertheless, on the contrary, on the other hand, regardless, still, though, unlike, whereas, yet.
+Logical relation: accordingly, as a result, because, consequently, for this reason, hence, if, otherwise, since, so, then, therefore, thus.
+Temporal relation: after, afterward, as, as long as, as soon as, at last, before, during, earlier, finally, formerly, immediately, later, meanwhile, next, since, shortly, subsequently, then, thereafter, until, when, while.
+Spatial relation: adjacent to, above, below, beyond, close, elsewhere, here, nearby, opposite, to the right, left, north, east, south, west, etc.
+To summarize or conclude: in conclusion, in summary, on the whole, that is, therefore, to conclude, to sum up.
+-> To increase the attractiveness of your text, vary the order of clauses in consecutive sentences
+-> Use formal wording: much, many, perform, carry out, conduct, large, such as, consider, discuss, examine, obtain, retain, preserve, ascend
+-> Quantify: "the thickness difference is of xxx millimeters"
+-> Avoid specialist terms the readers will not understand
+-> Results must be discussed: explain what is learned and why, not just numbers
+-> Provide a caption to your table or figure. This caption should be sufficiently informative to understand the table or figure without reading the main text
+
+## References
+
+✓ In-text citations include the surname of the author and date, either both inside parentheses or with the author names in running text and the date in parentheses. For example:
+“Recently, Johnson et al. (2014) have shown that” or “This has recently been shown by Johnson et al. (2014)”
+✓ You can also use the reference numbers. For example: “Recently, Johnson et al. [1] have shown that” or “This has recently been shown by Johnson et al. [1]”
+
+
 --
 
 --
