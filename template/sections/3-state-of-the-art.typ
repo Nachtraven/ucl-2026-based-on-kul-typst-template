@@ -27,6 +27,7 @@ The standard for open and free software at the OS level is Linux, a kernel, on t
 
 === Software for 3D analysis
 
+// TODO: REVISIT THIS LIST OF SW ON WIKI: https://en.wikipedia.org/wiki/Analyze_(imaging_software)
 The outputs, after reconstruction, of a CT scan are in the form of slice-by-slice files. These 2D slice outputs are then combined into a 3D representation by dedicated software, of which many exist. Drawing from Dragonfly3D's own comparative software list and a search for available tools, those relevant to this thesis can be divided along the same axis introduced in the previous section: commercial and open source or freeware. On the commercial side, the main options include (Bold indicating those actively used in the UCLouvain IMMC) #text(weight: "bold")[Dragonfly3D, Avizo, CTAn], Amira, Analyze and CTVol (by Bruker), Image Pro, Imaris, MeVisLab, Mimics, ScanIP, Octopus, VG Studio, Zeiss Inspect. On the open source and freeware side, the principal options are 3D Slicer, Chimera, Blender, Dream3D, Drishti, ImageJ, FIJI, IMOD, MeshLab, OsiriX, ParaView, SimVascular, VesselKnife and VisIt. 
 
 #linebreak()

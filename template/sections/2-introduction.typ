@@ -50,25 +50,72 @@
 // Does the idea we are trying to implement fit into our narrative? Maybe it is worth trying an alternative?
 
 
+// Abstract from 17-04 0958:
+// As medical imaging has evolved from humble beginnings of 2D microscopy analyzed by human observation towards higher and higher resolution 3D imaging generating orders of magnitude more data in the process, the step of data analysis and its required tools and methods have become central to leveraging the data for information extraction. The evolution of these imaging methods has also opened the door to new possibilities for the study of structures whos intrinsic organization in 3D contributes towards function, embodied in the usecase of tissue vascularization. Advanced imaging methods such as contrast-enhanced micro tomography aim to separate tissue by use of contrast enhacing agents, but noise in imaging and the small, dispersed nature of the vascularization of tumors result in the need for more powerful software methods to enable the comparison of samples across various treatment profiles, and achieve the levels of accuracy required for drug research. In this document the clinical pipeline is examined from end to end, a more powerful extraction method for vascular structures in challenging use cases is developped, and the groundwork laid for principled, scientifically rigorous work to be carried out.
+
+
+// From KUL guidelines
+// The main matter: heart of the thesis, it contains the real content. One should be able to read only the main matter to take in the whole story. The chapters have a logical sequence, which must be made evident to the reader. 
+// First chapter: introduction the reader must be informed about the research field of the master’s thesis, situating it in a broader context. The goals of the thesis, as well as previous work, are described from a technical point of view. The structure of the thesis text is briefly explained. 
+// Other chapters Each chapter, except the first and the last one, starts with an introduction to the contents of the chapter. If readers would only read the introductions, they should have an overview of the contents of the master’s thesis and the relation between the chapters.
+
+
+
 = Introduction
 
-// Describe the situtation
-When carrying out research in a particular field, it is common to utilize processes and methods that extend beyond the boundaries of said field. In biology and materials science, the process of data acquisition, processing and analysis requires expertise across a vast amount of different domains: physics to understand the imaging methods used, chemistry relating to the reactants employed for colour and constrast, and computer science in the methods used for analysis and information extraction from collected data. It is natural for researchers to not have extensive knowledge across all fields required for a particular experiment, which is compensated for by relying on the existing corpus of prior research work, established methods and available tools. The underlying principle of science dictates that replicability, reproducibility, and robustness are critical to any scientif endeavour, and this remains a challenge across all disciplines: prior research work often fails to be reproducible due to a lack of accessibility to the data acquisition hardware & methods, data processing tools, and insufficiently documented procedures, or subjective biases resulting from prior experience of the person executing the process @10simple_rules_reproducibility. 
 
-Research based on multi step pipelines, especially those incorporating expensive software, are unable to be extended. Free and open source data processing tools  paliate the reproducibility and replicability problems by providing free and extensible software, publication of the data as well as data versionning enable an understanding of the steps carried out in modifying and obtaining the final result data, and automation in information extraction processes such as segmentation remove the tacit data filtering done by a human in the annotation processes.
+// Start with a cause or stimulus which results in a situation or event
+// From this, you get a problem or question
+// This problem or question has: effects or responses, which result in Response by others/partial answers/other consequences
+                                                                // -> this is circular and results in other effects/responses
+
+// For the context, we want to have a progress or evolution in situations, be it chronological or technological, that drives our story. We always want to motivate our context - previous people didn't do work without a motivation/cause
+
+
+
+// Describe the situation - 
+// Bio research for tissues has progressed from 2D to 3D analysis, due to it being more advantageous to better understand tissues where the structure in 3D is essential to the functionning, such as for vasculature. This progression means there is a lot more data, and the need for tools to help in the analysis, which have all evolved over time as the imaging methods gained traction in different research fields. When doing research on these tissues, biologists use software to assist them: this is outside of their domain of expertise, meaning they rely on prior work for extraction techniques, and the tools that enable them. Prior work for extracting info is often not directly re-usable because the tool landscape is fragmented, advanced methods are often beyond the understanding of the biologist or not available with the "surrounding" software and they are behind a paywall, or the data isn't available.
+
+// This manifests in our usecase of micro vasculature extraction from tumors: in order to be able to measure the impact of a drug on the vasculature when comparing a reference tumor to a treated one, it must be possible to compare them with high enough certainty and using biologically relevant parameters. Currently the vasculature cannot be extracted with enough fidelity to enable downstream analysis: Previous work at UCLouvain attempted to make use of proprietary software and poorly documented pipelines, and used extraction methods that did not reach a level of confidence and accuracy to enable decisionmaking. Extraction of vasculature, and more largely the separation of structures of interest in an image, is a problem in computer science that people have tried to solve using segmentation. Often basic methods are used due to their simplicity such as grey level thresholding (lisa) and their availability in the tools familiar or provided to the researcher.
+
+
+
+// Need to approach coding a solution differently:
+// When a researcher in computer science works on data such as is used here, it is common for them to circumvent the "wrapper" software problem by using code directly: this results in a lot of cutting edge algorithms being inscrutable or not re-usable by biologists for future work, and is not scientifically rigorious as it is difficult to replicate and to expand upon, both foundational scientific requirements 
+
+// Need to approach segmenting differently:
+// Due to the diversity of CECT data, advanced algorithms don't work well on our small vasculature because of its low contrast, noise, disconnections and gradient. Algorithms like jerma, frangi, and other structurally aware algorithms are complex to use for biologists due to having a lot of parameters to adjust, and often these aren't set in a rigorous "principled" manner.
+
+
+
+// Say what you aim to do - I aim to apply algorithms that distil expert knowledge inside of open source tools in an expandable way. These algorithms are augmented by use of the prior of blood vessel connectivity, knowledge we acquire from prior deep learning work, that teaches us that it can be more relevant to encode knowledge in the loss function than in the algorithm itself
+
+
+
+
+
+Research takes place at the edges of human knowledge, and extends it through careful, iterative work. In biology, the analysis of tissues has progressed from 2D histology, carried out by humans looking through microscopes to 3D techniques across a wide spectrum of wavelenghts ranging from sound and infrared to magnetic resonance and x-ray imaging. When carrying out research it is common to utilize processes and methods that extend beyond the boundaries of said field. In biology and materials science, the process of data acquisition, processing and analysis requires expertise across a vast amount of different domains: physics to understand the imaging methods used, chemistry relating to the reactants employed for colour and constrast, and computer science in the methods used for analysis and information extraction from collected data. It is natural for researchers to not have extensive knowledge across all fields required for a particular experiment, which is compensated for by relying on the existing corpus of prior research work, established methods, and available tools.
+
+This corpus of existing work, before the era of computerized analysis, relied on the use of a tool for imaging and human analysis. This enabled replicability with the only hurdle of image acquisition; today many more hurldes have appeared: on top of acquisition, data is often not shared, and the tools to carry out the process of analysis are proprietary or locked behind paywalls. The underlying principle of science dictates that replicability, reproducibility, and robustness are critical to any scientifc endeavour, and this remains a challenge across all with prior research work often failing to be reproducible due to this lack of accessibility to the data acquisition hardware or data, the processing tools, and insufficiently documented procedures, or subjective biases resulting from prior experience of the person executing the process @10simple_rules_reproducibility. 
+
+
+// Research based on multi step pipelines, especially those incorporating expensive software, are unable to be extended or replicated independently. Free and open source data processing tools  paliate the reproducibility and replicability problems by providing free and extensible software, publication of the data as well as data versionning enable an understanding of the steps carried out in modifying and obtaining the final result data, and automation in information extraction processes such as segmentation remove the tacit data filtering done by a human in the annotation processes.
 
 == Biological motivation
-// More background on the situation
-#linebreak()
-When carrying out research in biology, an understanding of a target tissue is often required. Tissue microstructure is closely linked to its function: soft tissue analysis is foundational to modern medecine, being used everywhere from clinical environments to laboratories. Tissue samples are collected and imaged in order to gain an understanding of their structure and composition, called histology or histopathology in the case of diseased tissue. We use the term histology to refer to either interchangeably. Classically, this sampling and subsequent analysis has been done _ex-vivo_ in 2D using a microscope, often manually analyzed, setting the gold standard for histology @2d_histo_sota_balcaen2023revealing. 
 
-// Motivating CECT
-#linebreak()
-Histology is relevant in both clinical and laboratory environments. Clinically, histopathological analysis of tissue samples is extensively used for use cases such as cancer detection and grading @histology_used_for_cancers_he2012histology where a sample is analysed manually or with computer assistance. In laboratories for tasks such as clinical trials, histopathologists carry out manual microscopic evaluation @pathology_in_clinical_trials_provenzano2015standardization. Classical 2D histology presents the distinct disadvantage of being unable to obtain information at the same granularity in all three axis: slices may be stacked to obtain a 3D result, but resolution in the third axis is limited to section thickness, with the stacked planes separated by a dead space where no information is acquired @litt_review_greet_debournonville2019contrast, and the cutting process induces changes in tissue structure @extending2d_histo_to_3d. 
+// Tissues are complex and have a 3D element, and vascularization even more so - entirely depends on 3D
+// Biological tissues are characterized by a spatially complex architecture, composition, and organization of their constituents at the microscale, referred to as the tissue microstructure. Due to the strong correlation between the tissue microstructure and its function, analysing the microstructure is crucial to gain a better understanding of how healthy and diseased tissues function, and is relevant across fields - from archeology to cardiology.
+
+// More background on the situation
+Biological tissues are spatially complex, diverse in composition and organization of their constituents at the microscale. Tissue microstructure is closely linked to its function: soft tissue analysis is foundational to modern medecine, being used everywhere from clinical environments to laboratories. Tissue samples are collected and imaged in order to gain an understanding of their structure and composition, called histology or histopathology in the case of diseased tissue. We use the term histology to refer to either interchangeably. Classically, this sampling and subsequent analysis has been done _ex-vivo_ in 2D using a microscope, often manually analyzed, setting the gold standard for histology @2d_histo_sota_balcaen2023revealing. 
+
+// Motivating CECT OG
+// #linebreak()
+// Histology is relevant in both clinical and laboratory environments. Clinically, histopathological analysis of tissue samples is extensively used for use cases such as cancer detection and grading @histology_used_for_cancers_he2012histology where a sample is analysed manually or with computer assistance. In laboratories for tasks such as clinical trials, histopathologists carry out manual microscopic evaluation @pathology_in_clinical_trials_provenzano2015standardization. Classical 2D histology presents the distinct disadvantage of being unable to obtain information at the same granularity in all three axis: slices may be stacked to obtain a 3D result, but resolution in the third axis is limited to section thickness, with the stacked planes separated by a dead space where no information is acquired @litt_review_greet_debournonville2019contrast, and the cutting process induces changes in tissue structure @extending2d_histo_to_3d. 
 
 // Motivating our work of extracting vessels
 #linebreak()
-All types of tissues can be analysed histologically. For the purpose of evaluating the use of the antiangiogenic drug Pazopanib, a tyrosine kinase inhibitor which blocks the creation of new blood vessels as a means for cancer treatment, accurate 3d reconstruction of blood vessel vascularization is required. Indeed, simple volume estimates do not capture important parameters such as tortuosity, connectivity/branching and cross section profile. The shortcomings of classical 2D histology make the asessment and quantification of hollow and highly heterogeneous tissues like vasculature, for which spatial relationships are particularly relevant, challenging @litt_review_greet_debournonville2019contrast. Due to these limitations alternatives such as 3D imaging methods that do not require slicing and have high spatial resolution in all axis are particularly relevant for blood vessel analysis.
+For the purpose of evaluating the use of the antiangiogenic drug Pazopanib, a tyrosine kinase inhibitor which blocks the creation of new blood vessels as a means for cancer treatment, accurate 3d reconstruction of blood vessel vascularization is required. Vascularization is by nature 3D and covers entire tissues, and simple volume estimates do not capture important parameters such as tortuosity, connectivity/branching and cross section profile. The shortcomings of classical 2D histology make the asessment and quantification of hollow and highly heterogeneous tissues like vasculature, for which spatial relationships are particularly relevant, challenging @litt_review_greet_debournonville2019contrast. Due to these limitations alternatives such as 3D imaging methods that do not require slicing and have high spatial resolution in all axis are particularly relevant for blood vessel analysis.
 
 == The role of computer science
 
@@ -143,17 +190,15 @@ In this thesis work will be carried out to create an open source, user friendly 
 
 
 
-// #hide[
+
 
 // * avoid giving information outside of expertise and is redundant *
-// ~
 // * start SOTA with biopsies -> clinical biopsies vs drug development biopsies *
 // "classical way" is classical 2D histo, explain reason why 3D is much better
 // 3D is better because vasculature
 // tumors result in biopsies result in needing to analyze vasculature results in histo result in 2d or 3d result in better or worse vascularization reconstruction results in ml, thresholding, classical methods. For segmentation, review article of Isabelle! You can learn from clinical cases for DL
-// ~
+
 // the motivation for segmentation is different in clinical vs in industrial. Different evaluation criteria, different reasons
-// ~
 
 // == Goal: SMART (Specific, Measurable, Achievable, Relevant, Time-bound)
 
@@ -170,18 +215,15 @@ In this thesis work will be carried out to create an open source, user friendly 
 // + - thickness distribution "thickness map" - fitting sphere midpoints -> we want to see a distribution
 // + Integrates with existing tools: Dragonfly, Avizo, Orthanc
 
-// #v(12pt)
 
 // + amount of branches per side, size of the branches/length of the branches, count nodes 
 
-// #v(12pt)
 
 // Evaluate for tumor, from the tree, to ensure transferrability to other domains
 // If I improve segmentation -> impact on final outcome -> sensitivity analysis
 // Translation of segmentation into the tree -> sensitivity analysis
 // Focus on process of evaluating the segmentation
 
-// #v(12pt)
 
 // TODO additions:
 // - having re-usability enables future federated machine learning
@@ -193,7 +235,6 @@ In this thesis work will be carried out to create an open source, user friendly 
 // - Link sections explicitly (e.g., "Having established the need for vascular reconstruction, we now compare imaging modalities...").
 // - Focus on extracting problems in the intro
 
-// #v(24pt)
 
 // == Vascularization
 
@@ -292,13 +333,11 @@ In this thesis work will be carried out to create an open source, user friendly 
 
 // We lack the priors of the radiologist
 // We're extracting a model that exists in peoples heads, qualitatively evaluates, and we're bringing 
-// ~
+
 // -> even if we make a 3D render, the radiologist doesn't care about small things missing, they care about the anatomy
 // -> difference in goals vs qualitative evaluation: the model is scrutable/interpretable/real, from which you can get quantitative figures
 // -> segmentation needs to be neat, accurate, robust to small changes and noise
-// ~
-// * final presentation: make good visualization showing the differece with some ablation. Explain difference between typical evaluation with dice, and the real structural evaluation. Show that DICE being really high or low doesn't necessarily reflect the actual final output. Benefit from the area under the curve difference wrt classical methods *
-// ~
-// * use the tumor case as one case study to explain what I'm doing: briefly SOTA 3D histology for drug screening, the need for 3D histo is clear for companies developping drugs, I focus on antiangionetic drugs on tumor -> refer to Lisa thesis (effect of pazopanib) *
 
-// ]
+// * final presentation: make good visualization showing the differece with some ablation. Explain difference between typical evaluation with dice, and the real structural evaluation. Show that DICE being really high or low doesn't necessarily reflect the actual final output. Benefit from the area under the curve difference wrt classical methods *
+
+// * use the tumor case as one case study to explain what I'm doing: briefly SOTA 3D histology for drug screening, the need for 3D histo is clear for companies developping drugs, I focus on antiangionetic drugs on tumor -> refer to Lisa thesis (effect of pazopanib) *
