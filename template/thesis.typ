@@ -38,9 +38,9 @@
   // dutch-summary: include "sections/main-text/dutch-abstract.typ",
   list-of-figures: true,
   list-of-listings: false,
-  // abbreviations: include "sections/main-text/list-of-abbreviations-and-symbols.typ",
+  abbreviations: include "sections/appendices/list-of-abbreviations-and-symbols.typ",
   symbols: none,
-  // appendices: include "sections/appendix/appendix.typ",
+  appendices: include "sections/appendices/0-appendix.typ",
   // Make sure that this is the correct logo for the correct master (en/nl)!
   logo: [#image("../resources/1024px-UCLouvain_logo.png")],//[#text(size: 3em, fill: gradient.linear(..color.map.turbo))[Fix logo]],
 )
@@ -48,3 +48,7 @@
 #include "sections/2-introduction.typ"
 #include "sections/3-state-of-the-art.typ"
 #include "sections/4-problem-statement.typ"
+#include "sections/5-technology-techniques.typ"
+#include "sections/7-results.typ"
+#include "sections/8-conclusions.typ"
+
