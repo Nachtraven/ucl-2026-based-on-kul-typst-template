@@ -5,14 +5,14 @@ The selected software for implementation is discussed, followed by the
 
 == Software for 3D Data analysis
 
-=== Introduction
+=== Introduction <data_intro>
 
 As discussed in the introduction, a variety of different pieces of software exist intended for use in analyzing 3D data. The prior experience of the team centered around three major poles: Avizo: a proprietary and paid software, Dragonfly3D: a free for academics "license" software, and a "bare metal" approach. These three analysis methods were favored by different profiles of users: those having been in the team a long time had adapted to the team standard of Avizo, which was also the recommended starting point for new joiners; Dragonfly3D was used by team members that had previously worked on data elsewhere and used software on their own devices, and the "bare metal" approach was taken by students who wished to avoid the substantial learning curve and friction involved with using one of the two aforementioned softwares. 
 
 #linebreak()
 These software are used in the context of analysis of CT data: users receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice weighing *9.2MB*, and a whole 2400 slice scan weighing in at *22.1GB*, they are then windowed to 8 bit, often BMP images, and the empty slices are removed: this results in approximately a halving in total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original data discarded.
 
-Furthermore, certain researchers would then compress the data in the form of JPEG image slices, as was the case with the data used in this thesis: the scans provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
+Furthermore, certain researchers would then compress the data in the form of JPEG image slices, as was the case with the data used in this thesis: the scans provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns. A full, uncompressed, 8 bit per pixel 3000x3000x2653 scan would occupy 217GB, a problem which is revisited in @performance_and_memory 
 
 Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine.
 
@@ -100,10 +100,83 @@ One the annotation and point parameter visualization was completed, the steps of
 
 === Implementation of segmentation
 
-As noted in @imaging_and_seg, the simplest method of segmentation is threhsolding, given the nature of CECT it is the goal that the tissues of interest are those with high values, with all other having low grey value. This however does not work in practice:
+==== Thresholding
+
+As noted in @imaging_and_seg, the simplest method of segmentation is thresholding, given the nature of CECT it is the goal that the tissues of interest are those with high values, with all other having low grey value. This however does not work in practice for a few reasons: *(i)* the shell effect in CECT, where the contrast enhancing agent has higher concentrations on the outside or surface of the tumor, results in values that would be segmented as "vessel" even though they are not. *(ii)* grey value gradients appear between the outside and center of the samples and *(iii)* incomplete staining resulting in discontinuous vessels.
+
+#figure(
+  image("../../resources/software/threshold_131_255_example.png", width: 80%),
+  caption: [Illustration of the shortcoming of threshold based segmentation, with the "shell" being included],
+)
+
+The shell effect can be tackled by fitting a shape to the outside of the sample, which was attempted as detailed in the following section. However following a user interview, a critical issue was raised: in tumors, it is common for the outside of the tumor to contain large and plentiful vascularization, and removal would both bias results as well as reduce the overall performance by preventing these outside vessels from being segmented.
+
+// TODO: add wlodarsky
+Secondly, a threshold does not hold up to the gradients in images that are present, which in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels. As a result, manual thresholding as well as automated thresholding such as Otsu were rejected after testing. 
+
+==== Classical algorithms
+
+// Source the SimpleITK https://simpleitk.org/doxygen/v2_4/html/classitk_1_1simple_1_1ObjectnessMeasureImageFilter.html
+To go beyond the limitations of threshold based segmentation, methods that make use of the blood vessel prior (algorithms designed with blood vessel or tubular structure extraction in mind) were tested. Frangi or its generalization in SimpleITK, is a tubular prior algorithm widely available and high performance, being available in a lower level implementation. 
+
+In order to optimally make use of different algorithms as well as enable comparison, a novel approach was utilized: the use of a *probability map*.
+
+This approach was selected as it allows the accumulation of evidence across steps in the pipeline, and if multiple probability maps are saved (one for each step or method) it enables selecing a weight for each map when combining them to create the final segmentation. This method was somewhat undermined by the memory usage limitations laid out in @performance_and_memory - and the final implementation was simplified to use a single probability map that is iteratively updated.
+
+After the first round of development, a multi stage pipeline was obtained: from the user placed points, a shell removal step was done, and subsequently the user "vessel" points were grown using region growing to follow the ridges defined by the high grey value points. These points grown from the user annotations were then treated as a baseline for creating a simple classifier based on random forests: the vessel points, and points within a small region around them, were used. The probability maps generated from this step, alognside the tubular frangi, were then combined and thresholded based on the values of the user annotated points. This complex method led to promising results:
+
+#figure(
+  image("../../resources/software/long_pipeline_promising.png", width: 80%),
+  caption: [Visualization of the segmentation following the multi stage pipeline during development],
+)
+
+The outputs from this stage presented interesting characteristics: continuous vessels and few noisy sections. After examining the performance using the user annotated points, with 26/27 vessels and 16/16 background points correctly classified, it was decided to carry out a miniature ablation study: as it was noted by the author during the research phase, it is common for software approaches comprising multiple steps to not correctly quantify the contribution of each individual step to the overall algorithm, resulting in a rube goldberg-esque algorithm. //This is a known issue in computer science and especially in machine learning
+
+== Intermediary ablation study <ablation_study>
+
+Despite the seemingly good performance, inspection of the probability maps showed that the Frangi vesselness step was the most important to obtaining high vessel extraction performance, on top of extremely long inference times. At this point, it was also noted that the performance evaluation method was lacking: small vessels were not being correctly picked up on, and discontinuities in the blood vessels were still an issue - things that point wise annotations fail to capture.
+
+#figure(
+  grid(
+    columns: 2,
+    gutter: 3pt,
+    image("../../resources/software/Vesselness_probability_top.png"),
+    image("../../resources/software/Vesselness_probability_bottom.png"),
+  ),
+  caption: [TODO],
+)
+
+=== Outputs of the ablation study
+
+The removal of all steps (shell removal, random forest) except vesselness resulted in improved performance for extraction of vessels in the outer shell, as noted previously being crucial, as well as a large performance increase: vessel extraction went from taking multiple hours to under 20 minutes. It also successfully reduced RAM and swap usage, enabling effective running of the algorithm on larger samples. As a result of this small ablation study, the probability map approach was simplified to reduce memory usage, with a single map being succecively updated, and focus was moved towards the use of simple, scientifically grounded extracton based on line-like features with a step for combatting the disconnections in vessels.
 
 
-During the implementation phase, 
+== Performance challenges <performance_and_memory>
+
+As noted in @data_intro, the total data required for an uncompressed scan can reach into the tens or hundreds of GB if the image size is large. During the initial software evaluation, 3D Slicer was successful in loading all datasets on the development machine - however it was not verified at the time how much memory was being used. This turned out to be a problem: the larger datasets resulted in un-manageable RAM utilization when trying to run un-optimized algorithms. As mentioned in section @ablation_study, the initial multi stage plugin was running into a performance wall: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity. When running on a large scan, combined with the generation of probability maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). Cutting down of full scans into smaller chunks is a possibility to be considered for future endeavours, as well as sampling at a lower resolution if the target structures are large enough to allow it.
+
+#figure(
+  grid(
+    columns: 2,
+    gutter: 3pt,
+    image("../../resources/misc/RAM_cpu_use_during_a_run.png"),
+    image("../../resources/misc/RAM-cb-luru-r.png"),
+  ),
+  caption: [RAM utilization during segmentation: 1. baseline after loading dataset, bellow 24GB utilization, during processing 100% RAM and swap are used, 2. RAM utilization when loading the largest compressed scan showing full RAM and SWAP utilization: Run 1, CB-LURU-R],
+)
+
+These performance concerns highlight a continuous issue encountered during the writing of this thesis: the complexity of methods able to be tested was limited by the volume of data and the hardware available. Lab computers available to students have 32GB of ram, less than the computer used for the testing and writing of code, and it was noted by previous students working on MicroCT imaging that they had struggled to run algorithms across the whole image.
+
+// === Avenues and alternatives for improved Performance 
+
+// ==== Machine learning
+
+
+== Final algorithm
+
+After the initial algorithm development, demonstration of the results, meeting with the lab researchers to show and discuss the outputs, and the ablation that reduced inference time and improved vessel extraction, the final algorithm was reached:
+
+
 
 
 
@@ -114,8 +187,4 @@ During the implementation phase,
 // 2. A method that integrates voxel level metrics such as DICE @og_dice_loss and vasculature relevant metrics such as @clDice_loss_func and @CFLoss_loss_func
 // 3. A method that is well documented, and enables reproducibility
 // 4. A method that outputs a portable format of segmentation, namely voxel level segmentation, as individual slices or a DICOM imaging format 
-
-
-
-===
 
