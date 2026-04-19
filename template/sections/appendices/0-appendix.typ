@@ -7,16 +7,18 @@ The main sources of CO2 impact of this thesis are the use of computational resou
 1. During the thesis, the laptop of the writer was used: A legion 7i slim with 48GB DDR5, i7-13700H, 8GB RTX4070.
   1. *Production CO2*: The compliance document provided by Lenovo details an estimated carbon footprint of 429g +/- 86g CO2e. For a lifetime of 8 years, and an estimated thesis length of 3 months equivalent full time, this equates to *13.41Kg* CO2e.
   2. *Usage CO2*: The total estimated time dedicated to the coding and writing of the thesis is estimated based on the credits and approximate time investment per credit: 25 credits at 30 hours per credit equates to 750 hours. The laptop was measured over one 2h coding + writing session as using 40.89Wh, equating to a continuous use of 20.45w. This works out to 15.34 kWh, with an estimated Belgian CO2/kWh by the AIB (Association of Issuing Bodies) in 2024 of 131.73 g/kWh, resulting in total emissions of *2.02Kg* CO2.
-  3. *AI Utilization*: The impact of LLMs from large providers such as OpenAI is an ongiong research topic and difficult to measure, on top of which are layered issues like the use of Piccolo, UCLouvains aggregation service. A total of xx credits were used on Piccolo, with an unknown impact. As a result, this number is left out of the estimation.
+  3. *AI Utilization*: The impact of LLMs from large providers such as OpenAI is an ongiong research topic and difficult to measure, on top of which are layered issues like the use of Piccolo, UCLouvains aggregation service. A total of TODO credits were used on Piccolo, with an unknown impact. Claude Code was also used, with a total of 3 separate conversations containing TODO 41 cumulative prompts. The impact of AI use is thus left out of the estimation, with a guesstimate bellow.
 2. The thesis required meetings, for which the main source of CO2 emissions is the travel to/from Louvain-La-Neuve. This travel was done primarily by train, and the amount of travel directly attributable to the thesis was of 21 round trips, with a distance per trip of 93.2Km at an estimated 16.6g CO2e/Km, equating to *32.49Kg* CO2e.
 
 There was minimal extra data storage required to complete this thesis, however it is important to note that the large files handled do incur emissions if duplicated and stored across devices outside othe users own computer.
 
-The prior calculations equate to a total approximate impact of 47.92 Kg CO2e.
+The prior calculations equate to a total approximate impact of *47.92 Kg CO2e*.
+
+As for AI - a rough impact is estimated using the computer of the writer as a basis: three of the prompts sent to Piccolo and Claude were sent to the largest local qwen instance fitting in the 8GB GPU, and the time to answer as well as power use while answering estimated: for the three prompts, a total of TODO minutes to answer was required, with a power use of TODO
 
 // TODO: source the above with https://business.engie.be/fr/faq/contrat/emissions-co2/
 // https://www.belgiantrain.be/fr/about-sncb/corporate/2026/sncb-carbon-footprint
-
+// https://www.lenovo.com/be/fr/compliance/eco-declaration/
 
 == Instructions for scientific rigor in data handling
 

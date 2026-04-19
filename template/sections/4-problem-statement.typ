@@ -44,7 +44,7 @@ How may a software pipeline for the segmentation and extraction of blood vessel 
 // _*Problem 4.3.* Existing vascular segmentation pipelines are typically designed and validated for a single imaging modality, contrast strategy, or tissue type. A robust pipeline must expose interpretable parameters that allow adapation to the users specific imaging context, without requiring retraining as with common deep learning methods, or re-annotation._
 
 
-== Problem resolution approach
+== Problem resolution approach <prob_statement>
 
 The proposed approach to solving the problem laid out above is as follows:
 1. A user centric approach, where the end user is placed in the segmentation loop and offers feedback to the algorithm, through placement of anchors @minimal_path_tubular

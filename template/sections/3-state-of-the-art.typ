@@ -206,7 +206,7 @@ _*Problem 3.2.* The selected evaluation method should encode the structure of bl
 
 
 #pagebreak()
-== Imaging and Segmentation of vasculature
+== Imaging and Segmentation of vasculature <imaging_and_seg>
 
 // SOTA vasculature seg:
 // 2010 Tubular Structure Segmentation Based on Minimal Path Method and Anisotropic Enhancement
