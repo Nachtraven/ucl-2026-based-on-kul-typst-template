@@ -61,4 +61,4 @@ The approach will make use of the ability of 3DSlicer to visualize the outputs o
 #figure(
   image("../../resources/images/msc_thesis_try1_09-03-26.png", width: 100%),
   caption: [Preliminary synthesized diagram for the annotation of vascularization and sharing of results],
-)
+) <use_flow>

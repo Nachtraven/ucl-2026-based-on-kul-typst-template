@@ -8,6 +8,11 @@
 // Image Segmentation Using Deep Learning: A Survey https://arxiv.org/pdf/2001.05566
 
 
+// TODO: add from https://forum.image.sc/t/comparison-of-some-tools-for-3d-dense-ground-truth-annotations/38918/39
+// https://project-monai.github.io/
+// https://home.webknossos.org/
+
+
 == Software in Research
 
 The kinds of software used in a research setting vary enormously by location, as well as in scope, purpose, availability, expense and licensing. At the UCLouvain faculty IMMC (Institute of Mechanics, Materials, and Civil Engineering), research is carried out on biological tissue samples using computed tomography techniques. During this research, a variety of software is used: both as explicit steps in the pipeline for tasks such as segmenting samples in 3D, using Avizo or Dragonfly3D, or implicitly as elements of the pipeline that lay before the steps done by researchers (software running on CT machines) or in the infrastructure, such as the OS used on computing devices.  
