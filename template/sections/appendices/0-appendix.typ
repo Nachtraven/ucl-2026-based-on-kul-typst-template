@@ -68,3 +68,11 @@ This theis was particularly challenging as a result, not due to educational or t
 // Above that is providing the relevant structures, their specificties, and showing how particular examples depart from the structure for more advanced topics or situations, and what this reveals
 
 // In the age of AI, when we only provide lower order, the student falls back to AI to provide these higher order structures, which suffer from bias or priors that don't align with the proprities of the 
+
+
+= Extra figures
+
+#figure(
+  image("../../../resources/misc/uncompressed_image_folder_sizes.png"),
+  caption: [Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
+) <uncompressed_dataset_size>

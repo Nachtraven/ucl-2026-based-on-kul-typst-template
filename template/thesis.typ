@@ -48,7 +48,8 @@
 #include "sections/2-introduction.typ"
 #include "sections/3-state-of-the-art.typ"
 #include "sections/4-problem-statement.typ"
-#include "sections/5-technology-techniques.typ"
-#include "sections/7-results.typ"
+#include "sections/5-chapter_1.typ"
+#include "sections/6-chapter_2.typ"
+#include "sections/7-chapter_3.typ"
 #include "sections/8-conclusions.typ"
 
