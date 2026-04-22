@@ -25,7 +25,7 @@
 // After -> results
 
 
-= Plugin development and vasculature extraction prototype <data_intro>
+= Plugin development <data_intro> //and vasculature extraction prototype
 
 // This chapter focuses on the work carried out going from the raw data, problem statement, and prior knowledge of the team members to the final delivered solution. 
 // The selected software for implementation is discussed, followed by the  
@@ -63,7 +63,7 @@ The three module types (C++ loadable, Scripted loadable and CLI) were compared, 
 
 
 
-#pagebreak()
+// #pagebreak()
 == Segmentation of tumor vascularization
 
 // With groundwork laid, an initial experimental plugin was developped that took in the data from the slices and, using a configurable threshold, output a segmented 3D volume. This threshold based segmentation was evaluated to validate the basic functionality of buttons, learn how 3D Slicer plugins are constructed. Following this learning step, implementation began. // and served as the basis for the subsequent features: // augmented iteratively to add the features required, which were extracted from the meetings with supervisors and lab members. These problems and the chosen solutions are broken down from the initial problem statement in @prob_statement:

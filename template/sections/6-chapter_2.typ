@@ -1,5 +1,16 @@
 = Performance challenges and ablation study <ablation_study>
 
+
+
+// REFRAME THE ABLATION STUDY AS A REACTION TO THE PERFORMANCE CHALLENGES
+
+
+
+
+
+
+
+
 == Performance challenges <performance_and_memory>
 
 // TODO: add source https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988

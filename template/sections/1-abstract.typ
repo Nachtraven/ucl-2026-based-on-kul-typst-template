@@ -1,16 +1,30 @@
 // Old abstract
 // The accurate reconstruction of tissue vascularization in ex-vivo biopsies is essential to quantitative analysis of samples, to enable their comparison across various treatment profiles, and achieve the level of accuracy required for drug research. We aim to enable the analysis of antiangionetic drugs for cancer treatment, specifically focused on pazopanib, by improving quantification of vascularization. Classical histology methods such as 2D histology suffer from a lack of accuracy due to the slicing process, and when used for vascularization reconstruction, loose the ability to reconstruct its structucal nature. 3D techniques such as contrast enhanced Micro CT enables the acquisition of high resolution 3D images of ex-vivo samples aided by a contrast agent, but does not enable direct quantitative information extration due to discontinuities, noise, low contrast and small features. In this document, a method for the structural reconstruction of vascularization from microct images is presented, enabling analysis of the impact of antiangionetic drugs on the vascularization of tumors in mice.
 
-As medical imaging has evolved from its humble beginnings of 2D microscopy towards higher and higher resolution 3D imaging, orders of magnitude more data are being generated and the process of data analysis with its associated tools and methods have become central to the scientific process. 
+TODO
 
-Advanced imaging methods such as contrast-enhanced micro tomography aim to separate tissue by use of contrast enhacing agents, but these methods 
+Driven by the link between tissue structure and function, medical imaging has evolved from its humble beginnings of 2D microscopy towards higher and higher resolution 3D imaging. Contrast-enhanced micro-tomography, one of these high resoluton methods, was used with the purpose of separating the micro-vasculature of tumors, 
 
-The evolution of these imaging methods has also opened the door to new possibilities for the study of tissues where 3D structure plays a central role in function such as for the study of angiogenesis, where the growth of vasculature is studied. 
+The process of data analysis, its associated tools and methods, has become central to the scientific process.
+
 
 Advanced imaging methods such as contrast-enhanced micro tomography aim to separate tissue by use of contrast enhacing agents, but noise in imaging and the multiscale, dispersed nature of vascularization result in the need for more powerful software methods to enable the comparison of samples across various treatment profiles, and achieve the levels of accuracy required for drug research. In this document the clinical pipeline is examined from end to end, a more powerful extraction method for vascular structures in challenging use cases is developped, and the groundwork laid for principled, scientifically rigorous work to be carried out.
 
 // Abstract from review article:
 // A key method for analyzing 3D data is Segmentation, used to separate structures of interest from the background and measure their parameters, but this techniques generally lays outside of the expertise of the entity wishing to analyze the data. As is shown, even entirely human driven extraction of information by means of manual segmentation presents large inter expert variance that is generally ill characterized in publicly available datasets. As a result, it is desirable to use computer assistance in the form of Segmentation: methods are plentiful, ranging from manual, semi automated to fully automated algorithm driven methods, with these recently extending gaining popularity in the form of deep learning. Here, the reader is guided through the diversity of methods for different use cases, and presented with a comparative evaluation discussing pitfalls and advantages for each. The basic evaluation techniques used to measure performance of these algorithms is also discussed: incorrect measurement of the performance of an algorithm hinders the downstream analysis of the extracted data. By discussing segmentation methods the reader is informed as to which technique may be more relevant for their priorities and knowledge of evaluation methods enables prioritization of the right kind of performance for integration of segmentation into downstream tasks.
+
+
+
+
+// Following Greet 21-04-2026:
+
+
+
+
+
+
+
+
 
 
 
