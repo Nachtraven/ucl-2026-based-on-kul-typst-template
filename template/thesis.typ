@@ -10,10 +10,13 @@
   authors: ("Nachtrab Sean"),
   promotors: ("Prof. Greet Kerckhofs","Prof. Sébastien Jodogne",),
 
-  // Also commentend out elsewhere
-  assessors: (
-    "Assessor nr 1",
-  ),
+  assessors: none, //(),
+
+  // supervisors: (
+  //   //"supervisor nr 1",
+  // ),
+  // Hacky: since I cannot load my local package changes, I edited the base package
+  // To rename supervisors to readers
   supervisors: (
     "Isabelle Gennart",
     "Juliette Vanderhaeghen",

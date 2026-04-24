@@ -28,6 +28,7 @@
   promotors,
   evaluators,
   supervisors,
+  readers,
   academic-year,
   // An degree dictionary, you should specify a `university`
   // keyword, `school` keyword and a `degree` keyword
@@ -96,8 +97,6 @@
           #submission-text(degree.master, degree.elective).at(
             if english-master { "en" } else { "nl" },
           )
-
-
         ]
 
         #let bold-spacing = 8pt
@@ -138,13 +137,27 @@
           } else {
             v(bold-spacing)
             if english-master {
-              [*Supervisor*#if supervisors.len() > 1 { [*s*] }: #linebreak()]
+              [*Reader*#if supervisors.len() > 1 { [*s*] }: #linebreak()]
             } else {
               [*Begeleider*#if supervisors.len() > 1 { [*s*] }: #linebreak()]
             }
             par(leading: 5pt)[
               // #v(-0.6em)
               #supervisors.join(linebreak())
+            ]
+          }
+          if readers == none {
+            // []
+          } else {
+            v(bold-spacing)
+            if english-master {
+              [*Reader*#if readers.len() > 1 { [*s*] }: #linebreak()]
+            } else {
+              [*ReaderTODO*#if readers.len() > 1 { [*s*] }: #linebreak()]
+            }
+            par(leading: 5pt)[
+              // #v(-0.6em)
+              #readers.join(linebreak())
             ]
           }
         }

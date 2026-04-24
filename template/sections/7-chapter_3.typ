@@ -1,8 +1,10 @@
 = Micro vasculature extraction
 
 
+== Final vessel extraction flow
 
-== Data annotation
+
+== Data annotation for evaluation
 
 As mentioned, the user is expected to place vessel, background and outside-of-volume points. These act as points used to define hyperparameters of the algorithms, but also as a performance metric: when the pipeline is run, feedback is given with how many vessel points are correctly classified. However this method of performance evaluation has shotcomings: it evaluates the data in a pointwise fashion, ignoring critical elements for downstream tasks such as connectivity, and relies on the human evaluating a 2D plane, ignoring parameters such as gap filling. As users also place points generally towards the center of the vessels, there is little measurement of the width of vessels beyond if a background point ends up being caught in the vessel prediction.
 
@@ -13,12 +15,11 @@ As a result of this, it was decided to provide more dense annotations in the for
 // TODO: add visualization
 Annotation was carried out using 3D slicer on 64x64x64 regions randomly selected from the provided samples: these regions were selected from one of 25 regions cropped from the center of the image. This ensures that points exist 
 
-== Performance evaluation
+== Performance results
 
 The final algorithm was ran on 192x192x192 volumes to provide context around the annotated 64x64x64 regions:
 
 //once the final algorithm was in development applied to each of the pieces of data provided, with as baseline for each dataset a manually annotated 64x64x64 region.
-
 
 
 

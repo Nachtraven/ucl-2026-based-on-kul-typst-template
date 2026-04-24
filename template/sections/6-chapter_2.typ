@@ -1,4 +1,4 @@
-= Performance challenges and ablation study <ablation_study>
+= Challenges and ablation study <ablation_study>
 
 
 
@@ -42,7 +42,7 @@ These performance concerns highlight a continuous issue encountered during the w
 
 
 
-== Challenges of MicroCT
+== Micro-CT Challenges
 
 // TODO: Insert image of the provided folder/data? 
 These software are used in the context of analysis of CT data: users receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice weighing *9.2MB*, and a whole 2400 slice scan weighing in at *22.1GB*, they are then windowed to 8 bit, often BMP images, and the empty slices are removed: this results in approximately a halving in total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original data discarded.

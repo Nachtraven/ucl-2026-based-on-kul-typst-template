@@ -60,18 +60,6 @@ GScholar "2D histology standard"
   doi = {http://dx.doi.org/10.1016/j.neuroimage.2016.06.005},
 }
 
-GScholar "clinical histology"
-@article{histology_used_for_cancers_he2012histology,
-  author   = {He, Lei and Long, L. Rodney and Antani, Sameer and Thoma, George R.},
-  title    = {Histology Image Analysis for Carcinoma Detection and Grading},
-  journal  = {Computer Methods and Programs in Biomedicine},
-  volume   = {107},
-  number   = {3},
-  pages    = {538--556},
-  year     = {2012},
-  doi      = {10.1016/j.cmpb.2011.12.007},
-}
-
 Gscholar "histology for clinical trial" then
 Found by going to source 4 of https://onlinelibrary.wiley.com/doi/epdf/10.1111/his.14099
 @article{pathology_in_clinical_trials_provenzano2015standardization,
@@ -344,12 +332,21 @@ TODO: VALIDATE CONTENT!!
 }
 
 @article{panoptic_seg_og,
-  author   = {},
-  title    = {Panoptic Segmentation},
-  journal  = {},
-  year     = {2000},
-  doi     = {10.48550/arXiv.1801.00868},
-  note    = {https://doi.org/10.48550/arXiv.1801.00868},
+  author       = {Alexander Kirillov and
+                  Kaiming He and
+                  Ross B. Girshick and
+                  Carsten Rother and
+                  Piotr Doll{\'{a}}r},
+  title        = {Panoptic Segmentation},
+  journal      = {CoRR},
+  volume       = {abs/1801.00868},
+  year         = {2018},
+  url          = {http://arxiv.org/abs/1801.00868},
+  eprinttype   = {arXiv},
+  eprint       = {1801.00868},
+  timestamp    = {Mon, 13 Aug 2018 16:48:18 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1801-00868.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
 -------------------- Sources for Imaging and Segmentation of vasculature --------------------
@@ -423,12 +420,14 @@ V-net expansion of unet, meh
 
 nnUNet
 @article{nnunet_paper,
-  author   = {},
-  title    = {nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation},
-  journal  = {},
-  year     = {2021},
+  author  = {Fabian Isensee, Paul F. Jaeger, Simon A. A. Kohl, Jens Petersen & Klaus H. Maier-Hein},
+  title   = {nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation},
+  journal = {Nature Methods},
+  year    = {2021},
+  volume  = {18},
+  pages   = {203--211},
   doi     = {10.1038/s41592-020-01008-z},
-  note    = {https://github.com/MIC-DKFZ/nnUNet},
+  note    = {Available: \url{https://github.com/MIC-DKFZ/nnUNet}}
 }
 
 -------------------- Sources for Existing tools --------------------
@@ -471,32 +470,60 @@ nnUNet
 
 Loss function - base
 @article{clDice_loss_func,
-  author   = {},
-  title    = {clDice - a Novel Topology-Preserving Loss Function for Tubular Structure Segmentation},
-  journal  = {},
-  year     = {2022},
-  doi     = {10.48550/arXiv.2003.07311},
-  note    = {https://doi.org/10.48550/arXiv.2003.07311},
+  author       = {Suprosanna Shit and
+                  Johannes C. Paetzold and
+                  Anjany Sekuboyina and
+                  Andrey Zhylka and
+                  Ivan Ezhov and
+                  Alexander Unger and
+                  Josien P. W. Pluim and
+                  Giles Tetteh and
+                  Bjoern H. Menze},
+  title        = {clDice - a Topology-Preserving Loss Function for Tubular Structure
+                  Segmentation},
+  journal      = {CoRR},
+  volume       = {abs/2003.07311},
+  year         = {2020},
+  url          = {https://arxiv.org/abs/2003.07311},
+  eprinttype   = {arXiv},
+  eprint       = {2003.07311},
+  timestamp    = {Tue, 17 Mar 2020 14:18:27 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2003-07311.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
 related to the above loss function, structurally similar
 @article{CFLoss_loss_func,
-  author   = {},
-  title    = {CF-Loss: Clinically-relevant feature optimised loss function for retinal multi-class vessel segmentation and vascular feature measurement},
-  journal  = {},
-  year     = {2024},
-  doi     = {10.1016/j.media.2024.103098},
-  note    = {https://doi.org/10.1016/j.media.2024.103098},
+title = {CF-Loss: Clinically-relevant feature optimised loss function for retinal multi-class vessel segmentation and vascular feature measurement},
+journal = {Medical Image Analysis},
+volume = {93},
+pages = {103098},
+year = {2024},
+issn = {1361-8415},
+doi = {https://doi.org/10.1016/j.media.2024.103098},
+url = {https://www.sciencedirect.com/science/article/pii/S1361841524000239},
+author = {Yukun Zhou and MouCheng Xu and Yipeng Hu and Stefano B. Blumberg and An Zhao and Siegfried K. Wagner and Pearse A. Keane and Daniel C. Alexander},
+keywords = {Multi-class vessel segmentation, Vascular feature, Loss function},
+abstract = {Characterising clinically-relevant vascular features, such as vessel density and fractal dimension, can benefit biomarker discovery and disease diagnosis for both ophthalmic and systemic diseases. In this work, we explicitly encode vascular features into an end-to-end loss function for multi-class vessel segmentation, categorising pixels into artery, vein, uncertain pixels, and background. This clinically-relevant feature optimised loss function (CF-Loss) regulates networks to segment accurate multi-class vessel maps that produce precise vascular features. Our experiments first verify that CF-Loss significantly improves both multi-class vessel segmentation and vascular feature estimation, with two standard segmentation networks, on three publicly available datasets. We reveal that pixel-based segmentation performance is not always positively correlated with accuracy of vascular features, thus highlighting the importance of optimising vascular features directly via CF-Loss. Finally, we show that improved vascular features from CF-Loss, as biomarkers, can yield quantitative improvements in the prediction of ischaemic stroke, a real-world clinical downstream task. The code is available at https://github.com/rmaphoh/feature-loss.}
 }
 
-
 @article{og_dice_loss,
-  author   = {},
-  title    = {Generalised Dice overlap as a deep learning loss function for highly unbalanced segmentations},
-  journal  = {},
-  year     = {2017},
-  doi     = {10.48550/arXiv.1707.03237},
-  note    = {https://doi.org/10.48550/arXiv.1707.03237},
+  author       = {Carole H. Sudre and
+                  Wenqi Li and
+                  Tom Vercauteren and
+                  S{\'{e}}bastien Ourselin and
+                  M. Jorge Cardoso},
+  title        = {Generalised Dice overlap as a deep learning loss function for highly
+                  unbalanced segmentations},
+  journal      = {CoRR},
+  volume       = {abs/1707.03237},
+  year         = {2017},
+  url          = {http://arxiv.org/abs/1707.03237},
+  eprinttype   = {arXiv},
+  eprint       = {1707.03237},
+  timestamp    = {Fri, 11 Feb 2022 16:53:27 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/SudreLVOC17.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }
 
 # 3D Slicer coding tutorial
@@ -520,4 +547,75 @@ related to the above loss function, structurally similar
 
 // ITK-SNAP
 Paul A. Yushkevich, Joseph Piven, Heather Cody Hazlett, Rachel Gimpel Smith, Sean Ho, James C. Gee, and Guido Gerig. User-guided 3D active contour segmentation of anatomical structures: Significantly improved efficiency and reliability. Neuroimage. 2006 Jul 1; 31(3):1116-28. 
-  
+
+# TOMOSAM
+@article{SEMERARO2025102218,
+    title = {TomoSAM: A 3D Slicer extension using SAM for tomography segmentation},
+    journal = {SoftwareX},
+    volume = {31},
+    pages = {102218},
+    year = {2025},
+    issn = {2352-7110},
+    doi = {https://doi.org/10.1016/j.softx.2025.102218},
+    url = {https://www.sciencedirect.com/science/article/pii/S2352711025001852},
+    author = {Federico Semeraro and Alexandre M. Quintart and Sergio Fraile Izquierdo and Joseph C. Ferguson},
+    keywords = {3D segmentation, SAM, Slicer, Tomography},
+}
+
+
+@misc{DragonflyFreeDLicense,
+  author       = {Comet Technologies Canada Inc.},
+  title        = {Dragonfly FreeD License Model},
+  howpublished = {Official Website},
+  year         = {2024},
+  note         = {Available: \url{https://dragonfly.comet.tech/en/products/license-models/freed-license}},
+  url          = {https://dragonfly.comet.tech/en/products/license-models/freed-license}
+}
+
+@article{histology_used_for_cancers_he2012histology,
+  title = {Histology Image Analysis for Carcinoma Detection and Grading},
+  author = {He, Lei and Long, L. Rodney and Antani, Sameer and Thoma, George R.},
+  year = {2012},
+  month = sep,
+  journal = {Computer Methods and Programs in Biomedicine},
+  volume = {107},
+  number = {3},
+  pages = {538--556},
+  issn = {01692607},
+  doi = {10.1016/j.cmpb.2011.12.007},
+  urldate = {2025-03-05},
+  abstract = {This paper presents an overview of the image analysis techniques in the domain of histopathology, specifically, for the objective of automated carcinoma detection and classification. As in other biomedical imaging areas such as radiology, many computer assisted diagnosis (CAD) systems have been implemented to aid histopathologists and clinicians in cancer diagnosis and research, which have been attempted to significantly reduce the labor and subjectivity of traditional manual intervention with histology images. The task of automated histology image analysis is usually not simple due to the unique characteristics of histology imaging, including the variability in image preparation techniques, clinical interpretation protocols, and the complex structures and very large size of the images themselves. In this paper we discuss those characteristics, provide relevant background information about slide preparation and interpretation, and review the application of digital image processing techniques to the field of histology image analysis. In particular, emphasis is given to state-of-the-art image segmentation methods for feature extraction and disease classification. Four major carcinomas of cervix, prostate, breast, and lung are selected to illustrate the functions and capabilities of existing CAD systems.},
+  copyright = {https://www.elsevier.com/tdm/userlicense/1.0/},
+  langid = {english},
+  file = {C:\Users\igennart\Zotero\storage\F76UYVTR\He et al. - 2012 - Histology image analysis for carcinoma detection and grading.pdf}
+}
+
+# Source for the size of voxels for Micro MRI
+@article{Chen2018,
+  author  = {Ko-Chin Chen, Alon Arad, Zan-Ming Song, David Croaker},
+  title   = {High-definition neural visualization of rodent brain using micro-CT scanning and non-local-means processing},
+  journal = {BMC Med. Imaging},
+  year    = {2018},
+  volume  = {18},
+  pages   = {38},
+  month   = oct,
+  doi     = {10.1186/s12880-018-0280-6},
+  url     = {https://doi.org/10.1186/s12880-018-0280-6}
+}
+
+2009 review, from tetteh2020deepvesselnet
+@article{LESAGE2009819,
+title = {A review of 3D vessel lumen segmentation techniques: Models, features and extraction schemes},
+journal = {Medical Image Analysis},
+volume = {13},
+number = {6},
+pages = {819-845},
+year = {2009},
+note = {Includes Special Section on Computational Biomechanics for Medicine},
+issn = {1361-8415},
+doi = {https://doi.org/10.1016/j.media.2009.07.011},
+url = {https://www.sciencedirect.com/science/article/pii/S136184150900067X},
+author = {David Lesage and Elsa D. Angelini and Isabelle Bloch and Gareth Funka-Lea},
+keywords = {Review, Vascular segmentation, Vascular models, Vessel-dedicated features, Segmentation algorithms, 3D angiography, Computed tomography angiography (CTA), Magnetic resonance angiography (MRA)},
+abstract = {Vascular diseases are among the most important public health problems in developed countries. Given the size and complexity of modern angiographic acquisitions, segmentation is a key step toward the accurate visualization, diagnosis and quantification of vascular pathologies. Despite the tremendous amount of past and on-going dedicated research, vascular segmentation remains a challenging task. In this paper, we review state-of-the-art literature on vascular segmentation, with a particular focus on 3D contrast-enhanced imaging modalities (MRA and CTA). We structure our analysis along three axes: models, features and extraction schemes. We first detail model-based assumptions on the vessel appearance and geometry which can embedded in a segmentation approach. We then review the image features that can be extracted to evaluate these models. Finally, we discuss how existing extraction schemes combine model and feature information to perform the segmentation task. Each component (model, feature and extraction scheme) plays a crucial role toward the efficient, robust and accurate segmentation of vessels of interest. Along each axis of study, we discuss the theoretical and practical properties of recent approaches and highlight the most advanced and promising ones.}
+}

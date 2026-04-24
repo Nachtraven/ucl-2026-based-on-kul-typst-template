@@ -25,46 +25,47 @@
 // After -> results
 
 
-= Plugin development <data_intro> //and vasculature extraction prototype
+= Sotware tool development <data_intro> //and vasculature extraction prototype
 
 // This chapter focuses on the work carried out going from the raw data, problem statement, and prior knowledge of the team members to the final delivered solution. 
 // The selected software for implementation is discussed, followed by the  
 
-As discussed in the introduction, a variety of different pieces of software exist intended for use in analyzing 3D data. The prior experience of the team centered around three major poles: Avizo: a proprietary and paid software, Dragonfly3D: with either a "FreeD" free-for-academics or paid commercial licenses, and a "bare metal" code only approach. These three analysis methods were favored by different profiles of users: those having been in the team a long time had adapted to the team standard of Avizo, which was also the recommended starting point for new joiners; Dragonfly3D was used by team members that had previously worked on data elsewhere and used software on their own devices, and the "bare metal" approach was taken by students who wished to avoid the substantial learning curve and friction involved with using one of the two aforementioned softwares to carry out basic analysis.
+The team had prior experience in three tools for the analysis of 3D data: Avizo: a proprietary and paid software, Dragonfly3D: with either a "FreeD" free-for-academics or paid commercial license, and a bare metal approach using python code. These three analysis methods were favored by different users: those having been in the team a long time had adapted to the team standard of Avizo, also the recommended starting point for new joiners; Dragonfly3D was used by team members that had previously worked on data elsewhere and used software on their own devices, and the "bare metal" approach was taken by students wishing to avoid the substantial learning curve and friction involved with using one of the two aforementioned softwares to carry out basic analysis. Avizo and Dragonfly3D were considered as potential candidates for the creation of a vessel extraction tool, however this proved challenging would not satisfy the desire for an open source alternatives offering extendability and re-usability by other researchers.
 
-Avizo and Dragonfly3D were explored as potential candidates for the creation of a vessel extraction tool, however following a comparison with open source alternatives that would offer better extendability and re-usability by other researchers, it was decided to move forward with 3D Slicer due to its wide availability of example software, instructions for plugin creation and existing vascularization extraction tools @vmtk. 
-
-In order to maintain interoperability with the pipeline in use within the lab, any plugin made for 3D Slicer must be able to export data in two ways: *(i)* a fashion that transparently fits into the existing pipeline, namely that of exporting raw binary segmentations that could then be re-imported into another program such as Avizo or Drangofly, and *(ii)* that of exporting data in a format that better enforces scientific rigor and enables easier data sharing, in the form of DICOM. This second option will offer the team growth perspectives in opening the door for easier collaboration with computer scientists as well as other researchers downstream.
+In order to maintain interoperability with the Avizo and Dragondly3D the 3D Slicer plugin needed to export data in one of two ways: *(i)* a fashion that transparently fits into the existing pipeline, namely that of exporting raw binary segmentations that could then be re-imported elsewhere *(ii)* an export format that better enforces scientific rigor and enables easier data sharing, in the form of DICOM. This second option will offer the team growth perspectives in opening the door for easier collaboration with computer scientists as well as other researchers downstream.
 
 
-== Plugin development
+== 3D Slicer Plugin
 
-As the 3D Slicer ecosystem is diverse with many existing tools, research was done on the available plugins with similar goals (vascular extraction) and similar data formats (high resolution CT). These were tested, before the methodology for developping a plugin was researched. During this exploratory phase, it was noted that many available plugins were either unmaintained, throwing errors during installation or use or did not successfully produce outputs. This is despite 3D Slicer having two classes of plugins: "official" via the extension manager @SlicerDocsExtensions and user installable or "non official". 
+As the 3D Slicer ecosystem is diverse with many existing tools, available plugins with similar goals (vascular extraction) and similar data formats (high resolution CT) were tested. It was noted that many available plugins were either unmaintained, throwing errors during installation or use or did not successfully produce outputs; this is despite 3D Slicer having two classes of plugins: "official" via the extension manager @SlicerDocsExtensions (further broken down by maintenance type) and user installable or "non official".
 
 After testing various plugins, the following common limitations came to surface:
 - 3D Slicer hangs when executing algorithms, and this execution happens without communication. The OS will ask the user if they wish to stop the program.
 - UI development is restrictive: UI must be in the left corner, and few context menus are available
 - Execution in Python is inefficient, and plugins that aimed to use multiple cores called external libraries
-- Machine learning extensions did not come pre-packaged with the model weights
+- Machine learning extensions did not come pre-packaged with the model weights and often required a GPU and installation of external software
 - Errors during installation were not user-friendly enough for a non computer scientist to be able to debug an installation problem
 - The 3D Slicer forums contained ample amounts of users having issues with different plugins
 
+
+=== Development
 // https://www.slicer.org/wiki/Documentation/Nightly/Training#Tutorials_for_software_developers
-#linebreak()
-The 3D Slicer plugin was developped following the indications in @SlicerTutorialPerkins. 3D Slicer is based on MRML (Medical Reality Markup Language), where modules communicate through reading/writing MRML nodes. 
+3D Slicer is based on MRML (Medical Reality Markup Language), where modules communicate through reading/writing MRML nodes, and plugins can be implemented in one of three types: CLI (command line interface), C++ loadable or Scripted (Python) loadable @SlicerTutorialPerkins. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, and having access to the full slicer API. Work was carried out in Visual Studio Code under Ubuntu 24.04.
+
+To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs.io/en/latest/user_guide/modules/extensionwizard.html#extension-wizard] was used to generate the required extension boilerplate, and the ScriptedLoadableModule was used as a starting point for the implementation code.
 
 #figure(
   image("../../resources/software/Scripted_Module_Implementation.png", width: 80%),
   caption: [Structure for module implementation from @SlicerTutorialPerkins],
 )
 
-The three module types (C++ loadable, Scripted loadable and CLI) were compared, and the Scripted loadable approach selected due to it being in Python lowering the barrier to entry and having access to the full slicer API
 
 
-
-
-// #pagebreak()
 == Segmentation of tumor vascularization
+
+The process of segmentation of a structure from the background by an algorithm can be seen as the output with a higher confidence than the background noise that the point belongs to the class of interest. The goal of any algorithm is to integrate this process of discrimination in some form: it can be encoded into the algorithm itself such as in OTSU, it can come from an algorithm with hyperparameters that can be adjusted as with objectness filters, or can be entirely data driven as in machine and deep learning.
+
+// This insight, alongside experience acquired during the research of different methods for segmentation, tells us that in order to segment a structure, some form of  
 
 // With groundwork laid, an initial experimental plugin was developped that took in the data from the slices and, using a configurable threshold, output a segmented 3D volume. This threshold based segmentation was evaluated to validate the basic functionality of buttons, learn how 3D Slicer plugins are constructed. Following this learning step, implementation began. // and served as the basis for the subsequent features: // augmented iteratively to add the features required, which were extracted from the meetings with supervisors and lab members. These problems and the chosen solutions are broken down from the initial problem statement in @prob_statement:
 
@@ -85,13 +86,6 @@ A second key element implemented to guide downstream steps was the expected vess
   caption: [View of the seed annotation and vessel size definition panes. The user may press add, click on the locations in any of the right hand panes, as well as import previous annotations or export the current points.],
 )
 
-// #figure(
-//   image("../../resources/software/feedback_pane_after_seed_analysis.png", width: 70%),
-//   caption: [Seed analsis output visualization in the feedback pane],
-// )
-    
-// One the annotation and point parameter visualization was completed, the steps of vessel extraction were ready to be implemented.
-
 
 === Thresholding segmentation
 
@@ -105,17 +99,20 @@ As noted in @imaging_and_seg, the simplest method of segmentation is thresholdin
 The shell effect can be tackled by fitting a shape to the outside of the sample, however following a user interview demonstrating the feature a critical issue was raised: in tumors, it is common for the outside to contain large and plentiful vascularization. Removal would both bias results as well as reduce the overall performance by preventing these outside vessels from being segmented.
 
 // TODO: add wlodarsky
-Secondly, a threshold does not hold up to the gradients in images that are present, which in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels. As a result, manual thresholding as well as automated thresholding such as Otsu were rejected. 
+Secondly, a threshold does not hold up to the gradients in images that are present which, in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels. As a result, manual thresholding as well as automated thresholding such as Otsu were rejected. 
 
 
+=== Localized thresholding
 
-// TODO: from here requires revision
+Vessels are still identifiable on a local scale using the grey value difference between the vessel (which holds on to the contrast enhancing agent). Grey vallue is, as laid out above, not _sufficient_, but it contributes some proof towards the presence of a blood vessel. As a result, thresholding was carried out on a local scale: in 32x32x32 tiles, 
+
 
 === Traditional algorithms
 
 // Source the SimpleITK https://simpleitk.org/doxygen/v2_4/html/classitk_1_1simple_1_1ObjectnessMeasureImageFilter.html
 To go beyond the limitations of threshold based segmentation, methods that make use of the blood vessel prior (algorithms designed with blood vessel or tubular structure extraction in mind) were tested: Frangi (or its generalization in SimpleITK) is a tubular prior algorithm widely available and high performance, being available as a C++ implementation. The algorithm is generally applied at multiple scales (different expected vessel sizes) with the outputs collected together into one segmentation. Frangi is known for having multiple hyperparameters that require fine tuning, in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters hard coded.
 
+#linebreak()
 In order to combine the information provided by thresholding with that of Frangi, a novel approach was utilized: the use of a *probability map*.
 
 #figure(

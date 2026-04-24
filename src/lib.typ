@@ -26,6 +26,9 @@
   /// the name of the supervisors(s) (aka mentors).
   /// -> array
   supervisors: (),
+  /// the name of the reader(s) (aka evaluators).
+  /// -> array
+  readers: (),
   /// your studies, should specify (master, elective and color (in hsv)).
   /// -> array
   degree: (
@@ -104,6 +107,7 @@
       promotors,
       assessors,
       supervisors,
+      readers,
       academic-year,
       degree,
       english-master,
@@ -120,6 +124,7 @@
     promotors,
     assessors,
     supervisors,
+    readers,
     academic-year,
     degree,
     english-master,
