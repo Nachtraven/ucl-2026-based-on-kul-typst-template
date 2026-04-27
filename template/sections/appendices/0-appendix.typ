@@ -24,7 +24,7 @@ As for AI - a rough impact is estimated using the computer of the writer as a ba
 
 // Talk about naming conventions, data versionning methods and saving
 
-== Use of LLMs and AIs for coding assistance
+== Use of LLMs and AIs <llm_and_ai>
 
 // Discuss claude code and closing the loop of coding, how it can be used to achieve more in a shorter time but still requiring compsci to guide and structure things
 
@@ -72,7 +72,7 @@ This theis was particularly challenging as a result, not due to educational or t
 
 = Extra figures
 
-#figure(
-  image("../../../resources/misc/uncompressed_image_folder_sizes.png"),
-  caption: [Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
-) <uncompressed_dataset_size>
+// #figure(
+//   image("../../../resources/misc/uncompressed_image_folder_sizes.png"),
+//   caption: [Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
+// ) <uncompressed_dataset_size>

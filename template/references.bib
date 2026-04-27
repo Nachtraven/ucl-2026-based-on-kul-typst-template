@@ -379,13 +379,16 @@ TODO: VALIDATE CONTENT!!
 }
 
 Gscholar µCT vessel quantification
-@article{µct_tumor_angio,
-  author   = {},
-  title    = {Micro-CT Imaging of Tumor Angiogenesis Quantitative Measures Describing Micromorphology and Vascularization},
-  journal  = {BIOPHYSICAL IMAGING AND COMPUTATIONAL BIOLOGY},
-  year     = {2014},
-  doi     = {10.1016/j.ajpath.2013.10.014},
-  note    = {http://dx.doi.org/10.1016/j.ajpath.2013.10.014},
+http://dx.doi.org/10.1016/j.ajpath.2013.10.014
+@article{microct_tumor_angio,
+  author  = {Josef Ehling, Benjamin Theek, Felix Gremse, Sarah Baetke, Diana Möckel, Juliana Maynard, Sally-Ann Ricketts, Holger Grüll, Michal Neeman, Ruth Knuechel, Wiltrud Lederle, Fabian Kiessling, Twan Lammers},
+  title   = {Micro-CT Imaging of Tumor Angiogenesis Quantitative Measures Describing Micromorphology and Vascularization},
+  journal = {Am. J. Pathol.},
+  year    = {2014},
+  volume  = {184},
+  pages   = {431--441},
+  month   = feb,
+  doi     = {10.1016/j.ajpath.2013.10.014}
 }
 
 REALLY GOOD PAPER: Compares confocal and microCT images "revealed no significant difference in vessel radius"
@@ -618,4 +621,55 @@ url = {https://www.sciencedirect.com/science/article/pii/S136184150900067X},
 author = {David Lesage and Elsa D. Angelini and Isabelle Bloch and Gareth Funka-Lea},
 keywords = {Review, Vascular segmentation, Vascular models, Vessel-dedicated features, Segmentation algorithms, 3D angiography, Computed tomography angiography (CTA), Magnetic resonance angiography (MRA)},
 abstract = {Vascular diseases are among the most important public health problems in developed countries. Given the size and complexity of modern angiographic acquisitions, segmentation is a key step toward the accurate visualization, diagnosis and quantification of vascular pathologies. Despite the tremendous amount of past and on-going dedicated research, vascular segmentation remains a challenging task. In this paper, we review state-of-the-art literature on vascular segmentation, with a particular focus on 3D contrast-enhanced imaging modalities (MRA and CTA). We structure our analysis along three axes: models, features and extraction schemes. We first detail model-based assumptions on the vessel appearance and geometry which can embedded in a segmentation approach. We then review the image features that can be extracted to evaluate these models. Finally, we discuss how existing extraction schemes combine model and feature information to perform the segmentation task. Each component (model, feature and extraction scheme) plays a crucial role toward the efficient, robust and accurate segmentation of vessels of interest. Along each axis of study, we discuss the theoretical and practical properties of recent approaches and highlight the most advanced and promising ones.}
+}
+
+Region growing, gscholar "region growing segmentation"
+@inproceedings{region_growing,
+author = {Matei Mancas and Bernard Gosselin and Benoit Macq},
+title = {{Segmentation using a region-growing thresholding}},
+volume = {5672},
+booktitle = {Image Processing: Algorithms and Systems IV},
+editor = {Edward R. Dougherty and Jaakko T. Astola and Karen O. Egiazarian},
+organization = {International Society for Optics and Photonics},
+publisher = {SPIE},
+pages = {388 -- 398},
+keywords = {distance, segmentation, medical imaging, parotid glands, tumors, spinal cord},
+year = {2005},
+doi = {10.1117/12.587995},
+URL = {https://doi.org/10.1117/12.587995}
+}
+
+@article{xgboost,
+  author       = {Tianqi Chen and
+                  Carlos Guestrin},
+  title        = {XGBoost: {A} Scalable Tree Boosting System},
+  journal      = {CoRR},
+  volume       = {abs/1603.02754},
+  year         = {2016},
+  url          = {http://arxiv.org/abs/1603.02754},
+  eprinttype   = {arXiv},
+  eprint       = {1603.02754},
+  timestamp    = {Sat, 17 Dec 2022 01:15:28 +0100},
+  biburl       = {https://dblp.org/rec/journals/corr/ChenG16.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+@article{detr_paper,
+  author       = {Nicolas Carion and
+                  Francisco Massa and
+                  Gabriel Synnaeve and
+                  Nicolas Usunier and
+                  Alexander Kirillov and
+                  Sergey Zagoruyko},
+  title        = {End-to-End Object Detection with Transformers},
+  journal      = {CoRR},
+  volume       = {abs/2005.12872},
+  year         = {2020},
+  url          = {https://arxiv.org/abs/2005.12872},
+  eprinttype   = {arXiv},
+  eprint       = {2005.12872},
+  timestamp    = {Thu, 28 May 2020 17:38:09 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2005-12872.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
 }

@@ -48,22 +48,35 @@ After testing various plugins, the following common limitations came to surface:
 - The 3D Slicer forums contained ample amounts of users having issues with different plugins
 
 
-=== Development
+=== Implementation
 // https://www.slicer.org/wiki/Documentation/Nightly/Training#Tutorials_for_software_developers
-3D Slicer is based on MRML (Medical Reality Markup Language), where modules communicate through reading/writing MRML nodes, and plugins can be implemented in one of three types: CLI (command line interface), C++ loadable or Scripted (Python) loadable @SlicerTutorialPerkins. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, and having access to the full slicer API. Work was carried out in Visual Studio Code under Ubuntu 24.04.
+3D Slicer is multi platform and is built around plugins to carry out tasks, communicating with the Medical Reality Markup Language (MRML) @MRML_diagram, where modules read and write to MRML nodes. These plugins can be implemented in one of three forms: as command line interface (CLI) tools where they may be called as an encapsulated piece of code and is the most abstracted way of working with external code or a C++/Scripted (Python) loadable module @SlicerTutorialPerkins. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, ability to use the UI features of 3D Slicer, and having access to the full slicer API. Work was carried out in Visual Studio Code under Ubuntu 24.04.
 
-To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs.io/en/latest/user_guide/modules/extensionwizard.html#extension-wizard] was used to generate the required extension boilerplate, and the ScriptedLoadableModule was used as a starting point for the implementation code.
+#v(0.5cm)
 
 #figure(
-  image("../../resources/software/Scripted_Module_Implementation.png", width: 80%),
-  caption: [Structure for module implementation from @SlicerTutorialPerkins],
-)
+  image("../../resources/software/Scripted_Module_Implementation.png", width: 65%),
+  caption: [Left: , Right: QT user interface designer],
+) <MRML_diagram>
+
+#v(0.5cm)
+
+To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs.io/en/latest/user_guide/modules/extensionwizard.html#extension-wizard] was used to generate the required extension boilerplate, and the ScriptedLoadableModule was used as a starting point for the implementation code. 3D Slicer implements a user interface development module in QT, enabling near drag and drop creation of UI elements, making it the natural method of developing a seamless UI experience. Although basic, this radically simplifies the process of creating a cross platoform UI.
+
+#figure(
+  image("../../resources/misc/QT_ui_designer.png", width: 65%),
+  caption: [Structure for module implementation from @SlicerTutorialPerkins.],
+) <QT_ui>
+
+#v(2cm)
 
 
 
 == Segmentation of tumor vascularization
 
-The process of segmentation of a structure from the background by an algorithm can be seen as the output with a higher confidence than the background noise that the point belongs to the class of interest. The goal of any algorithm is to integrate this process of discrimination in some form: it can be encoded into the algorithm itself such as in OTSU, it can come from an algorithm with hyperparameters that can be adjusted as with objectness filters, or can be entirely data driven as in machine and deep learning.
+As seen during the litterature review, a wide variety of solutions exist for segmentation, as well as a diversity of different plugins for 3D Slicer. Additionally, the problem of lacking existing annotated data limits the possible data driven approaches beyond those making use of basic annotations able to be done by the user. As a result, after testing existing plugins, it was chosen to implement a multi stage pipeline that would leverage user feedback.
+
+//The process of segmentation of a structure from the background by an algorithm can be seen as the output with a higher confidence than the background noise that the point belongs to the class of interest. The goal of any algorithm is to integrate this process of discrimination in some form: it can be encoded into the algorithm itself such as in OTSU, it can come from an algorithm with hyperparameters that can be adjusted as with objectness filters, or can be entirely data driven as in machine and deep learning.
 
 // This insight, alongside experience acquired during the research of different methods for segmentation, tells us that in order to segment a structure, some form of  
 
@@ -81,20 +94,24 @@ A principled approach was required: in order to select thresholds and evaluate t
 
 A second key element implemented to guide downstream steps was the expected vessel size and deviation in voxels. This parameter is easy to measure and is critical for certain steps such as the subsequent seed annotation analysis.
 
+#v(0.5cm)
 #figure(
   image("../../resources/software/overview_seed_vessel_param.png"),
   caption: [View of the seed annotation and vessel size definition panes. The user may press add, click on the locations in any of the right hand panes, as well as import previous annotations or export the current points.],
 )
+#v(0.5cm)
 
 
 === Thresholding segmentation
 
 As noted in @imaging_and_seg, the simplest method of segmentation is thresholding. Given the nature of CECT intends to give the structures of interest high grey values, this is an intuitive method with a strong prior. It however does not work in practice for a few reasons: *(i)* the shell effect in CECT, where the contrast enhancing agent has higher concentrations on the outside or surface of the tumor, results in values that would be segmented as "vessel" even though they are not. *(ii)* grey value gradients appear between the outside and center of the samples and *(iii)* incomplete staining resulting in discontinuous vessels.
 
+#v(0.5cm)
 #figure(
   image("../../resources/software/threshold_131_255_example.png", width: 80%),
   caption: [Illustration of the shortcoming of threshold based segmentation, with the "shell" being included],
 )
+#v(0.5cm)
 
 The shell effect can be tackled by fitting a shape to the outside of the sample, however following a user interview demonstrating the feature a critical issue was raised: in tumors, it is common for the outside to contain large and plentiful vascularization. Removal would both bias results as well as reduce the overall performance by preventing these outside vessels from being segmented.
 
@@ -102,15 +119,17 @@ The shell effect can be tackled by fitting a shape to the outside of the sample,
 Secondly, a threshold does not hold up to the gradients in images that are present which, in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels. As a result, manual thresholding as well as automated thresholding such as Otsu were rejected. 
 
 
-=== Localized thresholding
-
-Vessels are still identifiable on a local scale using the grey value difference between the vessel (which holds on to the contrast enhancing agent). Grey vallue is, as laid out above, not _sufficient_, but it contributes some proof towards the presence of a blood vessel. As a result, thresholding was carried out on a local scale: in 32x32x32 tiles, 
-
-
 === Traditional algorithms
 
 // Source the SimpleITK https://simpleitk.org/doxygen/v2_4/html/classitk_1_1simple_1_1ObjectnessMeasureImageFilter.html
-To go beyond the limitations of threshold based segmentation, methods that make use of the blood vessel prior (algorithms designed with blood vessel or tubular structure extraction in mind) were tested: Frangi (or its generalization in SimpleITK) is a tubular prior algorithm widely available and high performance, being available as a C++ implementation. The algorithm is generally applied at multiple scales (different expected vessel sizes) with the outputs collected together into one segmentation. Frangi is known for having multiple hyperparameters that require fine tuning, in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters hard coded.
+When annotated by the user, vessels are identified on a local scale using the grey value difference between the vessel with contrast enhancing agent and the background. Grey vallue alone is, as laid out above, not _sufficient_, but it contributes some proof towards the presence of a blood vessel, given the presence of a grey value difference and a vessel-like shape. As a result, to obtain vessels from the user placed starting points, a series of different steps were assembled to form a _pipeline_.
+
+To go beyond the limitations of threshold based segmentation, methods that make use of the blood vessel prior (algorithms designed with blood vessel or tubular structure extraction in mind) were tested: Frangi (or its generalization in SimpleITK) is a tubular prior algorithm widely available and high performance, being available as a C++ implementation. The algorithm is generally applied at multiple scales (different expected vessel sizes) with the outputs collected together into one segmentation. Frangi is known for having multiple hyperparameters that require fine tuning, in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters hard coded. 
+
+Additionally, as the user has already provided high confidence starting points in the form of annotations, the marching squares algorithm was applied to extract vessels attached to these points, as mentioned in Lesage _et al_ @LESAGE2009819.
+
+// Finally, when we have high confidence points and a neighborhood around them, it is possible to train a simple classifier: using these marching squares points, neighborhoods around the initial user placed points are used as training data for a classification tree: an algorithm available in python, able to be trained without GPU resources and with good performance on such 
+
 
 #linebreak()
 In order to combine the information provided by thresholding with that of Frangi, a novel approach was utilized: the use of a *probability map*.

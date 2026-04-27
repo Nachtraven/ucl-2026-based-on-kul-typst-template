@@ -13,8 +13,13 @@
 // 2. Scientists the program for research, to whom performance, speed of attaining results, repeatability and adjustability to their exact modalities and needs are essential
 // 3. The scientific community, for whom replicability, re-usability and ease of use are essential in being able to extend any paper they may want to build upon;
 
+The task at hand requires analyzing existing collected CECT data that presents challenges in the form of gradients, disconnected vessels and low contrast, by means of a user friendly piece of software. This software must be re-usable and fit into the wider ecosystem of open source tools for working on 3D data being implemented as an extension of 3D Slicer
 
-The task at hand covers a multistep pipeline multiple different stakeholders: biology oriented researchers wishing to use a tool, for whom simplicity is central, the wider scientific community for whom replicability and extensibility matter, and computer science researchers, for whom algorithm development and performance is the goal.
+
+The task at hand covers a multistep pipeline with three key stakeholders: 
+- future end users of the tool on different data
+- the wider scientific community for whom replicability and extensibility matter, and 
+- computer science researchers, for whom algorithm development and performance is the goal.
 
 #linebreak()
 From this, the following problem statement is obtained:

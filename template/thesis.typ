@@ -3,8 +3,7 @@
 // Clinical tooling for vascularization reconstruction on Contrast-Enhanced Micro CT 3D images.
 
 #show: template.with(
-  title: "Clinical tooling for vascularization reconstruction on Contrast-Enhanced Micro CT 3D images.
-",
+  title: "Title to be revisited",
   // subtitle: "With a subtitle",
   academic-year: 2025, // datetime.today().year(),
   authors: ("Nachtrab Sean"),
