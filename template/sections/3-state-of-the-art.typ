@@ -87,7 +87,42 @@ Non-destructive 3D volumetric imaging methods overcome many of the limitations o
 
 As mentionned, standard Micro-CT suffers from low contrast between soft-tissue making the visualization of blood vessels difficult. To improve contrast two common approaches exist: changes to imaging methodology, and modifications to the sample. Imaging techniques such as phase-contrast Micro-CT (PC-CT) utilize the refractive properties of the X-rays rather than its absorption alone, enhance soft tissue edge detection at the cost of higher complexity and long acquisition times. Tissue modifying techniques that aim to increase contrast include the use of various Contrast Enhancing agents (CESAs): Casting contrast agents (CCA) are perfused into vasculature but pressure must be controlled carefully @exvivo_cardioct and is not applicable to our usecase due to the size of vessels to be observed. Diffusion contrast-enhacing agents reach the structure of interest and bind to it based on diffusion through the structure to be imaged, termed CECT. For the tumor vascularization studied in this thesis, ex-vivo tissue binding CESAs are used, namely Hafnium Wells-Dawson Polyoxometalates (Hf-WD POM) due to its nondestructive nature and low tissue shrinkage during incubation after excision. Techniques exist that can be used in combination with CESAs: contrast can be increased using freezing to increase contrast Cryogenic contrast-enhanced microCT (cryo-CECT) which preserves tissue microstructure with reduced deformation @cryoct_maes2022cryogenic.
 
-#linebreak()
+
+#v(0.5cm)
+#import "./appendices/gradient_graph.typ": chart
+
+#let image-with-line(path, colour, label) = block(width: 100%, height: auto)[
+  #set align(center + horizon)
+  #image(path, width: 100%)
+  #place(center + horizon, line(length: 100%, stroke: 0.8pt + colour))
+  #place(
+    bottom + right,
+    dx: -0.4em, dy: -0.4em,
+    box(
+      fill: rgb(0, 0, 0, 160),
+      inset: (x: 0.4em, y: 0.2em),
+      radius: 2pt,
+      text(fill: white, size: 9pt, weight: "bold")[#label],
+    ),
+  )
+]
+
+#figure(
+  stack(
+    spacing: 0.6em,
+    chart,
+    grid(
+      columns: (1fr, 1fr),
+      column-gutter: 0.6em,
+      image-with-line("../../resources/images/ca-ru-r_0864.jpg", red, "CA-RU-R - Reliable"),
+      image-with-line("../../resources/images/ca-rl-l_1489.jpg", blue, "CA-RL-L - Unreliable"),
+    ),
+  ),
+  caption: [Top: Grey values of a reliable scan and unreliable scan. Bottom Left: CA-RL-L, considered previously unreliable. Bottom Right: CA-RU-R, considered reliable.],
+) <reliability_of_scans>
+#v(0.5cm)
+
+
 Tumors also present a particularity in that they are frequently partially or entirely devoid of residual hemoglobin, preventing or reducing the action of CESAs and thereby reducing contrast and introducing discontinuities. Diffusion based contrast-enhacing agents also bring an additional disadvantage as seen in the data provided for this thesis: the diffusion of CE agents throughout the tissue happens from the outside in, resulting in a gradient of the amount of agent and as a result a gradient in contrast, as opposed to perfusion CESAs that follow the blood vessels. 
 
 #v(0.5cm)
@@ -145,11 +180,18 @@ Region-growing methods @region_growing extend thresholding by incorporating spat
 // Skeletonization-first vs. segmentation-first pipelines
 // Problem: hyperparameter-heavy, degrade at junctions, scale poorly to dense vasculature.
 
-Beyond intensity-based methods, algorithms integrating local geometric priors exist such as Gabor filters or Hessian-based filters @SATO1998143 where the local second-order structure is analyzed to detect tubular shapes, characterized for vessel detection by Frangi's multiscale vessel enhancement filter @frangi_og_paper, improved in @beyond_frangi. These second-order methods utilize the eigenvalues of the Hessian matrix of local image intensities at multiple Gaussian scales to produce a vesselness score for each voxel, responding to tubular structures while suppressing circular and planar structures. The Frangi vesselness algorithm has been particularly influential in vessel segmentation tasks, as it explicitly models the prior of tubular geometry inherent in blood vessels. These methods offer greater robustness than simple thresholding but depend on the user fine tuning algorithm hyperparameters to optimize performance for a given domain or usecase when working with a tool as in @imagej_frangi. 
+Beyond intensity-based methods, algorithms integrating local geometric priors exist such as Gabor filters or Hessian-based filters @SATO1998143 where the local second-order structure is analyzed to detect tubular shapes, characterized for vessel detection by Frangi's multiscale vessel enhancement filter @frangi_og_paper, with extensions such as @beyond_frangi and many other methods being created since. Although many improvements to frangi exist, with a selection of 6 methods compared in @9833530, Frangi remains highly competitive, being shown to continuously offer the highest true positive to false positive rates. 
 
-Additionally the filter's response degrades at vessel bifurcations, at the endpoints of vessels, and in regions of low contrast. In @beyond_frangi extensions to the vesselness formulation are proposed that improve responses at junctions and at low-contrast boundaries to increase robustness of the filter.
+// Frangi detects ridges (peaks of curvature), not edges (peaks of gradient)!
 
-The aforementioned local methods fail to incorporate the overarching goal of vasculature extraction. A different class of methods reformulate extraction as a global optimization rather than a local filter response, such as minimal path methods which formulate vessel centerline extraction as an optimization problem. The path of least cost is taken between user-defined endpoints, with cost derived from vesselness or image intensity. In @minimal_path_tubular the geometry of vessels is incorporated, adding radius as an additional dimension of the path space. This class of methods is particularly well-suited to expert-in-the-loop approaches where small amounts of data need to be annotated: a user can place seed points that guide the extraction of a complete vascular tree, requiring no training data, and enabling iterative improvement. This method can be seen used for large arteries and airways available in tools such as the Vascular Modeling Toolkit (VMTK) @vmtk. This strength is also a weakness: the low scalability means that for a densely vascularized tissue, or a tissue with non-uniform characteristics, many seed points can be required which is impractical. Automatic seed point placement is a potential solution although introducing its own tradeoff, moving the optimization and work into the point placement. 
+#linebreak()
+These second-order methods utilize the eigenvalues of the Hessian matrix of local image intensities (capturing how rapidly intensity changes are themselves changing - the local curvature of the intensity surface) at multiple Gaussian scales (corresponding to multiple candidate "tube" sizes) to produce a vesselness score for each voxel, modeling the prior of blood vessels by responding to tubular structures while suppressing blob- and plate-like ones. Frangi and related methods offer greater robustness than simple thresholding but depend on the user fine tuning algorithm hyperparameters to optimize performance for a given domain or usecase when working with a tool as in @imagej_frangi. Additionally the filter's response degrades at vessel bifurcations, at the endpoints of vessels, and in regions of low contrast. In @beyond_frangi extensions to the vesselness formulation are proposed that improve responses at junctions and at low-contrast boundaries to increase robustness of the filter.
+
+#v(0.5cm)
+#include "./appendices/frangi_graph.typ"
+#v(0.5cm)
+
+Although offering high performance, second-order methods are inherently local, failing to incorporate the overarching goal of vasculature extraction. A different class of methods reformulate extraction as a global optimization rather than a local filter response, such as minimal path methods which formulate vessel centerline extraction as an optimization problem. The path of least cost is taken between user-defined endpoints, with cost derived from vesselness or image intensity. In @minimal_path_tubular the geometry of vessels is incorporated, adding radius as an additional dimension of the path space. This class of methods is particularly well-suited to expert-in-the-loop approaches where small amounts of data need to be annotated: a user can place seed points that guide the extraction of a complete vascular tree, requiring no training data, and enabling iterative improvement. This method can be seen used for large arteries and airways available in tools such as the Vascular Modeling Toolkit (VMTK) @vmtk. This strength is also a weakness: the low scalability means that for a densely vascularized tissue, or a tissue with non-uniform characteristics, many seed points can be required which is impractical. Automatic seed point placement is a potential solution although introducing its own tradeoff, moving the optimization and work into the point placement. 
 
 
 === Data driven learning methods
@@ -264,6 +306,7 @@ When evaluating a segmentation method, consideration of the downstream analysis 
   Evaluation of a segmentation performance is a challenging topic, especially for vessels. Our method of evaluation must be based on data that is feasible for non-expert annotators to generate using existing 3D Slicer tooling, namely landmark placement, and be calculable in 3D Slicer. To enable downstream performance analysis, segmentations should exportable into a shared format, as well as being evaluated on relevant challenging scenarios.
 ]
 
+// Standard segmentation metrics often misalign with the downstream analytical tasks the segmentation feeds into. Our evaluation should therefore use metrics tied to the features researchers extract (branch counts, connectivity, tortuosity), and should report performance separately on the regions where downstream analysis is most sensitive (low-CESA areas, bifurcations).
 
 === Existing pipelines and tools 
 
