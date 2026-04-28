@@ -155,6 +155,13 @@ Biological tissues are spatially complex, diverse in composition and organizatio
 #linebreak()
 For the purpose of evaluating the use of the antiangiogenic drug Pazopanib, a tyrosine kinase inhibitor which blocks the creation of new blood vessels as a means for cancer treatment, accurate reconstruction of tumor vasculature is required. Vascularization is by nature 3D and covers entire tissues, and simple volume estimates do not capture important parameters such as tortuosity, connectivity/branching and cross section profile. This 3D nature, coupled with the limitations of 2D methods, motivates the use of 3D imaging: for the purpose of tumor evaluation, contrast-enhanced Micro-CT scans were collected with an agent to increase the contrast of blood vessels.
 
+
+#v(0.5cm)
+#include("./appendices/intro_cect_image_annotations.typ")
+#v(0.5cm)
+
+
+
 // The shortcomings of classical 2D histology make the asessment and quantification of hollow and highly heterogeneous tissues like vasculature, for which spatial relationships are particularly relevant, challenging @litt_review_greet_debournonville2019contrast. Due to these limitations alternatives such as 3D imaging methods that do not require slicing and have high spatial resolution in all axis are particularly relevant for blood vessel analysis.
 
 // Motivating CECT OG

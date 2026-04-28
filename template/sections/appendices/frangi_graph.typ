@@ -183,6 +183,12 @@
     }),
   ),
   caption: [
-    The Frangi vesselness filter. *Left:* The second-order derivative of a Gaussian kernel $G''_sigma$ probes inside-versus-outside contrast over the spatial range $(-sigma, sigma)$; here $sigma = 1$. Convolving an image with this kernel measures for each point how strongly intensity curves over the scale _sigma_: high response means a detected peak or valley of width comparable to _sigma_ *Right:* At each voxel, the eigen-decomposition of the Hessian matrix yields three principal directions of curvature $lambda_1, lambda_2, lambda_3$. For a tubular structure, the eigenvalue along the vessel axis ($lambda_1$) has small magnitude (intensity is roughly constant along the vessel) while the two perpendicular eigenvalues ($lambda_2, lambda_3$) have large magnitude and the same sign (reflecting the drop in intensity in either direction perpendicular to the vessel) this constitutes the geometric signature Frangi's filter exploits and are combined to form the Frangi vesselness score. Figure dapted from @frangi_og_paper.
+    The Frangi vesselness filter. 
+    
+    *Left:* The second-order derivative of a Gaussian kernel $G''_sigma$ probes inside-versus-outside contrast over the spatial range $(-sigma, sigma)$; here $sigma = 1$. Convolving an image with this kernel measures for each point how strongly intensity curves over the scale _sigma_: high response means a detected peak or valley of width comparable to _sigma_ 
+    
+    *Right:* At each voxel, the eigen-decomposition of the Hessian matrix yields three principal directions of curvature $lambda_1, lambda_2, lambda_3$. For a tubular structure, the eigenvalue along the vessel axis ($lambda_1$) has small magnitude (intensity is roughly constant along the vessel) while the two perpendicular eigenvalues ($lambda_2, lambda_3$) have large magnitude and the same sign (reflecting the drop in intensity in either direction perpendicular to the vessel) this constitutes the geometric signature Frangi's filter exploits and are combined to form the Frangi vesselness score.
+
+    Figure dapted from @frangi_og_paper.
   ],
 ) <fig:frangi-hessian>

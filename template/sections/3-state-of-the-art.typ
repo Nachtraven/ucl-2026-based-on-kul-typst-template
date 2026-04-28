@@ -83,9 +83,12 @@ To achieve 3D imaging from 2D histology, 2D slices are stacked across a virtual 
 Non-destructive 3D volumetric imaging methods overcome many of the limitations of 2D slice based histology by collecting data uniformly across dimensions, enabling virtual slicing across any plane without requiring physically sectioning the sample. Techniques for 3D imaging range from the aforementioned microscopy techniques using visible or near infrared light, to techniques like MRI that utilize magnetic fields or X-Ray imaging in the form of X-ray microfocus computed tomography (CT). These techniques allow the collection of qualitative and quantitative 3D microstructural data of tissues and their constituents: analysis is not restricted to a single orientation and does not require sample destruction. They also have associated high resolution variants allowing micrometer level imaging: Micro-MRI has an inherently high-contrast for soft-tissue and is able to reach 20 μm @Chen2018; Micro-CT is commonly used at 6µm, as in the data used in this document and resolutions down to 1µm are possible, but the technique suffers from low contrast when imaging soft tissue, when extra technques are not used @2d_histo_sota_balcaen2023revealing. These techniques are the most relevant for ex-vivo tissue histology at the scale of small animal models, due to their small maximum capture volume.
 
 
+
 === Contrast-enhanced micro-CT <CECT_technique>
 
 As mentionned, standard Micro-CT suffers from low contrast between soft-tissue making the visualization of blood vessels difficult. To improve contrast two common approaches exist: changes to imaging methodology, and modifications to the sample. Imaging techniques such as phase-contrast Micro-CT (PC-CT) utilize the refractive properties of the X-rays rather than its absorption alone, enhance soft tissue edge detection at the cost of higher complexity and long acquisition times. Tissue modifying techniques that aim to increase contrast include the use of various Contrast Enhancing agents (CESAs): Casting contrast agents (CCA) are perfused into vasculature but pressure must be controlled carefully @exvivo_cardioct and is not applicable to our usecase due to the size of vessels to be observed. Diffusion contrast-enhacing agents reach the structure of interest and bind to it based on diffusion through the structure to be imaged, termed CECT. For the tumor vascularization studied in this thesis, ex-vivo tissue binding CESAs are used, namely Hafnium Wells-Dawson Polyoxometalates (Hf-WD POM) due to its nondestructive nature and low tissue shrinkage during incubation after excision. Techniques exist that can be used in combination with CESAs: contrast can be increased using freezing to increase contrast Cryogenic contrast-enhanced microCT (cryo-CECT) which preserves tissue microstructure with reduced deformation @cryoct_maes2022cryogenic.
+
+Tumors also present a particularity in that they are frequently partially or entirely devoid of residual hemoglobin, preventing or reducing the action of CESAs and thereby reducing contrast and introducing discontinuities. Diffusion based contrast-enhacing agents also bring an additional disadvantage as seen in the data provided for this thesis, visible in @reliability_of_scans: the diffusion of CE agents throughout the tissue happens from the outside in, resulting in a gradient of the amount of agent and as a result a gradient in contrast, as opposed to perfusion CESAs that follow the blood vessels. 
 
 
 #v(0.5cm)
@@ -122,10 +125,6 @@ As mentionned, standard Micro-CT suffers from low contrast between soft-tissue m
 ) <reliability_of_scans>
 #v(0.5cm)
 
-
-Tumors also present a particularity in that they are frequently partially or entirely devoid of residual hemoglobin, preventing or reducing the action of CESAs and thereby reducing contrast and introducing discontinuities. Diffusion based contrast-enhacing agents also bring an additional disadvantage as seen in the data provided for this thesis: the diffusion of CE agents throughout the tissue happens from the outside in, resulting in a gradient of the amount of agent and as a result a gradient in contrast, as opposed to perfusion CESAs that follow the blood vessels. 
-
-#v(0.5cm)
 #colorbox(
   title: "Problem 2.",
   color: (
@@ -159,7 +158,6 @@ The purpose of imaging a tissue is to generate an image containing sufficient da
 Vasculature extraction from 3D tomographic data is a longstanding challenge in computer science, predating deep learning as reviewed in @LESAGE2009819. The 3D data of this thesis carries a unique set of challenges specific to modern high resolution CT: the vessel diversity ranges in the supplied data from singular voxels (~6µm) to tens of voxels (100+µm) across, corroborated in @microct_tumor_angio. The vasculature is diverse in shape and branching structure, with variable grey levels and most critically disconnections of variable size, presenting however a distinctive and consistent set of geometric priors.
 
 The priors of vessels, namely that they are tubular, connected, branching structures and contain blood, provides a distinct imaging profile against surrounding tissue when combined with a CESA. They are what subsequent segmentation methods either exploit explicitly through hand crafted classical filters or learn implicitly in data-driven methods.
-
 
 === Classical segmentation
 
@@ -214,6 +212,10 @@ Deep learning has been applied to vascular segmentation for blood vessel extract
 
 Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods.
 
+// TODO: Maybe this is too much?
+#v(0.5cm)
+#include "./appendices/taxonomy_of_methods_graph.typ"
+#v(0.5cm)
 
 #v(0.5cm)
 #colorbox(

@@ -25,7 +25,7 @@
 // After -> results
 
 
-= Sotware tool development <data_intro> //and vasculature extraction prototype
+= Sotware tool development <data_intro>
 
 // This chapter focuses on the work carried out going from the raw data, problem statement, and prior knowledge of the team members to the final delivered solution. 
 // The selected software for implementation is discussed, followed by the  
@@ -56,7 +56,7 @@ After testing various plugins, the following common limitations came to surface:
 
 #figure(
   image("../../resources/software/Scripted_Module_Implementation.png", width: 65%),
-  caption: [Left: , Right: QT user interface designer],
+  caption: [Structure for module implementation from @SlicerTutorialPerkins],
 ) <MRML_diagram>
 
 #v(0.5cm)
@@ -65,10 +65,10 @@ To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs
 
 #figure(
   image("../../resources/misc/QT_ui_designer.png", width: 65%),
-  caption: [Structure for module implementation from @SlicerTutorialPerkins.],
-) <QT_ui>
+  caption: [Left: , Right: QT user interface designer],
+) <QT_ui> 
 
-#v(2cm)
+#v(0.5cm)
 
 
 
@@ -77,8 +77,6 @@ To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs
 As seen during the litterature review, a wide variety of solutions exist for segmentation, as well as a diversity of different plugins for 3D Slicer. Additionally, the problem of lacking existing annotated data limits the possible data driven approaches beyond those making use of basic annotations able to be done by the user. As a result, after testing existing plugins, it was chosen to implement a multi stage pipeline that would leverage user feedback.
 
 //The process of segmentation of a structure from the background by an algorithm can be seen as the output with a higher confidence than the background noise that the point belongs to the class of interest. The goal of any algorithm is to integrate this process of discrimination in some form: it can be encoded into the algorithm itself such as in OTSU, it can come from an algorithm with hyperparameters that can be adjusted as with objectness filters, or can be entirely data driven as in machine and deep learning.
-
-// This insight, alongside experience acquired during the research of different methods for segmentation, tells us that in order to segment a structure, some form of  
 
 // With groundwork laid, an initial experimental plugin was developped that took in the data from the slices and, using a configurable threshold, output a segmented 3D volume. This threshold based segmentation was evaluated to validate the basic functionality of buttons, learn how 3D Slicer plugins are constructed. Following this learning step, implementation began. // and served as the basis for the subsequent features: // augmented iteratively to add the features required, which were extracted from the meetings with supervisors and lab members. These problems and the chosen solutions are broken down from the initial problem statement in @prob_statement:
 
@@ -101,65 +99,58 @@ A second key element implemented to guide downstream steps was the expected vess
 )
 #v(0.5cm)
 
+=== Segmenting using multiple features
 
-=== Thresholding segmentation
-
-As noted in @imaging_and_seg, the simplest method of segmentation is thresholding. Given the nature of CECT intends to give the structures of interest high grey values, this is an intuitive method with a strong prior. It however does not work in practice for a few reasons: *(i)* the shell effect in CECT, where the contrast enhancing agent has higher concentrations on the outside or surface of the tumor, results in values that would be segmented as "vessel" even though they are not. *(ii)* grey value gradients appear between the outside and center of the samples and *(iii)* incomplete staining resulting in discontinuous vessels.
+During research multiple interesting algorithms appeared relevant to test. In order to combine the information provided by e.g. thresholding with that of Frangi, an interesting approach was used to explicit the process of evidence accumulation: the use of a *probability map*, where each algorithm or method saves point wise probabilities, allowing them to be weighed and stacked. This approach was selected as it allows the accumulation of evidence across steps in the pipeline, and if multiple probability maps are saved (one for each step or method) they can be given weights when being combined to create the final segmentation. 
 
 #v(0.5cm)
 #figure(
-  image("../../resources/software/threshold_131_255_example.png", width: 80%),
-  caption: [Illustration of the shortcoming of threshold based segmentation, with the "shell" being included],
+  image("../../resources/software/Vesselness_probability_bottom.png", width: 80%),
+  caption: [Visualization of the vesselness probability map as defined by the Frangi feature. *In white:* Intensity corresponds to vesselness probability, *In red:* Final segmentation overlaid],
 )
 #v(0.5cm)
 
-The shell effect can be tackled by fitting a shape to the outside of the sample, however following a user interview demonstrating the feature a critical issue was raised: in tumors, it is common for the outside to contain large and plentiful vascularization. Removal would both bias results as well as reduce the overall performance by preventing these outside vessels from being segmented.
 
-// TODO: add wlodarsky
-Secondly, a threshold does not hold up to the gradients in images that are present which, in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels. As a result, manual thresholding as well as automated thresholding such as Otsu were rejected. 
+=== Thresholding segmentation
 
+As noted in @imaging_and_seg, the simplest method of segmentation is thresholding. Given the nature of CECT intends to give the structures of interest high grey values, this is an intuitive method with a strong prior. It is however not sufficient alone for three reasons: *(i)* the shell effect in CECT, where the contrast enhancing agent has higher concentrations on the outside or surface of the tumor, results in values that would be segmented as "vessel" even though they are not. *(ii)* grey value gradients appear between the outside and center of the samples and *(iii)* incomplete staining resulting in discontinuous vessels.
+
+#v(0.5cm)
+#figure(
+  image("../../resources/software/threshold_131_255_example.png", width: 75%),
+  caption: [The shortcoming of threshold based segmentation visualized, with the "shell" being included.],
+)
+#v(0.5cm)
+
+The shell effect can be tackled by fitting a shape to the outside of the sample, however following a user interview demonstrating the feature a critical issue was raised: in tumors, it is common for the outside to contain large and plentiful vascularization. Removal would both bias results as well as reduce the overall performance by preventing these outside vessels from being segmented. Secondly, a threshold does not hold up to the gradients in images that are present which, in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels.
+
+#linebreak()
+As a result, thresholding was utilized in the probability map stacking, but given a low contribution.
 
 === Traditional algorithms
 
 // Source the SimpleITK https://simpleitk.org/doxygen/v2_4/html/classitk_1_1simple_1_1ObjectnessMeasureImageFilter.html
 When annotated by the user, vessels are identified on a local scale using the grey value difference between the vessel with contrast enhancing agent and the background. Grey vallue alone is, as laid out above, not _sufficient_, but it contributes some proof towards the presence of a blood vessel, given the presence of a grey value difference and a vessel-like shape. As a result, to obtain vessels from the user placed starting points, a series of different steps were assembled to form a _pipeline_.
 
-To go beyond the limitations of threshold based segmentation, methods that make use of the blood vessel prior (algorithms designed with blood vessel or tubular structure extraction in mind) were tested: Frangi (or its generalization in SimpleITK) is a tubular prior algorithm widely available and high performance, being available as a C++ implementation. The algorithm is generally applied at multiple scales (different expected vessel sizes) with the outputs collected together into one segmentation. Frangi is known for having multiple hyperparameters that require fine tuning, in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters hard coded. 
+To go beyond the limitations of threshold based segmentation, the generalized C++ implementation of Frangi in SimpleITK was used. The algorithm is applied at multiple scales (different expected vessel sizes) with the outputs collected together into one segmentation. Frangi is known for having multiple hyperparameters that require fine tuning: in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters hard coded. 
 
 Additionally, as the user has already provided high confidence starting points in the form of annotations, the marching squares algorithm was applied to extract vessels attached to these points, as mentioned in Lesage _et al_ @LESAGE2009819.
 
-// Finally, when we have high confidence points and a neighborhood around them, it is possible to train a simple classifier: using these marching squares points, neighborhoods around the initial user placed points are used as training data for a classification tree: an algorithm available in python, able to be trained without GPU resources and with good performance on such 
-
-
-#linebreak()
-In order to combine the information provided by thresholding with that of Frangi, a novel approach was utilized: the use of a *probability map*.
-
-#figure(
-  image("../../resources/software/Vesselness_probability_bottom.png", width: 80%),
-  caption: [Visualization of the vesselness probability map, as defined by the Frangi feature. Higher valued pixels are assigned a higher vesselness probability.],
-)
-
-This approach was selected as it allows the accumulation of evidence across steps in the pipeline, and if multiple probability maps are saved (one for each step or method) they can be given weights when being combined to create the final segmentation. // This method was somewhat undermined by the memory usage limitations laid out in @performance_and_memory - and the final implementation was simplified to use a single probability map that is iteratively updated.
 
 === Machine learning
 
-bla bla about the random forests
-
-#linebreak()
-bla
-
-#linebreak()
-bla
-
+When extracting high likelyhood points from the combination of the probability maps of Frangi and Marching squares, a subset of all possible vessels is obtained: those expanded from the user placed points. As these are high probability to be correct, they are extracted and used for training a random forest.
 
 == Results
 
 After the first round of development, a multi stage pipeline was obtained: from the user placed points, a shell removal step was done, and subsequently the user "vessel" points were grown using region growing to follow the ridges defined by the high grey value points. These points grown from the user annotations were then treated as a baseline for creating a simple classifier based on random forests: the vessel points, and points within a small region around them, were used. The probability maps generated from this step, alognside the tubular frangi, were then combined and thresholded based on the values of the user annotated points. This complex method led to promising results:
 
-#figure(
-  image("../../resources/software/long_pipeline_promising.png", width: 80%),
-  caption: [Visualization of the segmentation following the multi stage pipeline during development],
-)
 
-The outputs from this stage presented interesting characteristics: continuous vessels and few noisy sections. Performance was measured using the user annotated points, with 26/27 vessels and 16/16 background points correctly classified.
-// , it was decided to carry out a miniature ablation study: as it was noted by the author during the research phase, it is common for software approaches comprising multiple steps to not correctly quantify the contribution of each individual step to the overall algorithm, resulting in a rube goldberg-esque algorithm. //This is a known issue in computer science and especially in machine learning
+#v(0.5cm)
+#figure(
+  image("../../resources/software/long_pipeline_promising_cropped.png", width: 80%),
+  caption: [Visualization of the segmentation following the multi stage pipeline during development. Successful continuous vessel segmentation and few small noisy sections. Performance, as measured using user annotated points, of 26/27 vessels and 16/16 background points correctly classified. Also visible: Blob-like artifacts from flood fill weight not being suppressed by Frangi, alognside disconnections in due to larger low signal areas.],
+)
+#v(0.5cm)
+
+// This then leads into the next chapter: performance (inference speed) was very poor, and RAM use was extremely high, meaning we needed to find what was actually contributing to our extraction performance: an ablation study is performed. 
