@@ -1,5 +1,61 @@
 = Appendices
 
+== List of software for working with 3D data
+
+// Appendix table: 3D analysis software landscape
+// Reference in prose with: see @tab:3d_software in the appendix
+
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    align: (left, left, center),
+    stroke: 0.5pt,
+    table.header(
+      [*Software*], [*License model*], [*Scriptable*],
+    ),
+
+    // Commercial
+    table.cell(colspan: 3, fill: luma(230))[*Commercial / closed source*],
+    [Amira],          [Proprietary, paid],            [Yes],
+    [Analyze],        [Proprietary, paid],            [Limited],
+    [Aphelion],       [Proprietary, paid],            [Yes],
+    [Avizo],          [Proprietary, paid],            [Yes],
+    [CTAn / CTVol],   [Proprietary, paid (Bruker)],   [Limited],
+    [Dragonfly3D],    [Proprietary; FreED (free, non-commercial)],[Yes (Python)],
+    [Image-Pro],      [Proprietary, paid],            [Yes],
+    [Imaris],         [Proprietary, paid],            [Yes],
+    [MeVisLab],       [Proprietary; free academic],   [Yes],
+    [Mimics],         [Proprietary, paid],            [Yes],
+    [Octopus],        [Proprietary, paid],            [Limited],
+    [ScanIP],         [Proprietary, paid],            [Yes],
+    [VG Studio],      [Proprietary, paid],            [Yes],
+    [Zeiss Inspect],  [Proprietary, paid],            [Limited],
+
+    // OSS/Freeware
+    table.cell(colspan: 3, fill: luma(230))[*Open source / freeware*],
+    [3D Slicer],      [BSD (modified)],               [Yes (Python, C++)],
+    [Blender],        [GPLv3],                        [Yes (Python)],
+    [Chimera / ChimeraX], [Free academic],            [Yes (Python)],
+    [Dream3D],        [BSD],                          [Yes],
+    [FIJI / ImageJ],  [GPLv2 / Public domain],        [Yes (Java, macros)],
+    [IMOD],           [GPLv2],                        [Yes],
+    [MeshLab],        [GPLv3],                        [Yes],
+    [OsiriX (Lite)],  [LGPL (Lite); proprietary (MD)],[Limited],
+    [ParaView],       [BSD],                          [Yes (Python)],
+    [SimVascular],    [BSD],                          [Yes],
+    [VesselKnife],    [Open source (research)],       [Yes],
+    [VisIt],          [BSD],                          [Yes (Python)],
+
+  ),
+  caption: [
+    Landscape of 3D imaging analysis software relevant to micro-CT vascular work,
+    grouped by licensing model. _Scriptable_ indicates if an extension interface exists.
+  ],
+) <3d_software>
+    // *Bold* indicate software actively used at the UCLouvain IMMC.
+    // [Drishti],        [GPLv2],                        [Volume visualization],     [Limited],
+
+
 == Environmental and CO2 impact of the thesis
 
 The main sources of CO2 impact of this thesis are the use of computational resources and the human factor.

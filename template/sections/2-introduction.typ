@@ -192,6 +192,8 @@ The uptake and adoption of advanced techniques remains limited outside of the wa
 #linebreak()
 In this thesis work will be carried out to create an open source, user friendly, data driven and robust small blood vessel extraction method for obtaining segmented blood vessels, with the goal of enabling downstream extraction of clinically relevant vasculature characteristics. This goal is defined by the usecase of a dataset of Contrast-Enhanced Micro-CT data acquired to examine the use of Pazopanib. The pipeline is created as an easily installable plugin for 3DSlicer, an open-source and free base software, that ingests and outputs data in portable data formats familiar to researchers, to ensure re-usability and compatibility with existing downstream software. The plugin implements proven algorithms with user adjustable hyperparameters to enable easy re-use without requiring expertise in computer science. Implemented methods are compared with existing pipelines for extracting fine blood vessels, and tested for robustness by examining performance on data previously considered non segmentable due to non uniform contrast agent staining.
 
+All code written in the implementation of this thesis, as well as the code to generate this document and the notes taken in the process of redaction, are made open source under the MIT license (for code) and labeled under the creative commons as CC0 - No Rights Reserved (for creative works - the writing).
+
 
 
 
