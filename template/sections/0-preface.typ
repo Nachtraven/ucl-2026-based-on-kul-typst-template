@@ -20,4 +20,4 @@ The developed plugin is available at #link("https://github.com/Nachtraven/Thesis
 #v(0.5cm)
 
 #linebreak()
-_The Generative AI tool Piccolo was used during the writing of this thesis for feedback and writing modifications for certain sections, although no sections were written using AI. A total use of xxx credits were consumed as detailed further in @llm_and_ai. Claude Code was used for support during certain sections of software development, mainly pertaining to the initial setup and 3DSlicer point placement interaction._
+_The Generative AI tool Piccolo was used during the writing of this thesis for feedback and writing modifications. A total use of xxx credits were consumed as detailed further in @llm_and_ai. Claude Code was used for support during certain sections of software development, mainly pertaining to the initial setup and 3DSlicer point placement interaction._

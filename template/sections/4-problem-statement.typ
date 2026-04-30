@@ -11,8 +11,10 @@
 
 = Problem statement
 
-In a diverse software landscape for analysis of 3D data, this work aims to answer the question _"How can an open-source microvasculature extraction pipeline be developed, able to be used by non computer scientists, leveraging classical segmentation methods and sparse user-driven input to obtain useful segmentations on CECT data across a diverse dataset?
-"_ and is defined by three principal constraints:
+// Microvasculature in CECT Micro-CT data is characterized by small and low contrast vessels with discontinuities and diffusion-induced intensity gradients. Existing extraction methods divide between data-driven approaches that require annotated training data unavailable for this regime, and classical methods that require careful hyperparameter tuning. Existing software pipelines generally target large vasculature or are unintegrated into software tools.
+
+
+In a diverse software landscape for analysis of 3D data, this work aims to answer the question _"How can an open-source microvasculature extraction pipeline be developed, able to be used by non computer scientists, leveraging classical segmentation methods and sparse user-driven input to obtain useful segmentations on CECT data across a diverse dataset?"_ and is defined by three principal constraints:
 
 *(i)* Data: Contrast-enhanced micro-CT of tumor microvasculature with compression artifacts, intensity gradients and discontinuities, and a highly imbalanced data distribution with small target structures only a few voxels across. 
 
@@ -23,7 +25,7 @@ In a diverse software landscape for analysis of 3D data, this work aims to answe
 
 == Goal
 
-This work will develop a 3D Slicer extension for microvasculature segmentation from the provided data of CECT imaged murine tumors, intended for use by non computer scientists. The algorithm will be able to infer vessels on both the data previously considered "reliable" as well as those samples labeled "unreliable", without requiring annotated training data or per-dataset retraining. The development should integrate user feedback and consider the limitations of 3DSlicer as well as challenges imposed by dataset size.
+This work will develop a 3D Slicer extension for microvasculature segmentation from the provided data of CECT imaged murine tumors, intended for use by non computer scientists. The algorithm will be able to infer vessels on both the data previously considered "reliable" as well as those samples labeled "unreliable", without requiring annotated training data. The development will integrate user feedback and consider the limitations of 3DSlicer as well as challenges imposed by dataset size.
 
 
 == Objectives
@@ -31,7 +33,7 @@ This work will develop a 3D Slicer extension for microvasculature segmentation f
 1. Deliver a user-friendly 3D Slicer extension.
 2. Leverage a user-in-the-loop approach for point placement & basic vessel-size context to drive automated parameter selection, replacing manual error-prone hyperparameter tuning.
 3. Build the segmentation core on multiple algorithms, combined through a framework that enables per component tuning. //an evidence accumulating framework
-4. Produce a pipeline focusing on perfromance and simplicity first.  // Identify the most relevant components to control runtime and avoid overly complex algorithms
+4. Produce a pipeline focusing on perfromance and simplicity first // by running an internal ablation study.
 5. Export useful segmentations for downstream analysis
 
 

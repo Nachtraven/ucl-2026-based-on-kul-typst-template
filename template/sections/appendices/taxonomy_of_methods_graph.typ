@@ -136,7 +136,8 @@
       (1.8, 6.0, "Minimal-path",        "north"),
       (8.0, 2.2, "U-Net / V-Net",       "north"),
       (6.0, 4.0, "Hybrid Frangi + U-Net", "south"),
-      (8.0, 8.0, "clDice",              "north"),
+      // (8.0, 8.0, "clDice",              "north"),
+      (2.5, 7.5, "This work: Bootstrapped hybrid",              "north"),
     )
 
     for m in methods {
@@ -181,6 +182,8 @@
   }),
   caption: [
     Vascular segmentation methods. *x-axis:* training-data needed. *y-axis:* level of encoding of vessel topology. Classical methods cluster on the left, requiring no training data, but vary in the priors they encode: Otsu encodes none, Frangi encodes local tubularity but not connectivity,
-    minimal-path methods enforce connectivity by construction at the cost of user-provided seeds. Data-driven methods (U-Net, V-Net) cluster on the right with high data needs and weak topological awareness when trained with voxel-wise losses; topology-aware losses such as clDice raise the latter without reducing the former. Hybrid approaches combine vesselness inputs with a learned correction stage, occupying the centre of the map.
+    minimal-path methods enforce connectivity by construction at the cost of user-provided seeds. Data-driven methods (U-Net, V-Net) cluster on the right with high data needs and lack topological awareness when trained with voxel-wise losses. _Hybrid approaches_ as used in this thesis combine vesselness inputs with a learned correction stage.
   ],
 ) <fig:segmentation-taxonomy>
+
+// ; topology-aware losses such as clDice raise the latter without reducing the former.

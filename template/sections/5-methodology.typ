@@ -174,11 +174,11 @@ Loaded dataset & point annotation   | 1  | 13   | NA  | NA      | 0
 Pre-processing (shell, thresholding)| 1  | 13.4 | 19  | 24 of 27| 108
 Vesselness                          | 20 | 22.5 | 38.4| 26 of 27| 179
 Gap bridging                        | 1  | 28   | 28  | Minor   | 225
-Tree training and inference         | 1  | 16   | 36.2| Minor   | 1991
+Tree training and inference         | 1  | 16   | 36.2| Minor   | 5973
 ")
 
 #let bar(x) = {
-  rect(width: int(x) / 3000 * 2in, fill: blue, text(fill: black, x))
+  rect(width: int(x) / 9000 * 2in, fill: blue, text(fill: black, x))
   }
 
 #figure(
@@ -194,7 +194,7 @@ Tree training and inference         | 1  | 16   | 36.2| Minor   | 1991
     ..data,
     caption: [Ablation study measurements of principal steps on CA-LL-R with development machine @pc_specs. Performance measured in correctly classified vesssel points. 
     
-    _TODO: revisit this with more detail._],
+    _TODO: revisit this with more detail and update figures._],
   )
 )
 
@@ -203,7 +203,7 @@ Tree training and inference         | 1  | 16   | 36.2| Minor   | 1991
 The removal of _shell removal_ resulted in improved performance for extraction of vessels in the outer shell, as noted previously being a crucial point. _Gap bridging_ was not identified as being a substantial performance consumer, and did not influence performance metrics but, as it operates on areas that are lacking annotations, it was not possible to know if its contribution was relevant using user annotated points. _Random forest_ removal resulted in a large performance gain: vessel extraction went from taking multiple hours to under 20 minutes. It also successfully reduced RAM and swap usage, enabling effective running of the algorithm on larger samples. Additionally, the _probability map_ itself was investigated: when every step generates a 3D new volume to hold the probabilities, RAM use naturally increases. The removal of steps thus directly reduces RAM use, and subsequently it was decided to unify the probability accumulation into a single, shared map for all steps. 
 
 #linebreak()
-As a result of this ablation study, focus was moved towards the use of simple, scientifically grounded extraction based on frangi with a step for combatting the disconnections in vessels, and an improvement in the performance measurement method.
+As a result of this ablation study, the shell removal was removed, the probability map was condensed, and machine learning was moved to an exteral optional step, with focus for the final algorithm on use of a simple, scientifically grounded extraction based on frangi with a step for combatting the disconnections in vessels, and an improvement in the performance measurement method in the form of manually annotated data.
 
 
 

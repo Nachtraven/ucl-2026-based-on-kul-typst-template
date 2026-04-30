@@ -28,34 +28,32 @@
 
 
 #import "@preview/colorful-boxes:1.4.3": *
+
 = State of the art
 
-== Software in Research
+== Software and Software licenses in Research
 
-=== Software Licenses 
+Software licenses are closely linked with the monetary and scientific costs of use: they don't only govern the terms of software use but also of modification, influencing the ability to build upon existing work. They broadly fall into two categories: proprietary (closed source) and open source. Proprietary software restricts access to its source code and is generally distributed under a paid license, with certain exceptions such as with Dragonfly3D's FreED license. Open source software makes its source code publicly available and is as a result free of charge. In a research context, the distinction matters beyond cost: open-source code is by nature extensible, with prior work directly inspectable and modifiable, while proprietary licenses can enable the owner of the original software to control the distribution and use of extensions: Dragonfly3D does not explicitly allow sharing extensions #footnote["\[The user\] shall not distribute or transfer the Software or Improvements \[...\], without prior written permission \[from Dragonfly3D\]" @DragonflyFreeDLicense]. 3D Slicer's license, by contrast, permits modification and redistribution: see #link("https://slicer.readthedocs.io/en/latest/user_guide/about.html#license")[3D Slicer's license page]. Open-source licenses themselves vary in how they govern downstream use, from permissive (MIT, BSD) to copyleft (GPLv3), with implications for how derivative work must be redistributed.
 
-Software licenses are closely linked with the monetary and scientific costs of use: they govern the terms of software use, modification, and redistribution and broadly fall into two categories: proprietary (closed source) and open source. Proprietary software restricts access to its source code and is generally distributed under a paid license, with certain exceptions such as with Dragonfly3D's FreED license. Open source software makes its source code publicly available and is as a result free of charge. Licenses enable the owner of the original software to control the distribution and use of extensions and modifications: Dragonfly3D does not explicitly allow sharing extensions #footnote["\[The user\] shall not distribute or transfer the Software or Improvements \[...\], without prior written permission \[from Dragonfly3D\]" @DragonflyFreeDLicense], unlike #link("https://slicer.readthedocs.io/en/latest/user_guide/about.html#license")[3DSlicer]
+// #linebreak()
+// Open source software matters in scientific research: being free removes a significant barrier to entry, and open-source is by nature extensible: prior work can be built upon by accessing, modifying and learning from its source code and development. Open-source licenses are diverse, from permissive such as MIT or BSD as used by 3D Slicer with modifications to protect from clinical use, and copyleft (GPLv3, used e.g. by Orthanc @orthanc_paper_jodogne), with implications for how downstream work must be redistributed.
 
-#linebreak()
-Open source software matters in scientific research: being free removes a significant barrier to entry, and open-source is by nature extensible: prior work can be built upon by accessing, modifying and learning from its source code and development. Open-source licenses are diverse, from permissive such as MIT or BSD as used by 3D Slicer with modifications to protect from clinical use, and copyleft (GPLv3, used e.g. by Orthanc @orthanc_paper_jodogne), with implications for how downstream work must be redistributed.
+
+
+
 
 === Software for 3D analysis <sota_sw_for_3d>
 
-To work on 3D CT scans researchers at the UCLouvain faculty IMMC (Institute of Mechanics, Materials, and Civil Engineering) use a variety of software to process the slice-by-slice data received from the imaging machines: closed source in the form of Avizo and CTan, "free-for-academics" with Dragonfly3D, and previously used open-source in the form of ImageJ. A full list of available solutions is visible in @3d_software. Standalone approaches exist, such as DeepVesselNet @tetteh2020deepvesselnet and SPROUT @sprout_segmentation_volumetric but do not come packaged as a software with user interface.
+Researchers at the UCLouvain faculty IMMC (Institute of Mechanics, Materials, and Civil Engineering) use a variety of software to process 3D Micro-CT data: closed source in the form of Avizo and CTan, "free-for-academics" with Dragonfly3D, and previously used open-source in the form of ImageJ/FIJI. A full list of available solutions is visible in @3d_software. Standalone approaches exist, such as DeepVesselNet @tetteh2020deepvesselnet and SPROUT @sprout_segmentation_volumetric but do not come packaged as a software with user interface.
 
 #linebreak()
-For the purposes of this thesis, software was required to meet the following requirements: *(1)* Import a 3D scan from individual 2D slices in standard formats, *(2)* Export data to non-proprietary formats, and *(3)* Allow coded plugins/code extensions.
+For this thesis, software was required to meet the following three hard requirements: *(1)* Import a 3D scan from individual 2D slices in standard formats, *(2)* Export data to non-proprietary formats, and *(3)* Allow coded plugins/code extensions. Some practical considerations were also taken into account: availability of dedicated support and documentation, active development, prior use within the lab and the broader research community, and ease of installation for non-technical users.
+
+Each candidate platform was tested for the practicality of implementing a plugin within its extension framework. Avizo and Dragonfly3D met the hard requirements but limit plugin redistribution as laid out previously. ImageJ/FIJI has a long history in biological image analysis and a rich plugin ecosystem, including use for vessel extraction @imagej_frangi, but native support for vascular network extraction in 3D is limited, and the plugin development model is less suited to the integrated segmentation workflows this thesis requires.
 
 #linebreak()
-With the goal of developing software for practical real world use, the following aspects were also weighed:
-1. Availability of dedicated support forums & tutorial videos
-2. Active development
-3. Prior use by the lab researchers, and by researchers of the field more broadly.
-4. Ease of installation and barrier to entry
+3D Slicer @3Dslicer_paper emerged as the most suitable platform. It is open-source under a permissive BSD-style license, widely adopted in the medical imaging field, and supports 3D segmentation workflows with established plugins relevant to vascular analysis such as the Vascular Modeling Toolkit (VMTK) @vmtk and R-Vessel-X @affane2025rvesselx. Its Extension Manager allows non-technical users to install plugins through a one-click interface without compiling code or managing dependencies, and standard import/export formats including DICOM and NIfTI ensure interoperability with downstream analysis tools.
 
-The software in use at the laboratory for blood vessel segmentation (Avizo, Dragonfly3D) were tested and compared to open source alternatives 3D Slicer and ImageJ/FIJI. ImageJ and its distribution FIJI have a rich history in biological image analysis, having also been used in the past in the lab and on CT data. An extensive plugin ecosystem relevant for this work is available, such as the Frangi vesselness @imagej_frangi algorithm, but native support for vascular network extraction in 3D is limited. 3D Slicer @3Dslicer_paper emerged as the most suitable tool, due to its wide adoption in the medical field, existing plugin ecosystem with vascular specific tools such as The Vascular Modeling Toolkit @vmtk and R-Vessel-X @affane2025rvesselx. 
-
-Beyond satisfying the core technical criteria of importing 3D scans as stacks of 2D slices, as well as import and export of open formats such as DICOM, 3D slicer also has extensive instructions and prior work in manual and semi-automatic segmentation. The Extension Manager is particularly relevant to this work, enabling non technical users to install the plugin without needing to code and free of charge, as opposed to the paid extensions for vascular extraction available for tools like Avizo and Dragonfly3D.
 
 #v(0.5cm)
 #colorbox(
@@ -68,11 +66,8 @@ Beyond satisfying the core technical criteria of importing 3D scans as stacks of
   radius: 4pt,
   width: auto
 )[
-  In an extensive and diverse software landscape, our software must fit into an existing well documented segmentation tool: 3DSlicer, be easy to use: click only installation and offer compelling performance.
+  Existing tools for 3D analysis are split between proprietary paid software and open-source platforms, neither having bespoke microvascular support. The pipeline must therefore integrate into an open-source software for 3D analysis: 3D Slicer.
 ]
-
-
-
 
 
 
@@ -152,14 +147,9 @@ Tumors also present a particularity in that they are frequently partially or ent
   ),
   radius: 4pt,
   width: auto
-)[
-  The wide diversity of available modalities for 3D imaging and with their subtypes, the different machines and their acquisition parameters, variability in samples and their preparation, staining agents and methods, as well as large diversity of tissue types come together to present a challenge in creating a method that is re-usable, even within the same lab. Any method used for the segmentation of small blood vessels should be robust to the gradients caused by diffusion CECT, and able to handle variable contrast levels.
+)[  
+  Our Micro-CT CECT data presents non-uniform contrast gradients across samples in addition to intra-dataset variability. The pipeline must therefore be robust to varying contrast and work on all dataset samples.
 ]
-
-
-
-
-
 
 
 
@@ -228,12 +218,12 @@ As algorithm complexity and data dimensionality increase, so must the amount of 
 
 Deep learning has been applied to vascular segmentation for blood vessel extraction directly with notable success: DeepVesselNet @tetteh2020deepvesselnet introduced a family of architectures designed for vessel segmentation, centerline prediction, and bifurcation detection in 3D angiographic data by making explicit use of the structural priors inherent to blood vessels as secondary learning targets. 
 
-Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods.
+#linebreak()
+Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods. This use of classical priors as a feature stage with a form of learning as a correction sets the direction of the present work, with the novel addition of sparse user input as a method for achieving training data acquisition.
 
-// TODO: Maybe this is too much?
-// #v(0.5cm)
-// #include "./appendices/taxonomy_of_methods_graph.typ"
-// #v(0.5cm)
+#v(0.5cm)
+#include "./appendices/taxonomy_of_methods_graph.typ"
+#v(0.5cm)
 
 #v(0.5cm)
 #colorbox(
@@ -246,12 +236,11 @@ Finally, hybrid approaches offer the interesting property of combining classical
   radius: 4pt,
   width: auto
 )[
-  Segmentation has evolved from classical methods encoding geometric priors explicitly toward data-driven methods that learn them implicitly, requiring annotated training data that is scarce and high variance for CECT micro-CT. Our pipeline should lean on classical methods that need no training data and expose their parameters to the user for adjustment.
+  Segmentation has evolved from classical methods encoding geometric priors toward data-driven methods, requiring annotated training data that is scarce and high variance for CECT micro-CT. Our work should need no training data when used but instead leverage simple user placed points, and automatically adjust the hyperparameters to enable portability across diverse data.
 ]
 
 
-
-==== Unreliability of ground truth
+=== Unreliability of ground truth
 
 // Inter-annotator variability and its bound on supervised performance
 // Annotator bias propagation (the skeletonization-first workaround you mention)
@@ -272,7 +261,7 @@ An alternative to real annotated data is the use of simulated and automatically 
 When data is available it may be used directly, although models trained on one imaging protocol, contrast agent, sample batch, or tissue type exhibit degraded performance when applied to data from a different distribution: this is termed domain shift, and is particularly acute in imaging methods containing many adjustable parameters and machine hardware specificities like micro-CT imaging. This can require the use of techniques like transfer learning, where a model is first trained on a similar task with large data availability then fine-tuned on a small amount of in-domain data @tetteh2020deepvesselnet. Annotated data can also be _augmented_ to artifically increase the available amount and diversity by applying random degradations, elastic deformations and intensity perturbation while preserving the original annotations. 
 
 #colorbox(
-  title: "Problem 3.1",
+  title: "Problem 4.",
   color: (
     fill: rgb("#f0f8ff"),
     stroke: rgb("#53d1fb"),
@@ -281,7 +270,7 @@ When data is available it may be used directly, although models trained on one i
   radius: 4pt,
   width: auto
 )[
-  Data from different datasets is not necessarily directly usable as a proxy without careful consideration. In domain data manually annotated for performance measurement, especially by a non domain expert, cannot be considered an absolute ground truth, and as a result errors calculated from these annotations should take into account this potential variability.
+  Data from different datasets is not necessarily directly usable as a proxy without careful consideration. In domain data manually annotated for performance measurement, especially by a non domain expert, cannot be considered an absolute ground truth. For the purpose of evaluating this work, data will be annotated in distribution, and errors calculated should take into account the potential variability from annotations.
 ]
 
 
@@ -314,33 +303,6 @@ When evaluating a segmentation method, consideration of the downstream analysis 
 
 #v(0.5cm)
 #colorbox(
-  title: "Problem 4.",
-  color: (
-    fill: rgb("#f0f8ff"),
-    stroke: rgb("#00bfff"),
-    title: rgb("#002366")
-  ),
-  radius: 4pt,
-  width: auto
-)[
-  Evaluation of a segmentation performance is a challenging topic, especially for vessels. Our method of evaluation must be based on data that is feasible for non-expert annotators to generate using existing 3D Slicer tooling, namely landmark placement, and be calculable in 3D Slicer. To enable downstream performance analysis, segmentations should exportable into a shared format, as well as being evaluated on relevant challenging scenarios.
-]
-
-// Standard segmentation metrics often misalign with the downstream analytical tasks the segmentation feeds into. Our evaluation should therefore use metrics tied to the features researchers extract (branch counts, connectivity, tortuosity), and should report performance separately on the regions where downstream analysis is most sensitive (low-CESA areas, bifurcations).
-
-=== Existing pipelines and tools 
-
-// ITKTubeTK, VMTK, VesselKnife, SKAN, SimVascular, InVesalius. Frame as a landscape map: 
-// classical-and-tunable vs. deep-and-rigid, integrated-into-research-tools vs. standalone
-
-Several software tools and pipelines have been developed to support vascular segmentation and analysis workflows. ITKTubeTK @ITKTubeTK_paper_github offers a library of algorithms for tubular structure segmentation and graph extraction built on the ITK framework. The Vascular Modeling Toolkit (VMTK) @vmtk integrates in 3DSlicer and provides a user friendly comprehensive suite of tools for vascular segmentation and vascular extraction: centerline extraction and surface reconstruction. VesselKnife @vesselknife provides an integrated pipeline targeting vessel segmentation, skeletonization, and graph extraction from micro-CT data. For analysis, SKAN @skan provides a well documented Python library for the quantitative analysis of skeleton graphs extracted from binary segmentation masks, enabling computation of branch length distributions, tortuosity, and network connectivity. SimVascular @simvascular extends vascular extraction into simulation, enabling downstream modeling of blood flow within reconstructed vascular geometries.
-
-#linebreak()
-The landscape of vascular segmentation tools reflects a broader conflict throughout bio-informatics, medical informatics and bioimagery: general-purpose deep learning segmentation frameworks offer good performance on the datasets they are trained on, but require large annotated datasets and offer limited interpretability or controllability as well as are not baked into tools used by researchers. Classical model-based methods such as Frangi filtering are more transparent and adjustable, built into existing tools and easy to use, but require manual parameter tuning and struggle with complex vascular geometries. 
-
-
-#v(0.5cm)
-#colorbox(
   title: "Problem 5.",
   color: (
     fill: rgb("#f0f8ff"),
@@ -350,20 +312,71 @@ The landscape of vascular segmentation tools reflects a broader conflict through
   radius: 4pt,
   width: auto
 )[
-  Existing pipelines focus on large vascularization. Our software should fit into the niche of small vessel segmentation, where tools are not readily available or tailored to the unique challenges of micro vasculature.
+  Evaluation of a segmentation performance requires integrating the structure of the problem. Our evaluation methodology should make use of prior aware losses when calculating error rates.
+]
+
+// Our method of evaluation must be based on data that is feasible for non-expert annotators to generate using existing 3D Slicer tooling, namely landmark placement, and be calculable in 3D Slicer. To enable downstream performance analysis, segmentations should exportable into a shared format, as well as being evaluated on relevant challenging scenarios.
+
+// Standard segmentation metrics often misalign with the downstream analytical tasks the segmentation feeds into. Our evaluation should therefore use metrics tied to the features researchers extract (branch counts, connectivity, tortuosity), and should report performance separately on the regions where downstream analysis is most sensitive (low-CESA areas, bifurcations).
+
+=== Existing pipelines and tools 
+
+// ITKTubeTK, VMTK, VesselKnife, SKAN, SimVascular, InVesalius. Frame as a landscape map: 
+// classical-and-tunable vs. deep-and-rigid, integrated-into-research-tools vs. standalone
+
+Several software tools and pipelines have been developed to support vascular segmentation and analysis workflows. Segmentation-focused tools operate on the image itself: the Vascular Modeling Toolkit (VMTK) @vmtk integrates in 3D Slicer and provides a comprehensive, user-friendly suite for vascular segmentation, centerline extraction, and surface reconstruction, but its methods are oriented toward low resolution, large vessels: arteries, aortas, and major branches. It also relies on seed-based interaction that does not scale to the dense, branching geometry of microvasculature. 
+
+ITKTubeTK @ITKTubeTK_paper_github offers a library of algorithms for tubular-structure segmentation and graph extraction built on the ITK framework, but is packaged as a programming library meaning it requires implementation into a tool or use in code, challenging for non-technical researchers. VesselKnife @vesselknife provides an integrated pipeline specifically targeting vessel segmentation, skeletonization, and graph extraction from Micro-CT data but is a standalone application, requiring researchers to leave their existing analysis environment, and is not intended for small vasculature. Tools like SimVascular @simvascular openrate on the outputs of segmentation and extend vascular extraction into simulation, supporting downstream modeling of blood flow.
+
+// Analysis-focused tools operate on segmentations as produced by  rather than images and are complementary to segmentation pipelines rather than competing with them. SKAN @skan provides a documented Python library for the quantitative analysis of skeleton graphs extracted from binary segmentation masks, enabling computation of branch-length distributions, tortuosity, and network connectivity. SimVascular @simvascular extends vascular extraction into simulation, supporting downstream modeling of blood flow within reconstructed geometries.
+
+#linebreak()
+The landscape of vascular segmentation tools reflects a tension in bio-informatics, medical informatics and bioimagery: general-purpose deep learning segmentation frameworks offer good performance on the datasets they are trained on, but require large annotated datasets and offer limited interpretability or controllability as well as are not baked into tools used by researchers. Classical model-based methods such as Frangi filtering are more transparent and adjustable, built into existing tools and easy to use, but require manual parameter tuning and struggle with complex vascular geometries. Neither pole serves the specific need addressed by this thesis: microvasculature-scale extraction, integrated into a widely-used segmentation environment, with parameters set by principled means rather than expert tuning. This combination is the niche the present work occupies.
+
+
+#v(0.5cm)
+#colorbox(
+  title: "Problem 6.",
+  color: (
+    fill: rgb("#f0f8ff"),
+    stroke: rgb("#00bfff"),
+    title: rgb("#002366")
+  ),
+  radius: 4pt,
+  width: auto
+)[
+  Existing pipelines focus on large vascularization. This work should fill the niche of small vessel segmentation, where tools are not readily available or tailored to the unique challenges of micro vasculature, and must export in a standard binary segmentation format.
 ]
 
 
-// Interesting to add?
-// === Segmenting large datasets 
 
-// #linebreak()
-// Methods exist to handle such large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsampling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicer's built in slicing, requires the ability to load the full dataset. An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldy for annotation and running the pipeline. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
 
-// Handling large datasets can also be done at the format and loading level: HDF5 is intended to _store_ such large multidimensional arrays and efficiently enable loading subsections, however this data storage format is totally incompatible with most medical imaging software, and is not the standard used by CT machines. Standards such as DICOM did not provision for the possibility that data such as those generated by micro-CT may exist in the future in the medical domain, and do not deal well with dynamically loading large datasets from memory. To _operate on_ large multidimensional arrays in Python, there exist libraries such as #link("https://www.dask.org/")[Dask] that enable "chunking" of the data to process smaller areas: this could enable improved scaling to larger scans.
+#pagebreak()
+=== Segmenting large datasets (removable)
 
-// #linebreak()
-// These performance concerns highlight a continuous issue encountered during the writing of this thesis: the complexity of methods able to be tested was limited by the choice of software, volume of data and the hardware available. Lab computers available to students have 32GB of ram, less than the computer used for the testing and writing of code, and it was noted by previous students working on MicroCT imaging that they had struggled to run algorithms across the whole image. In the end, much effort was invested in the research, testing and optimization of the algorithms, and runtime concerns pushed development towards the use of methods implemented in C++ available with Python bindings, such as the SimpleITK Frangi filter used. 
+I had previously here a SOTA on managing large datasets, as this was a challenge that turned up later and blocked me for a while. Would it be interesting to add?
+
+#v(0.4cm)
+
+#linebreak()
+Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
+
+
+Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
+
+
+Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
+
+
+#linebreak()
+Methods exist to handle large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsampling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicers' built in slicing, requires the ability to load the full dataset. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
+
+//An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldy for annotation and running the pipeline. 
+
+Handling large datasets can also be done at the format and loading level: HDF5 is intended to _store_ such large multidimensional arrays and efficiently enable loading subsections, however this data storage format is totally incompatible with most medical imaging software, and is not the standard used by CT machines. Standards such as DICOM did not provision for the possibility that data such as those generated by micro-CT may exist in the future in the medical domain, and do not deal well with dynamically loading large datasets from memory. To _operate on_ large multidimensional arrays in Python, there exist libraries such as #link("https://www.dask.org/")[Dask] that enable "chunking" of the data to process smaller areas: this could enable improved scaling to larger scans.
+
+#linebreak()
+These performance concerns highlight a continuous issue encountered during the writing of this thesis: the complexity of methods able to be tested was limited by the choice of software, volume of data and the hardware available. Lab computers available to students have 32GB of ram, less than the computer used for the testing and writing of code, and it was noted by previous students working on MicroCT imaging that they had struggled to run algorithms across the whole image. In the end, much effort was invested in the research, testing and optimization of the algorithms, and runtime concerns pushed development towards the use of methods implemented in C++ available with Python bindings, such as the SimpleITK Frangi filter used. 
 
 
 // #v(0.5cm)
