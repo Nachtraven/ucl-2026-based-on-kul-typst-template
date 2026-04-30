@@ -1,3 +1,19 @@
+// Sébastien notes: No metrics in SOTA
+// Vue hélicoptère: you want citable bibliographic references, your technical chapter goes into some specific algos
+// SOTA: mettre le doigt sur les trous, et ce sur quoi on va travailler
+
+// supposer le communément acquis: e.g. perceptron
+// SOTA: ce que vous allez faire, et ce qui a déjà été fait par le passé 
+// 30 references
+
+// Intro 5 pp
+// SOTA 10pp
+// Technologie/technque 10pp
+// Methodologie 10pp
+// Resultats 10pp
+// Conclusion 3-5 pages (discussion et repossitionner le travail)
+
+
 // Add papers: 
 
 // Three-dimensional multi-scale line filter for segmentation and visualization of curvilinear structures in medical images https://www.sciencedirect.com/science/article/abs/pii/S1361841598800091
@@ -91,7 +107,7 @@ As mentionned, standard Micro-CT suffers from low contrast between soft-tissue m
 Tumors also present a particularity in that they are frequently partially or entirely devoid of residual hemoglobin, preventing or reducing the action of CESAs and thereby reducing contrast and introducing discontinuities. Diffusion based contrast-enhacing agents also bring an additional disadvantage as seen in the data provided for this thesis, visible in @reliability_of_scans: the diffusion of CE agents throughout the tissue happens from the outside in, resulting in a gradient of the amount of agent and as a result a gradient in contrast, as opposed to perfusion CESAs that follow the blood vessels. 
 
 
-#v(0.5cm)
+#v(0.2cm)
 #import "./appendices/gradient_graph.typ": chart
 
 #let image-with-line(path, colour, label) = block(width: 100%, height: auto)[
@@ -121,9 +137,11 @@ Tumors also present a particularity in that they are frequently partially or ent
       image-with-line("../../resources/images/ca-rl-l_1489.jpg", blue, "CA-RL-L - Unreliable"),
     ),
   ),
-  caption: [Top: Grey values of a reliable scan and unreliable scan. Bottom Left: CA-RL-L, considered previously unreliable. Bottom Right: CA-RU-R, considered reliable.],
+  caption: [*Top:* Grey values of a reliable scan (Red) and unreliable scan (Blue). An ideal scan would be approximately flat within the tumor.
+  
+  *Bottom Left:* CA-RL-L, considered previously unreliable. *Bottom Right:* CA-RU-R, considered reliable.],
 ) <reliability_of_scans>
-#v(0.5cm)
+#v(0.2cm)
 
 #colorbox(
   title: "Problem 2.",
@@ -203,19 +221,19 @@ Although offering high performance, second-order methods are inherently local, f
 
 Data-driven methods approach extraction from a different direction: rather than hand-engineering features and priors, parameters are learned from labeled examples. Supervised learning algorithms map labeled inputs to outputs with simple methods like k-nearest-neighbours use neighbour voting and more complex gradient-boosted trees combining weak learners @xgboost. With the paradigm deep learning exploding in popularity with @alexnet_og_deeplearning, higher dimensionality inputs became analyzable without hand crafted features, and led to fully convolutional encoder-decoder architectures being used in the medical domain such as with U-Net @unet_og_paper, a leap in performance for image segmentation. 
 
-U-Net specifically constituted a breakthrough in medical imaging due to its ability to segment large images with high compute and data efficiency, and across multiple scales by introducing skip connections between encoder and decoder pathways. These allow the network to combine low-level spatial detail with high-level semantic context, enabling the segmentation of thin structures that require context such as cells and vasculature. The structure of U-Net can be extended into 3D with different approaches such as @3d_unet. Recently, transformer-based architectures have superseded convolutional networks as a more generalist approach to machine learning, being applied to object detection @detr_paper and being extended to segmentation @kirillov2023segment_SAM, offering higher performance thanks to a more general computation model. Expert crafted feature extraction is removed, such as in the locality prior of convolutions, enabling the capture of more diverse features and long-range spatial dependencies, at the cost of an increase in required training data.
+U-Net specifically constituted a breakthrough in medical imaging due to its ability to segment large images with high compute and data efficiency, and across multiple scales by introducing skip connections between encoder and decoder pathways. These allow the network to combine low-level spatial detail with high-level semantic context, enabling the segmentation of thin structures that require context such as cells and vasculature. The structure of U-Net can be extended into 3D with different approaches such as @3d_unet. Recently, transformer-based architectures have superseded convolutional networks as a more generalist approach to machine learning, being applied to object detection @detr_paper and being extended to segmentation @kirillov2023segment_SAM, offering higher performance thanks to a more general computation model. Expert crafted feature extraction is removed, such as in the locality prior of convolutions, enabling the capture of more diverse features and long-range spatial dependencies, at the cost of an increase in required training data, an issue for Micro-CT.
 
 #linebreak()
-As algorithm complexity and data dimensionality increase, so must the amount of training or example data increase, an issue for convolutional networks and even more so for transformers. This limits the application of deep learning to Micro-CT data where annotated data is expensive and where inter dataset variance is large, even though attempts exist to palliate the high data requirements by offering self-configuring training frameworks with model weights @nnunet_paper or by crafting more data-efficient models. Examples also exist of trying to make use of so called foundation models, based on a large transformer and able to be "prompted" to customize the segmentation to the usecase at hand @SEMERARO2025102218. 
+As algorithm complexity and data dimensionality increase, so must the amount of training or example data increase, an issue for convolutional networks and even more so for transformers. This limits the application of deep learning to Micro-CT data, where annotated data is expensive and where inter dataset variance is large, even though attempts exist to palliate the high data requirements by offering self-configuring training frameworks with model weights @nnunet_paper or by crafting more data-efficient models. Examples also exist of trying to make use of so called foundation models, based on a large transformer and able to be "prompted" to customize the segmentation to the usecase at hand @SEMERARO2025102218. 
 
 Deep learning has been applied to vascular segmentation for blood vessel extraction directly with notable success: DeepVesselNet @tetteh2020deepvesselnet introduced a family of architectures designed for vessel segmentation, centerline prediction, and bifurcation detection in 3D angiographic data by making explicit use of the structural priors inherent to blood vessels as secondary learning targets. 
 
 Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods.
 
 // TODO: Maybe this is too much?
-#v(0.5cm)
-#include "./appendices/taxonomy_of_methods_graph.typ"
-#v(0.5cm)
+// #v(0.5cm)
+// #include "./appendices/taxonomy_of_methods_graph.typ"
+// #v(0.5cm)
 
 #v(0.5cm)
 #colorbox(
@@ -286,10 +304,10 @@ When training a model, or evaluating a method, it is important to be able to mea
 #linebreak()
 Loss functions such as cross-entropy used for binary classification calculate the loss on a point-by-point basis, based on the predicted distribution. It can be used for segmentation @unet_og_paper, however vessel segmentation has a severe class-imbalance with vessels being a small minority of voxels. The choice of loss function matters as a result: Pixel-independent losses like cross-entropy treat each prediction as independent, meaning for our biased distribution there is a prior of predicting background and producing fragmented or incomplete vessel predictions. V-Net @vnet_paper extended U-Net into 3D and improved performance by using Dice loss, a method better suited for class-imbalanced settings.
 
-For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream, motivating the creation of custom loss function in @clDice_loss_func called clDice, that integrate the prior of connectedness, and build it into the loss function for predictions. In @CFLoss_loss_func clinically relevant vascular features are encoded into the loss function. Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level @VesselGraph. 
+For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream, motivating the creation of custom loss function in @clDice_loss_func called clDice, that integrate the prior of connectedness, and build it into the loss function for predictions. In @CFLoss_loss_func clinically relevant vascular features are encoded into the loss function. A collection of topology-aware loss functions is available in @topolosses. Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level @VesselGraph. 
 
 #linebreak()
-When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features, such as tortuosity and branching ratio, is important to consider. As a result, and driven by the expert-in-the-loop approach, outputs will be evaluated based on point-wise loss of user annotated points, as well as on a manually annotated pixel level baseline. The challenging parameter of connectivity, difficult to capture in the loss, will be manually measured by selecting target areas and reported separately.
+When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features, such as tortuosity and branching ratio, is important to consider. As a result, and driven by the expert-in-the-loop approach, outputs will be evaluated based on point-wise loss of user annotated points, as well as on a manually annotated pixel level baseline relevant for connectivity analysis, an area difficult to capture in the loss.
 
 //In light of these considerations, and following the analytical needs of the laboratory researchers
 // Graphs metrics are particularly relevant when the goal is biological interpretation rather than pixel-perfect overlap --> evaluate my method on this if time allows
@@ -336,18 +354,46 @@ The landscape of vascular segmentation tools reflects a broader conflict through
 ]
 
 
+// Interesting to add?
+// === Segmenting large datasets 
+
+// #linebreak()
+// Methods exist to handle such large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsampling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicer's built in slicing, requires the ability to load the full dataset. An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldy for annotation and running the pipeline. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
+
+// Handling large datasets can also be done at the format and loading level: HDF5 is intended to _store_ such large multidimensional arrays and efficiently enable loading subsections, however this data storage format is totally incompatible with most medical imaging software, and is not the standard used by CT machines. Standards such as DICOM did not provision for the possibility that data such as those generated by micro-CT may exist in the future in the medical domain, and do not deal well with dynamically loading large datasets from memory. To _operate on_ large multidimensional arrays in Python, there exist libraries such as #link("https://www.dask.org/")[Dask] that enable "chunking" of the data to process smaller areas: this could enable improved scaling to larger scans.
+
+// #linebreak()
+// These performance concerns highlight a continuous issue encountered during the writing of this thesis: the complexity of methods able to be tested was limited by the choice of software, volume of data and the hardware available. Lab computers available to students have 32GB of ram, less than the computer used for the testing and writing of code, and it was noted by previous students working on MicroCT imaging that they had struggled to run algorithms across the whole image. In the end, much effort was invested in the research, testing and optimization of the algorithms, and runtime concerns pushed development towards the use of methods implemented in C++ available with Python bindings, such as the SimpleITK Frangi filter used. 
+
+
+// #v(0.5cm)
+// #figure(
+//   image("../../resources/misc/uncompressed_image_folder_sizes.png", width:90%),
+//   caption: [TODO: This is a placeholder. TODO: Add horizontal lines for the RAM of computers. 
+  
+//   Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
+// ) <uncompressed_dataset_size>
+// #v(0.5cm)
+
+// #v(0.5cm)
+// #colorbox(
+//   title: "Problem 6.",
+//   color: (
+//     fill: rgb("#f0f8ff"),
+//     stroke: rgb("#00bfff"),
+//     title: rgb("#002366")
+//   ),
+//   radius: 4pt,
+//   width: auto
+// )[
+//   todo.
+// ]
+
+
+
+
 // Other suggested sources by Claude 28-04-2026
 // Domain shift in medical imaging: Guan & Liu 2021 (IEEE TMI, "Domain adaptation for medical image analysis: A survey"), or Glocker et al. 2019 on cross-scanner / cross-protocol shift.
 // Transfer learning in medical imaging: Raghu et al. 2019 (NeurIPS, "Transfusion: Understanding transfer learning for medical imaging") is the canonical critical reference; ImageNet pretraining for medical tasks is more nuanced than commonly assumed.
 // Data augmentation: Shorten & Khoshgoftaar 2019 (Journal of Big Data, survey of image data augmentation) for the general framing; Isensee et al. (the nnU-Net paper, already cited) for the specific augmentations used in 3D medical segmentation.
 // Synthetic vasculature beyond GANs: Schneider et al. 2012 (Medical Image Analysis, "Tissue metabolism driven arterial tree generation") and the VascuSynth tool (Hamarneh & Jassi 2010) are vascular-specific synthetic data references that would strengthen the L-systems sentence.
-
-
-
-
-
-
-// _*Problem 4.2.* Deep learning based segmentation methods that rely on a large corpus of images fit to the distribution on which they are trained, that suffer when the domain shifts due to changes in imaging methodology or sample variance, are not robust enough, nor transferrable enough to enable replicable work across multiple datasets. Any algorithm to extract blood vessels from tumors must contain user adjustable hyper parameters to enable fitting to the parameters of their data, as well as avoid the need for training data beyond a single test example._
-
-
-// _*Problem 4.3.* Existing vascular segmentation pipelines are typically designed and validated for a single imaging modality, contrast strategy, or tissue type. The fragmentative nature of research means there exist few user friendly modular pipelines with adjustable parameters that can be adapted to the specific imaging characteristics of small tumor micro-CT (non uniform contrast agent diffusion, limited sample size, low contrast and tumor vessel specificities). Robust, reproducible vascular reconstruction usable for quantifying the vasculature network with an accuracy sufficient for clinical and research applications is thus out of reach for most lab work . A robust pipeline must expose interpretable parameters that allow adapation to the users specific imaging context, without requiring retraining as with common deep learning methods, or re-annotation._

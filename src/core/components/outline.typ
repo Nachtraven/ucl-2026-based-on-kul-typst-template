@@ -20,7 +20,7 @@
       repeat(gap: 0.5em)[.]
     } else { [] }
     let rest = (
-      text(red, weight: weight)[#it.body()]
+      text(blue, weight: weight)[#it.body()]
         + h(1em)
         + box(width: 1fr, fill)
         + sym.space
@@ -30,7 +30,7 @@
     // TOOD: fix indentation of numbered items
     link(
       it.element.location(),
-      it.indented(text(red, weight: weight)[#it.prefix()], rest),
+      it.indented(text(blue, weight: weight)[#it.prefix()], rest),
     )
   }
   show outline: set heading(numbering: none, outlined: false)
@@ -49,7 +49,7 @@
   show outline.entry: it => {
     let fill = repeat(gap: 0.5em)[.]
     let rest = (
-      text(red, weight: 500)[#it.body()]
+      text(blue, weight: 500)[#it.body()]
         + h(1em)
         + box(width: 1fr, fill)
         + sym.space
@@ -69,7 +69,7 @@
     link(
       location,
       it.indented(
-        text(red, weight: 500)[#number],
+        text(blue, weight: 500)[#number],
         rest,
       ),
     )

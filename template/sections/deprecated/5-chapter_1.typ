@@ -24,15 +24,21 @@
 
 // After -> results
 
+//The process of segmentation of a structure from the background by an algorithm can be seen as the output with a higher confidence than the background noise that the point belongs to the class of interest. The goal of any algorithm is to integrate this process of discrimination in some form: it can be encoded into the algorithm itself such as in OTSU, it can come from an algorithm with hyperparameters that can be adjusted as with objectness filters, or can be entirely data driven as in machine and deep learning.
 
-= Sotware tool development <data_intro>
+// With groundwork laid, an initial experimental plugin was developed that took in the data from the slices and, using a configurable threshold, output a segmented 3D volume. This threshold based segmentation was evaluated to validate the basic functionality of buttons, learn how 3D Slicer plugins are constructed. Following this learning step, implementation began. // and served as the basis for the subsequent features: // augmented iteratively to add the features required, which were extracted from the meetings with supervisors and lab members. These problems and the chosen solutions are broken down from the initial problem statement in @prob_statement:
 
-// This chapter focuses on the work carried out going from the raw data, problem statement, and prior knowledge of the team members to the final delivered solution. 
-// The selected software for implementation is discussed, followed by the  
+
+
+
+// This thesis builds a complex pipeline, then identifies what was contributing to performance, before building a simpler pipeline that performs comparably with a fraction of the resources from this knowledge
+
+= Software tool development <data_intro>
+
 
 The team had prior experience in three tools for the analysis of 3D data: Avizo: a proprietary and paid software, Dragonfly3D: with either a "FreeD" free-for-academics or paid commercial license, and a bare metal approach using python code. These three analysis methods were favored by different users: those having been in the team a long time had adapted to the team standard of Avizo, also the recommended starting point for new joiners; Dragonfly3D was used by team members that had previously worked on data elsewhere and used software on their own devices, and the "bare metal" approach was taken by students wishing to avoid the substantial learning curve and friction involved with using one of the two aforementioned softwares to carry out basic analysis. Avizo and Dragonfly3D were considered as potential candidates for the creation of a vessel extraction tool, however this proved challenging would not satisfy the desire for an open source alternatives offering extendability and re-usability by other researchers.
 
-In order to maintain interoperability with the Avizo and Dragondly3D the 3D Slicer plugin needed to export data in one of two ways: *(i)* a fashion that transparently fits into the existing pipeline, namely that of exporting raw binary segmentations that could then be re-imported elsewhere *(ii)* an export format that better enforces scientific rigor and enables easier data sharing, in the form of DICOM. This second option will offer the team growth perspectives in opening the door for easier collaboration with computer scientists as well as other researchers downstream.
+In order to maintain interoperability with the Avizo and Dragonfly3D the 3D Slicer plugin needed to export data in one of two ways: *(i)* a fashion that transparently fits into the existing pipeline, namely that of exporting raw binary segmentations that could then be re-imported elsewhere *(ii)* an export format that better enforces scientific rigor and enables easier data sharing, in the form of DICOM. This second option will offer the team growth perspectives in opening the door for easier collaboration with computer scientists as well as other researchers downstream.
 
 
 == 3D Slicer Plugin
@@ -49,6 +55,7 @@ After testing various plugins, the following common limitations came to surface:
 
 
 === Implementation
+
 // https://www.slicer.org/wiki/Documentation/Nightly/Training#Tutorials_for_software_developers
 3D Slicer is multi platform and is built around plugins to carry out tasks, communicating with the Medical Reality Markup Language (MRML) @MRML_diagram, where modules read and write to MRML nodes. These plugins can be implemented in one of three forms: as command line interface (CLI) tools where they may be called as an encapsulated piece of code and is the most abstracted way of working with external code or a C++/Scripted (Python) loadable module @SlicerTutorialPerkins. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, ability to use the UI features of 3D Slicer, and having access to the full slicer API. Work was carried out in Visual Studio Code under Ubuntu 24.04.
 
@@ -65,7 +72,7 @@ To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs
 
 #figure(
   image("../../resources/misc/QT_ui_designer.png", width: 65%),
-  caption: [Left: , Right: QT user interface designer],
+  caption: [QT user interface designer],
 ) <QT_ui> 
 
 #v(0.5cm)
@@ -74,11 +81,8 @@ To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs
 
 == Segmentation of tumor vascularization
 
-As seen during the litterature review, a wide variety of solutions exist for segmentation, as well as a diversity of different plugins for 3D Slicer. Additionally, the problem of lacking existing annotated data limits the possible data driven approaches beyond those making use of basic annotations able to be done by the user. As a result, after testing existing plugins, it was chosen to implement a multi stage pipeline that would leverage user feedback.
+As seen during the literature review, a wide variety of solutions exist for segmentation, as well as a diversity of different plugins for 3D Slicer. Additionally, the problem of lacking existing annotated data limits the possible data driven approaches beyond those making use of basic annotations able to be done by the user. As a result, after testing existing plugins, it was chosen to implement a multi stage pipeline that would leverage user feedback.
 
-//The process of segmentation of a structure from the background by an algorithm can be seen as the output with a higher confidence than the background noise that the point belongs to the class of interest. The goal of any algorithm is to integrate this process of discrimination in some form: it can be encoded into the algorithm itself such as in OTSU, it can come from an algorithm with hyperparameters that can be adjusted as with objectness filters, or can be entirely data driven as in machine and deep learning.
-
-// With groundwork laid, an initial experimental plugin was developped that took in the data from the slices and, using a configurable threshold, output a segmented 3D volume. This threshold based segmentation was evaluated to validate the basic functionality of buttons, learn how 3D Slicer plugins are constructed. Following this learning step, implementation began. // and served as the basis for the subsequent features: // augmented iteratively to add the features required, which were extracted from the meetings with supervisors and lab members. These problems and the chosen solutions are broken down from the initial problem statement in @prob_statement:
 
 === Principled hyper parameter selection
 
@@ -105,8 +109,8 @@ During research multiple interesting algorithms appeared relevant to test. In or
 
 #v(0.5cm)
 #figure(
-  image("../../resources/software/Vesselness_probability_bottom.png", width: 80%),
-  caption: [Visualization of the vesselness probability map as defined by the Frangi feature. *In white:* Intensity corresponds to vesselness probability, *In red:* Final segmentation overlaid],
+  image("../../resources/software/frangi_probability_map.png", width: 80%),
+  caption: [Visualization of the vesselness probability map as defined by the Frangi feature. Intensity corresponds to vesselness probability],
 )
 #v(0.5cm)
 
@@ -122,35 +126,35 @@ As noted in @imaging_and_seg, the simplest method of segmentation is thresholdin
 )
 #v(0.5cm)
 
-The shell effect can be tackled by fitting a shape to the outside of the sample, however following a user interview demonstrating the feature a critical issue was raised: in tumors, it is common for the outside to contain large and plentiful vascularization. Removal would both bias results as well as reduce the overall performance by preventing these outside vessels from being segmented. Secondly, a threshold does not hold up to the gradients in images that are present which, in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels.
+The shell effect can be tackled by fitting a shape to the outside of the sample, however following a user interview demonstrating the feature a critical issue was raised: in tumors, it is common for the outside to contain large and plentiful vascularization. Removal would both bias results as well as reduce the overall performance by preventing these outside vessels from being segmented. Secondly, a threshold does not hold up to the gradients in images that are present which, in prior work carried out on this data, resulted in rejection of samples with a gradient considered too large. Finally, standard thresholding does not do anything to combat the incomplete staining resulting in discontinuous vessels. As a result, thresholding was utilized in the probability map stacking after shell removal, but given a low contribution.
 
-#linebreak()
-As a result, thresholding was utilized in the probability map stacking, but given a low contribution.
 
 === Traditional algorithms
 
 // Source the SimpleITK https://simpleitk.org/doxygen/v2_4/html/classitk_1_1simple_1_1ObjectnessMeasureImageFilter.html
-When annotated by the user, vessels are identified on a local scale using the grey value difference between the vessel with contrast enhancing agent and the background. Grey vallue alone is, as laid out above, not _sufficient_, but it contributes some proof towards the presence of a blood vessel, given the presence of a grey value difference and a vessel-like shape. As a result, to obtain vessels from the user placed starting points, a series of different steps were assembled to form a _pipeline_.
+When annotated by the user, vessels are identified on a local scale using the grey value difference between the vessel with contrast enhancing agent and the background. Grey value alone is, as laid out above, not _sufficient_, but it contributes some proof towards the presence of a blood vessel, given the presence of a grey value difference and a vessel-like shape. As a result, to obtain vessels from the user placed starting points, a series of different steps were assembled to form a _pipeline_.
 
-To go beyond the limitations of threshold based segmentation, the generalized C++ implementation of Frangi in SimpleITK was used. The algorithm is applied at multiple scales (different expected vessel sizes) with the outputs collected together into one segmentation. Frangi is known for having multiple hyperparameters that require fine tuning: in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters hard coded. 
+To go beyond the limitations of threshold based segmentation, the generalized C++ implementation of Frangi in SimpleITK was used. The algorithm was applied at multiple scales (different expected vessel sizes) with the outputs collected together into one segmentation. Frangi is known for having multiple hyperparameters that require fine tuning: in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters hard coded. 
 
 Additionally, as the user has already provided high confidence starting points in the form of annotations, the marching squares algorithm was applied to extract vessels attached to these points, as mentioned in Lesage _et al_ @LESAGE2009819.
 
 
 === Machine learning
 
-When extracting high likelyhood points from the combination of the probability maps of Frangi and Marching squares, a subset of all possible vessels is obtained: those expanded from the user placed points. As these are high probability to be correct, they are extracted and used for training a random forest.
+TODO: Initial experiments included a random forest classifier trained on points labeled high-confidence by the combined Frangi-and-marching-squares output, with the goal of recovering vessel regions outside the user's annotation neighborhood. This component was retained through initial development but was ablated in Chapter 2
+
+// When extracting high likelihood points from the combination of the probability maps of Frangi and Marching squares, a subset of all possible vessels is obtained: those expanded from the user placed points with high likelihood to be vessels. As these are high probability to be correct, they were extracted and used for training a random forest classifier - leveraging the data efficiency advantages of classial methods as input to a machine learning model. This model saw substantial revisions downstream, and was intended to be fed augmented data in order to acquire a robustness to small disconnections.
 
 == Results
+ 
+TODO: This complex pipeline produced encouraging results on the development dataset (CA-LL-R): 26/27 vessel points and 16/16 background points correctly classified. The encouraging single-dataset performance, however, masked two issues that became apparent when the pipeline was tested on other datasets: severe performance limitations under larger inputs (Chapter 2.1), and substantial redundancy among the pipeline's components (Chapter 2.2). The figure below illustrates the development-dataset output that motivated the optimism, alongside artifacts (blob-like flood-fill responses, disconnections at low-signal regions) that foreshadow the issues addressed in subsequent chapters
 
-After the first round of development, a multi stage pipeline was obtained: from the user placed points, a shell removal step was done, and subsequently the user "vessel" points were grown using region growing to follow the ridges defined by the high grey value points. These points grown from the user annotations were then treated as a baseline for creating a simple classifier based on random forests: the vessel points, and points within a small region around them, were used. The probability maps generated from this step, alognside the tubular frangi, were then combined and thresholded based on the values of the user annotated points. This complex method led to promising results:
+// After the first round of development, a multi stage pipeline was obtained: from the user placed points, a shell removal step was done, and subsequently the user "vessel" points were grown using region growing to follow the ridges defined by the high grey value points. Frangi was also used to obtain a vesselness probability layer. These points grown from the user annotations, when also having a high vesselness score, were then treated as a baseline for exporting data around the user placed points and creating a simple classifier based on random forests. The random forest was then inferred on the whole image to obtain other high likelihood points that could be expanded using marching squares. Finally, these layers (Frangi, Intensity, collated marching squares) were combined and a final threshold based on the values of the user annotated points applied to obtain a binary segmentation map. This complex method led to promising results:
 
 
 #v(0.5cm)
 #figure(
   image("../../resources/software/long_pipeline_promising_cropped.png", width: 80%),
-  caption: [Visualization of the segmentation following the multi stage pipeline during development. Successful continuous vessel segmentation and few small noisy sections. Performance, as measured using user annotated points, of 26/27 vessels and 16/16 background points correctly classified. Also visible: Blob-like artifacts from flood fill weight not being suppressed by Frangi, alognside disconnections in due to larger low signal areas.],
+  caption: [Visualization of the segmentation following the multi stage pipeline during development. Successful continuous vessel segmentation and few small noisy sections. Performance, as measured using user annotated points, of 26/27 vessels and 16/16 background points correctly classified. Also visible: Blob-like artifacts from flood fill weight not being suppressed by Frangi, alongside disconnections in due to larger low signal areas.],
 )
 #v(0.5cm)
-
-// This then leads into the next chapter: performance (inference speed) was very poor, and RAM use was extremely high, meaning we needed to find what was actually contributing to our extraction performance: an ablation study is performed. 

@@ -1,10 +1,6 @@
 = Appendices
 
 == List of software for working with 3D data
-
-// Appendix table: 3D analysis software landscape
-// Reference in prose with: see @tab:3d_software in the appendix
-
 #figure(
   table(
     columns: (auto, auto, auto),
@@ -13,7 +9,6 @@
     table.header(
       [*Software*], [*License model*], [*Scriptable*],
     ),
-
     // Commercial
     table.cell(colspan: 3, fill: luma(230))[*Commercial / closed source*],
     [Amira],          [Proprietary, paid],            [Yes],
@@ -30,7 +25,17 @@
     [ScanIP],         [Proprietary, paid],            [Yes],
     [VG Studio],      [Proprietary, paid],            [Yes],
     [Zeiss Inspect],  [Proprietary, paid],            [Limited],
+  ),
+) <3d_software>
 
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    align: (left, left, center),
+    stroke: 0.5pt,
+    table.header(
+      [*Software*], [*License model*], [*Scriptable*],
+    ),
     // OSS/Freeware
     table.cell(colspan: 3, fill: luma(230))[*Open source / freeware*],
     [3D Slicer],      [BSD (modified)],               [Yes (Python, C++)],
@@ -51,12 +56,72 @@
     Landscape of 3D imaging analysis software relevant to micro-CT vascular work,
     grouped by licensing model. _Scriptable_ indicates if an extension interface exists.
   ],
-) <3d_software>
-    // *Bold* indicate software actively used at the UCLouvain IMMC.
-    // [Drishti],        [GPLv2],                        [Volume visualization],     [Limited],
+) <3d_software_oss>
 
 
-== Environmental and CO2 impact of the thesis
+
+== CECT dataset performance challenges (TODO: revisit, this was excised from the main text) <performance_and_memory>
+
+// TODO: Compress/review this
+Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
+
+#linebreak()
+Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
+
+Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
+
+// TODO: this is moved from elsewhere, to be reviewed
+#linebreak()
+The total data required for an uncompressed scan can reach into the tens or hundreds of GB. During the initial software evaluation, 3D Slicer was successful in loading all datasets on the development machine - however it was not verified at the time how much memory was being used. The testing of the pipeline on other datasets revealed the performance limitations of the implemented approach: with initial end to end runtime being about an hour and requiring 24GB of system memory, larger datasets saw an increase in inference time to un-manageable levels, as well as limitations of system memory. 
+
+These performance issues have multiple sources: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity (this fact extends to other 3D Slicer functions such as loading and saving). When running on a large scan, combined with the generation of probability maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on here the forums]].
+
+// #import "@preview/lilaq:0.6.0" as lq
+// #let xs = range(9)
+// #let ys = (12, 51, 23, 36, 38, 15, 10, 22, 86)
+
+// #lq.diagram(
+//   width: 9cm,
+//   xaxis: (subticks: none),
+
+//   lq.bar(
+//     xs, ys
+//   ),
+
+//   ..xs.zip(ys).map(((x, y)) => {
+//     let align = if y > 12 { top } else { bottom }
+//     lq.place(x, y, pad(0.2em)[#y], align: align)
+//   })
+// )
+
+#v(0.5cm)
+#figure(
+  image("../../../resources/misc/uncompressed_image_folder_sizes.png", width:90%),
+  caption: [TODO: This is a placeholder. TODO: Add horizontal lines for the RAM of computers. 
+  
+  Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
+) <uncompressed_dataset_size>
+#v(0.5cm)
+
+RAM use: originally discussed in the methodology
+
+#v(0.5cm)
+#figure(
+  grid(
+    rows: 2,
+    // columns: 2,
+    gutter: 3pt,
+    image("../../../resources/misc/RAM_cpu_use_during_a_run_cropped_ram_only.png", width: 90%),
+    image("../../../resources/misc/RAM-cb-luru-r.png", width: 90%),
+  ),
+  caption: [*Top:* CA-LL-L2 RAM utilization during segmentation: baseline after loading dataset, below 24GB utilization, during processing 100% RAM and swap are used, *Bottom:* CB-LURU-R showing full RAM and SWAP utilization when loaded (no inference)],
+) <system_performance>
+#v(0.5cm)
+
+
+
+
+== Environmental and CO2 impact of the thesis (TODO: revisit)
 
 The main sources of CO2 impact of this thesis are the use of computational resources and the human factor.
 
@@ -76,7 +141,7 @@ As for AI - a rough impact is estimated using the computer of the writer as a ba
 // https://www.belgiantrain.be/fr/about-sncb/corporate/2026/sncb-carbon-footprint
 // https://www.lenovo.com/be/fr/compliance/eco-declaration/
 
-== Instructions for scientific rigor in data handling
+// == Instructions for scientific rigor in data handling
 
 // Talk about naming conventions, data versionning methods and saving
 
@@ -86,34 +151,44 @@ As for AI - a rough impact is estimated using the computer of the writer as a ba
 
 The main two AI assistants used in this thesis were Piccolo, offered by UCLouvain and used for writing feedback, and ClaudeCode, by Anthropic, for the expansion and creation of the plugin.
 
+== Development computer specifications <pc_specs>
 
+Development computer:
 
-== Structuring a Masters thesis
+Lenovo legion 7i slim, 48GB DDR5, i7-13700H, 8GB RTX4070
 
-// Link the video and writing techniques
-During the preparation, reading and writing phases of the masters thesis, it was particularly challenging to both understand what is expected as well as the techniques needed for writing scientifically. This process of learning to write a scientific article has been challenging as well as rewarding, but required extensive effort to document and learn beyond what was offered by the official UCLouvain Masters thesis page.
+laboratory computer provided to students:
 
-// https://writingcenter.fas.harvard.edu/thesis
-// https://www.youtube.com/watch?v=pM6orL-bGDc
-The writer strongly recommends the _Harvard College Writing Center_'s recommendations for thesis writing, as well as the talk _How to write your PhD thesis (without going insane)_ by James Hayton.
+TODO: i7, 32GB, 3060ti ??
 
+// == Structuring a Masters thesis
 
+// // Link the video and writing techniques
+// During the preparation, reading and writing phases of the masters thesis, it was particularly challenging to both understand what is expected as well as the techniques needed for writing scientifically. This process of learning to write a scientific article has been challenging as well as rewarding, but required extensive effort to document and learn beyond what was offered by the official UCLouvain Masters thesis page.
 
-== Masters thesis writing across group and field boundaries
-
-As is all too common, it is easy when experience is lacking to over estimate ones capabilities, as well as the ease of solving (or even working on) a particular problem. The concept of a thesis across field boundaries was initiated by the writer motivated by the wish to grow a skillset beyond what is usually developped when carrying out a thesis within ones field, as well as by a desire for real world impact through applying computer science skills to a problem where the limitations are mainly technical.
-
-This theis was particularly challenging as a result, not due to educational or technical reasons, but mainly due to the practical issues one faces when attempting to solve a real problem: unclear or varying goals and measurements for success, a misunderstanding by the engineer of the field in which the software is to be used, as well as the friction induced by having many stakeholders. These three points will be unpacked one by one:
-
-=== Setting clear goals
-
-
-
-=== Field knowledge and problem encapsulation
+// // https://writingcenter.fas.harvard.edu/thesis
+// // https://www.youtube.com/watch?v=pM6orL-bGDc
+// The writer strongly recommends the _Harvard College Writing Center_'s recommendations for thesis writing, as well as the talk _How to write your PhD thesis (without going insane)_ by James Hayton.
 
 
 
-=== Stakeholders 
+// == Masters thesis writing across group and field boundaries
+
+// As is all too common, it is easy when experience is lacking to over estimate ones capabilities, as well as the ease of solving (or even working on) a particular problem. The concept of a thesis across field boundaries was initiated by the writer motivated by the wish to grow a skillset beyond what is usually developed when carrying out a thesis within ones field, as well as by a desire for real world impact through applying computer science skills to a problem where the limitations are mainly technical.
+
+// #linebreak()
+// This theis was particularly challenging as a result, not due to educational or technical reasons, but mainly due to the practical issues one faces when attempting to solve a real problem: unclear or varying goals and measurements for success, a misunderstanding by the engineer of the field in which the software is to be used, as well as the friction induced by having many stakeholders. These three points will be unpacked one by one:
+
+
+// === Setting clear goals
+
+
+
+// === Field knowledge and problem encapsulation
+
+
+
+// === Stakeholders 
 
 // Talk about working with two sets of goals under two people with different requirements, the importance of going towards code fast, the reasoning why biologists do thorough research first vs computer science (the cost for compsci is 0 so better have a broader experience, and compsci methods suffer from poor replicability over time)
 
@@ -126,9 +201,31 @@ This theis was particularly challenging as a result, not due to educational or t
 // In the age of AI, when we only provide lower order, the student falls back to AI to provide these higher order structures, which suffer from bias or priors that don't align with the proprities of the 
 
 
-= Extra figures
+= Extra figures (TODO: revisit)
 
-// #figure(
-//   image("../../../resources/misc/uncompressed_image_folder_sizes.png"),
-//   caption: [Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
-// ) <uncompressed_dataset_size>
+#figure(
+  image("../../../resources/software/Error_in_external_plugin_VTK_2026-03-30 11-11-14.png"),
+  caption: [Demonstration of one of the failing plugins and the lack of user feedback on what went wrong],
+) <error_in_external_plugins>
+
+
+#figure(
+  image("../../../resources/software/error_looks_like_vessels_because_of_holes.png"),
+  caption: [Areas of CA-LL-R where vessels are detected because of the black holes around it],
+) <holes_causing_errors>
+
+
+#figure(
+  image("../../../resources/software/imprted_seeds_message.png"),
+  caption: [Import process],
+) <importing>
+
+#figure(
+  image("../../../resources/misc/RAM_cpu_use_during_a_run.png"),
+  caption: [RAM and CPU use during a run of the initial pipeline on CA-LL-R showing the efficiency issues that Python and 3D Slicer cause],
+) <inefficient>
+
+#figure(
+  image("../../../resources/misc/RAM_use_large_dataset.png"),
+  caption: [RAM use loading a large dataset, showcasing the issue with 3D Slicers method of loading data into memory],
+) <large_dataset>

@@ -1,4 +1,9 @@
-= Contending with limitations <performance_and_memory>
+= Contending with limitations 
+
+// Here we want to talk about the issue encountered after the last step previously: I developed the algo looking at one piece of data (the smallest). Inference was taking over an hour and using nearly all my RAM (baseline RAM of 9gb, when the data was loaded it was 13 and when running the pipeline it reached ~44 out of a total maximum of 48).
+// When I tried to infer on other datasets, it either ran out of ram or took extremely long time. This prompted the ablation study
+// The ablation study showed that Frangi was the largest contributor.
+// As a result, I re-started the process from frangi, and this is detailed in the last chapter: I manually annotate some data as a baseline and use a new pipeline for extraction.
 
 == Micro-CT Data management challenges
 
@@ -7,7 +12,7 @@ Data management for Micro-CT scans is a challenge for users: after a scan is com
 
 Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
 
-Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the litterature review which required particular attention.
+Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
 
 
 == Performance challenges
@@ -37,7 +42,6 @@ The initial plugin development phase took place using the CA-LL-R dataset, the s
   })
 )
 
-
 #v(0.5cm)
 #figure(
   image("../../resources/misc/uncompressed_image_folder_sizes.png", width:90%),
@@ -50,7 +54,7 @@ The initial plugin development phase took place using the CA-LL-R dataset, the s
 
 As noted in @data_intro, the total data required for an uncompressed scan can reach into the tens or hundreds of GB. During the initial software evaluation, 3D Slicer was successful in loading all datasets on the development machine - however it was not verified at the time how much memory was being used. The testing of the pipeline on other datasets revealed the performance limitations of the implemented approach: with initial end to end runtime being about an hour and requiring 24GB of system memory, larger datasets saw an increase in inference time to un-manageable levels, as well as limitations of system memory. 
 
-These limitations performance issues have multiple sources: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity (this fact extends to other 3D Slicer functions such as loading and saving). When running on a large scan, combined with the generation of probability maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on here the forums]].
+These performance issues have multiple sources: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity (this fact extends to other 3D Slicer functions such as loading and saving). When running on a large scan, combined with the generation of probability maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on here the forums]].
 
 
 #v(0.5cm)
@@ -62,13 +66,13 @@ These limitations performance issues have multiple sources: when implementing a 
     image("../../resources/misc/RAM_cpu_use_during_a_run.png", width: 90%),
     image("../../resources/misc/RAM-cb-luru-r.png", width: 90%),
   ),
-  caption: [1. CA-LL-L2 RAM utilization during segmentation: baseline after loading dataset, bellow 24GB utilization, during processing 100% RAM and swap are used, 2. Run 1, CB-LURU-R showing full RAM and SWAP utilization],
+  caption: [1. CA-LL-L2 RAM utilization during segmentation: baseline after loading dataset, below 24GB utilization, during processing 100% RAM and swap are used, 2. Run 1, CB-LURU-R showing full RAM and SWAP utilization],
 ) <system_performance>
 #v(0.5cm)
 
 
 #linebreak()
-Methods exist to handle such large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsamling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicer's built in slicing, requires the ability to load the full dataset. An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldly for annotation and running the pipeline. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
+Methods exist to handle such large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsampling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicer's built in slicing, requires the ability to load the full dataset. An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldy for annotation and running the pipeline. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
 
 Industry standard methods exist for handling large datasets: HDF5 is intended to _store_ such large multidimensional arrays and efficiently enable loading subsections, however this data storage format is totally incompatible with most medical imaging software, and is not the standard used by CT machines. Standards such as DICOM did not provision for the possibility that data such as those generated by micro-CT may exist in the future in the medical domain, and do not deal well with dynamically loading large datasets from memory. To _operate on_ large multidimensional arrays in Python, there exist libraries such as #link("https://www.dask.org/")[Dask] that enable "chunking" of the data to process smaller areas: this could enable improved scaling to larger scans.
 
@@ -114,15 +118,21 @@ Tree training and inference         | 1  | 16   | 32  | Minor   | 1991
   caption: [Ablation study measurements],
 )
 
+
+== Conclusion of the ablation study
+
+The removal of all steps (shell removal, random forest) except vesselness resulted in improved performance for extraction of vessels in the outer shell, as noted previously being a crucial point, as well as a large performance increase: vessel extraction went from taking multiple hours to under 20 minutes. It also successfully reduced RAM and swap usage, enabling effective running of the algorithm on larger samples. As a result of this small ablation study, the probability map approach was simplified to reduce memory usage, with a single map being successively updated, and focus was moved towards the use of simple, scientifically grounded extraction based on line-like features with a step for combatting the disconnections in vessels.
+
+
+
+
 // Baseline 9GB
 
 // 13.4 - 19GB
 // 1.39 198
 
-
 // 14.6GB
 // 1.28 176
-
 
 // 22.5 - peaks 38.4GB vesselness
 // 1.15 225
@@ -130,11 +140,5 @@ Tree training and inference         | 1  | 16   | 32  | Minor   | 1991
 // 28GB
 // 2.33 186
 
-
 // 21GB fast march
 // 4.59 598
-
-
-== Conclusion of the ablation study
-
-The removal of all steps (shell removal, random forest) except vesselness resulted in improved performance for extraction of vessels in the outer shell, as noted previously being a crucial point, as well as a large performance increase: vessel extraction went from taking multiple hours to under 20 minutes. It also successfully reduced RAM and swap usage, enabling effective running of the algorithm on larger samples. As a result of this small ablation study, the probability map approach was simplified to reduce memory usage, with a single map being successively updated, and focus was moved towards the use of simple, scientifically grounded extracton based on line-like features with a step for combatting the disconnections in vessels.

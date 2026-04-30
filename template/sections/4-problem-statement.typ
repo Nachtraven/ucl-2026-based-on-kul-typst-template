@@ -11,43 +11,152 @@
 
 = Problem statement
 
-Three princopal constraints define the territory of this thesis: *(i)* The data: Contrast-enhanced micro-CT scans of tumor tissue acquired with diffusion-based staining agents, which produce intensity gradients across the sample and leave disconnections. The vessels of interest span 6 to 100 μm, occupying only a few voxels at the resolutions used. *(ii)* The algorithms: Two paradigms of vascular segmentation are identified with complementary weaknesses: data-driven methods achieve strong in-distribution performance but require annotated training data that is difficult to generate and high-variance for CECT, while classical methods encode vessel priors explicitly, need no training, but reason only on a local scale resulting in fragmented segmentations at bifurcations, vessel endpoints, and in low-contrast regions. *(iii)* The tooling: Existing vascular extraction software is intended for large vessels with few disconnections: arteries, airways and organs. Microvasculature extraction methods are sparse, locked behind closed-source and lack proper development or integration into freely available tools.
+In a diverse software landscape for analysis of 3D data, this work aims to answer the question _"How can an open-source microvasculature extraction pipeline be developed, able to be used by non computer scientists, leveraging classical segmentation methods and sparse user-driven input to obtain useful segmentations on CECT data across a diverse dataset?
+"_ and is defined by three principal constraints:
+
+*(i)* Data: Contrast-enhanced micro-CT of tumor microvasculature with compression artifacts, intensity gradients and discontinuities, and a highly imbalanced data distribution with small target structures only a few voxels across. 
+
+*(ii)* Segmentation and its two paradigms: _data-driven_ methods (machine learning) with potentially high performance but poor generalization and requiring annotated training data that is difficult to generate high-variance for CECT, and _classical_ methods that encode vessel priors explicitly but require hyperparameter tuning, and reason locally with poor extrapolation resulting in fragmented segmentations and weaker peformance in low-contrast regions.
+
+*(iii)* Tooling: existing software is focused on low resolution, on human arteries and organs with large vessels and few disconnections. Microvasculature extraction methods are sparse, rarely bespoke or integrated into available tooling
 
 
-// Suggestion to continue from Claude/Piccolo:
+== Goal
 
-// == Aim
+This work will develop a 3D Slicer extension for microvasculature segmentation from the provided data of CECT imaged murine tumors, intended for use by non computer scientists. The algorithm will be able to infer vessels on both the data previously considered "reliable" as well as those samples labeled "unreliable", without requiring annotated training data or per-dataset retraining. The development should integrate user feedback and consider the limitations of 3DSlicer as well as challenges imposed by dataset size.
 
-// [One paragraph stating the aim of this thesis as a positive proposition. Something like: "This thesis aims to deliver a practical software pipeline for the segmentation of microvasculature from CECT micro-CT data, designed to be usable by domain scientists without programming expertise, robust to the contrast variability characteristic of diffusion-CECT, and integrated into the open-source 3D Slicer ecosystem."]
 
-// [A short paragraph on stakeholder tensions: end users (usability, robustness), the open-source scientific community (extensibility, reproducibility), and CS researchers (algorithmic novelty, performance). Acknowledging that these goals are partially in tension is a strength, not a weakness.]
+== Objectives
+
+1. Deliver a user-friendly 3D Slicer extension.
+2. Leverage a user-in-the-loop approach for point placement & basic vessel-size context to drive automated parameter selection, replacing manual error-prone hyperparameter tuning.
+3. Build the segmentation core on multiple algorithms, combined through a framework that enables per component tuning. //an evidence accumulating framework
+4. Produce a pipeline focusing on perfromance and simplicity first.  // Identify the most relevant components to control runtime and avoid overly complex algorithms
+5. Export useful segmentations for downstream analysis
+
+
+== Scope
+
+This work delivers the segmentation pipeline in the form of a plugin and measures results on manually annotated data, with downstream quantitative analysis left to existing tools by exporting binary masks. Deep learning in its most common form is not utilized due to a lack of available reference data, training data and usability concerns. The plugin is intended for use in a research setting and tested on the set of data provided with its known shortcomings.
+
+//Not compared with deep-learning baselines as annotated training data sufficient for fair comparison is not available. 
+// The plugin is a research tool, not a clinical one.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// == Aim and positioning
+
+// [ONE OR TWO PARAGRAPHS. The substance:
+
+// This is where the "computer scientist visiting biology" framing 
+// earns its place. The aim is not just to build a tool; the aim is 
+// to build a tool that serves a specific community working with 
+// specific data, where the methodology is iteratively shaped by 
+// their feedback and the constraints their data imposes.
+
+// Suggested content beats:
+// - One sentence: the aim of this thesis.
+// - One sentence: the positioning ("this work approaches the 
+//   problem from computer science, applied to a biological domain, 
+//   with explicit acknowledgment that domain users are the 
+//   primary stakeholders").
+// - One paragraph: the three-stakeholder tension. End users who 
+//   need usability and robustness, the open-source scientific 
+//   community that needs reproducibility and extensibility, and 
+//   computer-science researchers for whom algorithmic novelty 
+//   is the goal. These goals are partially in tension: a maximally 
+//   novel algorithm may not be the most usable; the most usable 
+//   tool may not be the most extensible. This thesis's response 
+//   to the tension is to weight usability and reproducibility 
+//   highly, and to treat algorithmic choice as a means rather 
+//   than an end.
+// - (Optional) One sentence acknowledging that the methodology 
+//   was iteratively shaped — that the ablation study is a 
+//   consequence of taking dataset constraints seriously, not 
+//   a methodological add-on.]
 
 
 // == Research question
 
-// [ONE focused research question. Suggested form:]
+// [ONE focused research question. Suggested form:
 
-// How can the algorithmic strengths of classical vesselness filtering be combined with user-driven parameter selection to produce a 3D Slicer plugin that segments microvasculature from CECT data without requiring training data or dataset-specific tuning?
+// How can a 3D Slicer plugin be designed to extract tumor 
+// microvasculature from CECT micro-CT data, such that it remains 
+// usable by domain scientists, robust to the heterogeneity of 
+// data encountered in practice, and scalable to the dataset sizes 
+// generated by modern micro-CT acquisitions, without requiring 
+// annotated training data or per-dataset retraining?
+
+// (Adjust based on whether you want to emphasize usability, 
+// robustness, or scalability as the primary axis. The question 
+// above weights all three roughly equally.)]
+
 
 // == Objectives
 
 // To meet this aim, the work pursues four objectives:
 
-// O1. *Software integration.* Deliver the pipeline as an installable 3D Slicer extension with click-only installation, addressing the integration constraints identified in the SOTA [Problems 1, 5].
+// *O1. Tooling.* Deliver the pipeline as an installable 3D Slicer 
+// extension with click-only installation, integrated into the 
+// ecosystem already in use by the lab and broader microvasculature 
+// research community.
 
-// O2. *Algorithmic robustness.* Build the segmentation core on classical methods that encode vessel-specific geometric priors, avoiding the data requirements of supervised deep learning and the brittleness of intensity-only thresholding [Problems 2, 3].
+// *O2. Methodology shaped by user feedback.* Place the user in the 
+// loop through anchor-based interaction, using sparse expert input 
+// to drive parameter selection and to anchor downstream pipeline 
+// stages. The choice of components is informed by interviews with 
+// prospective users and iterated based on observed working practices.
 
-// O3. *User-guided parameter selection.* Use sparse user input (landmark or anchor placement) to drive parameter selection on a per-dataset basis, accepting the tradeoff of expert interaction in exchange for cross-dataset generalization [Problems 2, 3].
+// *O3. Robustness through classical methods.* Build the segmentation 
+// core on classical algorithms that encode vessel-specific geometric 
+// priors, avoiding the data requirements of supervised deep learning. 
+// Combine multiple algorithms through a probability-map framework 
+// that accumulates evidence and tolerates the failure of any single 
+// component.
 
-// O4. *Reproducibility.* Output segmentations in portable, non-proprietary formats and release the plugin under an open license [Problem 1].
+// *O4. Scalability across the lab's actual data.* Ensure the pipeline 
+// runs on the full range of dataset sizes encountered in practice, 
+// on hardware available to lab users, in tractable time. Where the 
+// initial pipeline fails this objective, identify and remove the 
+// components responsible — an ablation that is itself a methodological 
+// contribution.
 
-// [If you keep Problem 3.1 / evaluation: add an O5 on evaluation methodology. If you drop Problem 4 / 3.1, no fifth objective.]
+// [OPTIONAL: If you keep evaluation as a separate concern rather 
+// than folding into O3/O4, add an O5:
+
+// *O5. Evaluation.* Use lightweight, expert-feasible annotation 
+// methods (anchor-point ground truth, manual pixel-level baselines 
+// on selected regions) and report performance separately on the 
+// challenging conditions identified in the SOTA: low-CESA regions, 
+// bifurcations, small vessels.]
+
 
 // == Scope and limitations
 
-// [One paragraph naming what is *out* of scope: full quantitative analysis of vascular topology (left to downstream tools like SKAN), comparison with deep-learning baselines (data not available), evaluation on additional tissue types, etc. Acknowledging scope limits up front is more credible than discovering them at the end.]
+// [ONE PARAGRAPH naming what is *out* of scope. Suggested content:
 
-
+// This thesis delivers the segmentation pipeline; downstream 
+// quantitative analysis (vessel length distributions, branching 
+// ratios, tortuosity computation) is left to existing tools 
+// such as SKAN that operate on the binary masks the plugin 
+// exports. Comparison with deep-learning baselines is not 
+// performed because annotated training data sufficient for 
+// fair comparison is not available. Evaluation focuses on the 
+// laboratory's own data; cross-laboratory generalization is 
+// identified as future work. The plugin is not a clinical tool 
+// and is not intended for clinical use.]
 
 
 
@@ -94,7 +203,7 @@ Three princopal constraints define the territory of this thesis: *(i)* The data:
 // 5. The inclusion of user feedback during the development of the plugin
 
 // // #linebreak()
-// // Deprecated: A 3DSlicer plugin is developped to offer user friendliness for data loading, saving and manipulation of the extraction pipeline.he segmentation will begin with a simple window thresholding segmentation done by the user or automatically based on the anchor points selected. The algorithm will then attempt to reconnect and grow the segmentation based on its loss functions, region growing and other lower order techniques, with the integration of the priors of vascularization by means of the loss functions used. The user will then be able to export the segmentations into a portable format.
+// // Deprecated: A 3DSlicer plugin is developed to offer user friendliness for data loading, saving and manipulation of the extraction pipeline.he segmentation will begin with a simple window thresholding segmentation done by the user or automatically based on the anchor points selected. The algorithm will then attempt to reconnect and grow the segmentation based on its loss functions, region growing and other lower order techniques, with the integration of the priors of vascularization by means of the loss functions used. The user will then be able to export the segmentations into a portable format.
 
 // #figure(
 //   image("../../resources/images/msc_thesis_try1_09-03-26.png", width: 100%),
