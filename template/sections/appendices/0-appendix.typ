@@ -76,6 +76,11 @@ The total data required for an uncompressed scan can reach into the tens or hund
 
 These performance issues have multiple sources: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity (this fact extends to other 3D Slicer functions such as loading and saving). When running on a large scan, combined with the generation of probability maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on here the forums]].
 
+
+TODO: Increasing SWAP size as a mitigation
+
+
+
 // #import "@preview/lilaq:0.6.0" as lq
 // #let xs = range(9)
 // #let ys = (12, 51, 23, 36, 38, 15, 10, 22, 86)
@@ -119,6 +124,10 @@ RAM use: originally discussed in the methodology
 #v(0.5cm)
 
 
+// Other 3D Slicer threads about large file loading:
+// https://discourse.slicer.org/t/loading-volume-of-several-hundred-gb/35615
+
+
 
 
 == Environmental and CO2 impact of the thesis (TODO: revisit)
@@ -151,6 +160,14 @@ As for AI - a rough impact is estimated using the computer of the writer as a ba
 
 The main two AI assistants used in this thesis were Piccolo, offered by UCLouvain and used for writing feedback, and ClaudeCode, by Anthropic, for the expansion and creation of the plugin.
 
+When using Claude Code, multiple events of note occured:
+1. The use of claude code for code audits in performance increases generally resulted in many more code changes and solution adjacent changes. For example, when auditing the code to improve performance on subsampled sections, ClaudeCode carried out over one hundred minor modifications on top of the proscribed main changes
+2. The use of coding assistants (Piccolo and Claude) for scripts to help in data management (subsampling and transformations) often resulted in minor discrepancies in outputs that required manual revision
+3. The process of requesting Claude Code to add comments also resulted in a re-organization of the code. Readability improved from the perspective of the writer, but the question of originality remained.
+
+
+talk about the branching effect - using models allows exploring more ideas but requires stronger motivation for the pruning of them & selection process   
+
 == Development computer specifications <pc_specs>
 
 Development computer:
@@ -159,7 +176,18 @@ Lenovo legion 7i slim, 48GB DDR5, i7-13700H, 8GB RTX4070
 
 laboratory computer provided to students:
 
-TODO: i7, 32GB, 3060ti ??
+// 32GB 4400mhz
+i7-13700, 32GB, T1000 8GB
+
+
+// == Data storage and pixel convertion
+
+// During the work, data was provided as JPEGs. This proved to be a repeated issue because of multiple implicit assumptions:
+// 1. The data is compressed but only across 2 of the 3 axes
+// 2. The data was saved in RGB but is greyscale. Meaning every pixel is the same value three times
+// // 3. WRONG this is actually fine: Converting a JPEG from RGB to true greyscale, *if you do not explicitly state that the original was already greyscale*, carries out a luminance weighted average greyscale conversion - another step that modifies the structure of the data. 
+// 4. [Minor] 3D Slicer automatically carries out window/level normalization - Visualizations will change based on the pixel values of the loaded data
+
 
 // == Structuring a Masters thesis
 

@@ -1,11 +1,13 @@
 
 // These three analysis methods were favored by different users: those having been in the team a long time had adapted to the team standard of Avizo, Dragonfly3D was used by team members with previous experience or wanting to use software on their own devices, and the "bare metal" approach was taken by students wishing to avoid the substantial learning curve and friction involved with the use of the aforementioned software.
 
+
+// In order to maintain interoperability the 3D Slicer plugin needed to export data in one of two ways: *(i)* a fashion that transparently fits into the existing pipeline, namely that of exporting raw binary segmentations that could then be re-imported elsewhere *(ii)* an export format that better enforces scientific rigor and enables easier data sharing, in the form of DICOM. This second option will offer the team growth perspectives in opening the door for easier collaboration with computer scientists as well as other researchers downstream.
+
+
 = Methodology
 
 This chapter documents the development of the 3D Slicer plugin, from the implementation and user interaction, through the method for combining algorithms and the different algorithms explored, and ending in an ablation study to simplify the pipeline and enable usable runtimes and memory use.
-
-// In order to maintain interoperability the 3D Slicer plugin needed to export data in one of two ways: *(i)* a fashion that transparently fits into the existing pipeline, namely that of exporting raw binary segmentations that could then be re-imported elsewhere *(ii)* an export format that better enforces scientific rigor and enables easier data sharing, in the form of DICOM. This second option will offer the team growth perspectives in opening the door for easier collaboration with computer scientists as well as other researchers downstream.
 
 == Tooling: 3D Slicer plugin
 
@@ -116,10 +118,12 @@ As other steps had the tendency to result in disconnected regions, as well as gi
 #v(0.5cm)
 
 
-=== Boostrapping Machine learning
+=== Leveraging user placed points
 
 //TODO: validate that marching cubes is intensity driven?
-As the user has already provided high confidence starting points in the form of annotations, it is reasonable to assume that high valued points attached to the annotation are vessel. As a result, two methods were used to "expand" user points: the marching cubes algorithm as mentioned in Lesage _et al_ @LESAGE2009819, and a tube prior algorithm proposed by ITKTubeTK: itktubeTubeExtractor that extracts tubular structures associated with the points. These areas attached to high confidence annotations were then extracted and used to train a small machine learning model: a random forest classifier, with the goal of recovering vessel regions outside the user's annotation neighborhood.
+As the user has already provided high confidence starting points in the form of annotations, it is reasonable to assume that high valued points attached to the annotation are vessel. As a result, it makes sense to leverage these points with this prior in mind: to do so, ridge following is implemented, using TubeTK ridge extraction. Ridge following involves expanding an area based on the contrast gradient 
+
+//As a result, two methods were used to "expand" user points: the marching cubes algorithm as mentioned in Lesage _et al_ @LESAGE2009819, and a tube prior algorithm proposed by ITKTubeTK: itktubeTubeExtractor that extracts tubular structures associated with the points. These areas attached to high confidence annotations were then extracted and used to train a small machine learning model: a random forest classifier, with the goal of recovering vessel regions outside the user's annotation neighborhood.
 
 #linebreak()
 TODO: add final ML method
@@ -209,8 +213,32 @@ As a result of this ablation study, the shell removal was removed, the probabili
 
 
 
-
+// TODO: add a note that DICE is high variance
+// missing 1px of a small vessel is the same as missing a whole large vessel
 #pagebreak()
 == A simplified, scalable pipeline
 
-The final pipeline detailed here with examples
+The final pipeline contains the following steps applied sequentially, with relevant hyperparameters exposed to the user and auto-configured where possible based on the vessel size and standard deviation provided:
+
+
+==== Gaussian denoising 
+Gaussian denoising is used to  remove scan and jpeg compression noise, as also applied in @wlodarski
+==== Frangi vesselness
+Frangi is applied across multiple scales, to identify tubular structures.
+Additionally, tiling is optionally applied to avoid this step being a memory bottleneck. This tiling involves calculating on subregions and then assembling into the full volume. This however remains a memory hungry step
+==== Intensity likelyhood
+Each pixel calculates a vesselness probability based on the intensity characteristics of the user provided points. From this step and the Frangi vesselness, a combined likelyhood map is created of the vesselness to directly rule out most potential points.
+==== Ridge extraction
+For each user placed point, ridge extraction is carried out to grow the vessel regions outwward by followinghigh likelyhood ridges. This step makes heavy use of the size priors provided by the user and runs in multiple loops.
+==== Seed discovery
+New potential vessels are discovered using the vessel intensities extracted from user points and vesselness likelyhood from the combined map. 
+==== Large blob removal
+Large circular or blob shaped detections are removed by filtering based on a defined probability threshold, exploiting the fact that blobs contain multiple tubes connected with low likelyhood to eachother.
+
+#v(0.2cm)
+After this, a binary segmentation mask is produced and visualized in the 3D Viewer for the user. There is then the possibility of loading a manually segmented DICOM subregion for evaluation based on the DICE and connectivity aware clDice metrics.
+
+#figure(
+  image("../../resources/images/zoomed_output_region.png", width:90%),
+  caption: [View of the feedback box with segmentation performance measurement based on the providing of a subregion for evaluation.],
+) <evaluation_window>

@@ -1,11 +1,11 @@
-wlodarski thesis - TODO revise
 @misc{wlodarski,
 	title        = {Contrast-enhanced micro-CT for 3D X-ray based histology to assess the influence of antiangiogenic drugs on tumor vascularization and necrosis},
 	author       = {Wlodarski, Lisa},
 	year         = 2024,
 	note         = {thesis published on DIAL.mem, provided by Prof. Greet Kerckhofs},
 	howpublished = {\url{https://hdl.handle.net/2078.2/37669}}
-}
+} wlodarski thesis - TODO revise
+
 3D Slicer https://slicer.readthedocs.io/en/latest/user_guide/about.html#how-to-cite
 Kitaware source https://www.kitware.eu/platforms/#3d-slicer
 @article{3Dslicer_paper,
@@ -20,6 +20,7 @@ Kitaware source https://www.kitware.eu/platforms/#3d-slicer
 	doi          = {10.1016/j.mri.2012.05.001},
 	keywords     = {Application software;Biomedical imaging;Computer interfaces;User interfaces;Visualization;Power system modeling;Surgery;Robot kinematics;Brain mapping;Virtual colonoscopy}
 }
+
 Ten Simple Rules for Reproducible Computational Research
 The importance of replication and reproducibility has recently been exemplified through studies showing that scientific papers commonly leave out experimental details essential for reproduction
 [5], studies showing difficulties with replicating published experimental results [6], an increase in retracted papers [7], and through a high number of failing clinical trials [8,9].
@@ -33,6 +34,7 @@ The importance of replication and reproducibility has recently been exemplified 
 	note         = {pp e1003285},
 	issue        = 10
 }
+
 Based on "A literature review on segmentation methods for ex vivo"
 @article{2d_histo_sota_balcaen2023revealing,
 	title        = {Revealing the Three-Dimensional Murine Brain Microstructure by Contrast-Enhanced Computed Tomography},
@@ -43,16 +45,22 @@ Based on "A literature review on segmentation methods for ex vivo"
 	pages        = 1141615,
 	doi          = {10.3389/fnins.2023.1141615}
 }
+
 GScholar "2D histology standard"
 @article{extending2d_histo_to_3d,
-	title        = {Extending two-dimensional histology into the third dimension through conventional micro computed tomography},
-	author       = {Anna K., Hans D., Georg S., Gabriel S., Jürgen H., Natalia C., Christos B., Simone E. H., Bert M.},
-	year         = 2016,
-	journal      = {NeuroImage},
-	volume       = 139,
-	pages        = {26--36},
-	doi          = {http://dx.doi.org/10.1016/j.neuroimage.2016.06.005}
+title = {Extending two-dimensional histology into the third dimension through conventional micro computed tomography},
+journal = {NeuroImage},
+volume = {139},
+pages = {26-36},
+year = {2016},
+issn = {1053-8119},
+doi = {https://doi.org/10.1016/j.neuroimage.2016.06.005},
+url = {https://www.sciencedirect.com/science/article/pii/S1053811916302166},
+author = {Anna Khimchenko and Hans Deyhle and Georg Schulz and Gabriel Schweighauser and Jürgen Hench and Natalia Chicherova and Christos Bikis and Simone E. Hieber and Bert Müller},
+keywords = {Hard X-ray tomography, Nano-focus X-ray, Histology, 2D-3D image registration, Paraffin-embedded human cerebellum, Purkinje cells, Joint histogram analysis},
+abstract = {Histological examination achieves sub-micrometer resolution laterally. In the third dimension, however, resolution is limited to section thickness. In addition, histological sectioning and mounting sections on glass slides introduce tissue-dependent stress and strain. In contrast, state-of-the-art hard X-ray micro computed tomography (μCT) systems provide isotropic sub-micrometer resolution and avoid sectioning artefacts. The drawback of μCT in the absorption contrast mode for visualising physically soft tissue is a low attenuation difference between anatomical features. In this communication, we demonstrate that formalin-fixed paraffin-embedded human cerebellum yields appropriate absorption contrast in laboratory-based μCT data, comparable to conventional histological sections. Purkinje cells, for example, are readily visible. In order to investigate the pros and cons of complementary approaches, two- and three-dimensional data were manually and automatically registered. The joint histogram of histology and the related μCT slice allows for a detailed discussion on how to integrate two-dimensional information from histology into a three-dimensional tomography dataset. This methodology is not only rewarding for the analysis of the human cerebellum, but it also has relevance for investigations of tissue biopsies and post-mortem applications. Our data indicate that laboratory-based μCT as a modality can fill the gap between synchrotron radiation-based μCT and histology for a variety of tissues. As the information from haematoxylin and eosin (H&E) stained sections and μCT data is related, one can colourise local X-ray absorption values according to the H&E stain. Hence, μCT data can correlate and virtually extend two-dimensional (2D) histology data into the third dimension.}
 }
+
 Gscholar "histology for clinical trial" then
 Found by going to source 4 of https://onlinelibrary.wiley.com/doi/epdf/10.1111/his.14099
 @article{pathology_in_clinical_trials_provenzano2015standardization,
@@ -401,12 +409,15 @@ nnUNet
 -------------------- Sources for Existing tools --------------------
 @article{ITKTubeTK_paper_github,
 	title        = {Initialization, noise, singularities, and scale in height ridge traversal for tubular object centerline extraction},
-	author       = {},
+	author       = {S. R. Aylward, E. Bullitt},
 	year         = 2002,
-	journal      = {},
+	journal      = {IEEE Transactions on Medical Imaging},
+	volume		 = 21,
+	pages		 = {61-75},
 	doi          = {10.1109/42.993126},
 	note         = {https://github.com/InsightSoftwareConsortium/ITKTubeTK}
 }
+
 @article{vesselknife,
 	title        = {VesselKnife – software for the analysis of tubular structures in biomedical images},
 	author       = {},

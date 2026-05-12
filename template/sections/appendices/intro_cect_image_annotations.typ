@@ -129,6 +129,6 @@
     ),
   ),
   caption: [
-    Slices illustrating the principal challenges: *(a)* A large high contrast vessel of approximately 14 voxels. *(b)* A large high-intensity region not corresponding to vasculature, illustrating staining artefacts. *(c)* Upper, left: many small vessels in cross-section, ranging from 2 to 8 voxels in diameter, where the partial-volume effect is present, as well as compression artifacts. *(d)* Right hand side: the "shell effect", a high-intensity boundary surrounding the tumor caused by the diffusion of the contrast agent. *(e, f)* Two slices from the same volume, separated by 5 voxels along the z-axis. The vessel indicated appears discontinuous in (e) but continuous in (f), highlighting the relevance of 3D methods.
+    Slices illustrating the principal challenges: *(a)* A large high contrast vessel of approximately 14 voxels. *(b)* A large high-intensity region not corresponding to vasculature, illustrating staining artefacts. *(c)* Upper, left: many small vessels in cross-section, ranging from 2 to 8 voxels in diameter, where the partial-volume effect is present, as well as compression artifacts. *(d)* Outter surface: the "shell effect", a high-intensity boundary surrounding the tumor caused by the diffusion of the contrast agent - also visible: a strong gradient between outside and center *(e, f)* Two slices from the same volume, separated by 5 voxels along the z-axis. The vessel indicated appears discontinuous in (e) but continuous in (f), highlighting the relevance of 3D methods.
   ],
 ) <cect-data-examples>
