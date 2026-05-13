@@ -1,15 +1,32 @@
+// Re-write:
+// CECT aims to make structures visible with CE agent that increases brightness. alternatives to CECT exist that use different "wavelengths" and different CE agents.
+// Most basic Segmentation uses this prior: intensity based, but this is not sufficient because it is global
+// After that, local gradients don't work because they don't integrate tubularity. You also get blobs, noise and artefacts
+// -> derived from gradients you get shape based methods: frangi
+// this enables detection of vessels with contrast wrt bakground 
+// But this does not solve the gaps issue
+// -> derived from shape based methods, you get reconnecting methods that use the previous steps
+// Shape based fill the "intensity" gap, and disconnection based fill the "disconnection" gap
+// 
+
+
+
+#import "./appendices/graph_results.typ": results-chart
+// #import "appendices/precision_recall_old.typ": pr-curve
+#import "appendices/precision_recall.typ" : xy-curve
 
 = Results
 
-The produced work, termed CollaboratiVessel is measured against thresholding, the previously leveraged method. The metrics of vessel length, DICE, clDICE are used to measure the segmentation performance, as well as 
+The plugin is measured both against thresholding, the method previously used, and against a manually annotated baseline. 
 
-
-== Data annotation for evaluation
-
-As mentioned, the user is expected to place vessel, background and outside-of-volume points. These act as points used to define hyperparameters of the algorithms, but also as a performance metric: when the pipeline is run, feedback is given with how many vessel points are correctly classified. However this method of performance evaluation has shotcomings: it evaluates the data in a pointwise fashion, ignoring critical elements for downstream tasks such as connectivity, and relies on the human evaluating a 2D plane, ignoring parameters such as gap filling. As users also place points generally towards the center of the vessels, there is little measurement of the width of vessels beyond if a background point ends up being caught in the vessel prediction.
+As mentioned, the user is expected to place vessel, background and outside-of-volume points. These act as points used to to guide and define hyperparameters of the algorithms and also as a performance metric: when the pipeline is run, feedback is given with how many vessel points are correctly classified. However this method of performance evaluation has shotcomings: data is evaluated pointwise, ignoring connectivity and vessel size, and it is inherently done in 2D.  //As users also place points generally towards the center of the vessels, there is little measurement of the width of vessels beyond if a background point ends up being caught in the vessel prediction.
 
 #linebreak()
-As a result, it was decided to manually annotate a set of ground truth data as a more dense annotation baseline. To achieve this, 30 regions were manually  annotated from the 5 smallest scans of Run 1 and Run 2 respectively: amongst the 16 data samples (of which 4/16 were considered "reliable") of Run 1, 5 were selected, with 3 being "unreliable", a representative sample, and 5 of the 16 of Run 2 (all considered reliable). These scans were subdivided into 6x6x6 regions from which, for each scan, three subregions were selected with one at each distance step from the center as visualized in @Annotation_grid. This method was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels.
+As a result, manual annotations were created. To achieve this, 4 samples were selected. These scans were subdivided into 6x6x6 regions from which, for each scan, three subregions were selected with one at each distance step from the center as visualized in @Annotation_grid. This method was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels.
+
+However an important caveat is to be kept in mind for the following section: as annotations were created by a non domain expert using 3D Slicer 2D views, they carry a strong bias towards what is visible in the image (i.e. context is not always fully taken into account) and the disconnections, when not visible, were not guessed. This means that any algorithm carrying out extrapolation will automatically have a negative performance hit. 
+
+//30 regions were manually  annotated from the 5 smallest scans of Run 1 and Run 2 respectively: amongst the 16 data samples (of which 4/16 were considered "reliable") of Run 1, 5 were selected, with 3 being "unreliable", a representative sample, and 5 of the 16 of Run 2 (all considered reliable). These scans were subdivided into 6x6x6 regions from which, for each scan, three subregions were selected with one at each distance step from the center as visualized in @Annotation_grid. This method was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels.
 
 #let image-with-grid(path, colour, label, gridsize, annotations: ()) = block(width: auto, height: auto)[
 #set align(center)
@@ -89,43 +106,304 @@ As a result, it was decided to manually annotate a set of ground truth data as a
 #v(0.1cm)
 
 
+
+// https://www.learnui.design/tools/data-color-picker.html
+// Colour scale:
+// #00876c
+// #9bb290
+// #e4e2df
+// #d89e78
+// #d43d51
+
+// Palette:
+// #003f5c
+// #78529b
+// #ef537d
+// #ffa600
+
+// Palette 5:
+// #003f5c
+// #575092
+// #bb4e99
+// #ff5f68
+// #ffa600
+
+#pagebreak()
 == Performance results
 
-// Recall (Sensitivity) - fraction of GT covered
-// IoU (Jaccard) - TP / (TP+FP+FN)
-// Specificity - TN / (TN+FP)
-// Volume ratio - pred_voxels / gt_voxels
+Performance is analyzed both _quantitatively_ and _qualitatively_: quantative numbers as they are evaluated here can fail to properly weigh the negative impact of vessels with variable sizes, or disconnections, and the ground truths as mentioned above are imperfect and conservative which impacts the performance of an algorithm designed to extrapolate. 
 
 
-#v(0.2cm)
-#import "./appendices/graph_results.typ": chart_results1
+=== Quantitative analysis 
+
+#v(0.5cm)
+#figure(
+  results-chart((
+    (col: "pred_gt_vol", colour: rgb("#003f5c"), label: "Pred Ratio"),
+    (col: "thr_gt_vol",  colour: rgb("#ffa600"), label: "Thr Ratio"),
+  ), 24.0, "Ratio"),
+  caption: [Ratio of segmentation to ground truth volume, offering a quantification for extrapolation (higher = more extrapolation/false positives).],
+)
+#v(0.5cm)
+
+
+As shown, the algorithm produces in 2 of 6 cases an extreme extrapolation. In 4 of 6 cases, extrapolation is a lot more closely aligned with thresholding.Next, classical DICE and connection weighted clDICE scores are interesing to obseve, although they suffer from the extrapolation, for the four closely matched cases. Here it can be seen that in those 4 cases, the DICE and clDICE scores are close.
+#v(0.5cm)
+// #figure(
+//   results-chart((
+//     (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
+//     (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
+//     (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+//     (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
+//   ), 1.0, "DICE"),
+//   caption: [DICE and clDICE results],
+// )
+// DICE + seed agreement on the same chart:
+#figure(
+  results-chart(
+    (
+      (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
+      (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
+      (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+      (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
+    ),
+    1.0,
+    "Score",
+    derived-series: (
+      // (num: "vessel_seeds_correct", den: "vessel_seeds_total", colour: rgb("#ef537d"), label: "Pipeline Vessel seeds"),
+      // (num: "bg_seeds_correct",     den: "bg_seeds_total",     colour: rgb("#ffa600"), label: "Pipeline BG seeds"),
+      // (num: "thr_vessel_seeds_correct", den: "thr_vessel_seeds_total", colour: rgb("#ef537d"), label: "Threshold Vessel seeds"),
+      // (num: "thr_bg_seeds_correct",     den: "thr_bg_seeds_total",     colour: rgb("#ffa600"), label: "Threshold BG seeds"),
+    )
+  ),
+  caption: [DICE vs seed agreement],
+)
+#v(0.5cm)
+
+This shows what appears to be substantially better performance than our tool, however when evaluating the length of predicted vessels within the ground truth:
+
+
+#v(0.5cm)
+#figure(
+  results-chart(
+    (
+      // (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
+      // (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
+      // (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+      // (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
+    ),
+    1.0,
+    "Score",
+    derived-series: (
+      (num: "vessel_seeds_correct", den: "vessel_seeds_total", colour: rgb("#003f5c"), label: "Pipeline Vessel seeds"),
+      (num: "bg_seeds_correct",     den: "bg_seeds_total",     colour: rgb("#78529b"), label: "Pipeline BG seeds"),
+      (num: "thr_vessel_seeds_correct", den: "thr_vessel_seeds_total", colour: rgb("#ef537d"), label: "Threshold Vessel seeds"),
+      (num: "thr_bg_seeds_correct",     den: "thr_bg_seeds_total",     colour: rgb("#ffa600"), label: "Threshold BG seeds"),
+    )
+  ),
+  caption: [seed agreement],
+)
+#v(0.5cm)
 
 
 
 
 
+#v(0.5cm)
+#figure(
+results-chart((
+  (col: "cl_len_pred_mm", colour: rgb("#003f5c"), label: "Tool"),
+  (col: "cl_len_thr_mm",  colour: rgb("#78529b"), label: "Threshold"),
+  (col: "gt_len",  colour: rgb("#ef537d"), label: "Ground truth"),
+), 60.0, "mm"),
+  caption: [Continuous length estimates of predicted vessels],
+)
+#v(0.5cm)
+
+
+Precision / recall allow us to disentangle the issue of false positives and oversegmentation:
+
+#v(0.5cm)
+#figure(
+  results-chart((
+    (col: "pred_gt_precision", colour: rgb("#003f5c"), label: "Tool precision"),
+    (col: "thr_gt_precision",  colour: rgb("#78529b"), label: "Thresh precision"),
+    (col: "pred_gt_recall",  colour: rgb("#ef537d"), label: "Tool recall"),
+    (col: "thr_gt_recall",  colour: rgb("#ffa600"), label: "Thresh recall"),
+  ), 1.0, "mm"),
+  caption: [Precision/recall analysis],
+)
+#v(0.5cm)
+
+From this graph we can see that the precision is consistently lower than thresholding, however recall is higher. 
+
+
+=== Qualitative analysis
+
+
+// Crop for CA-RU-R 666
+// 1537 528
+// 3237 528
+// 1537 1905
+// 3237 1905
+
+
+
+
+// #v(0.5cm)
+// #figure(
+//   // pr-curve((
+//   //   ("../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", "Thresholding", rgb("#e63946")),
+//   //   ("../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", "CollaboratiVessel", rgb("#457b9d")),
+//   //   ("../../../resources/images/sweep_experiment/frangi_sweep_005/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", "Frangi", rgb("#ff1a1a")),
+//   //   ("../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", "Frangi Wider", rgb("#1afbff")),
+//   // )),
+
+//   pr-curve((
+//   (
+//     csv:    "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//     label:  "Thresholding",
+//     colour: rgb("#e63946"),
+//     x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+//     y: (num: "vessel_seeds_correct",  den: "vessel_seeds_total"),
+//   ),
+//   (
+//     csv:    "../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//     label:  "CollaboratiVessel",
+//     colour: rgb("#457b9d"),
+//     x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+//     y: (num: "vessel_seeds_correct",  den: "vessel_seeds_total"),
+//   ),
+//   (
+//     csv:    "../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//     label:  "Frangi",
+//     colour: rgb("#b4d94d"),
+//     x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+//     y: (num: "vessel_seeds_correct",  den: "vessel_seeds_total"),
+//   ),
+//   )),
+//   caption: [CA-RU-R 222 
+  
+//   Precision recall curve comparing thresholding with our algorithm, highlighting the regime differences. Precision of 100% is never reached because certain high valued pixels do not belong to vessels, and invesely ],
+// )
+// #v(0.5cm)
+// Peak precision 0.6342 at threshold_193 w recall 0.2058
+// 
 
 
 
 
 
+// PR curve 
+#figure(
+    xy-curve(
+    (
+      (csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "Thresholding",      colour: rgb("#e63946")),
+      (csv: "../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "CollaboratiVessel", colour: rgb("#457b9d")),
+      (csv: "../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "Frangi", colour: rgb("#459d6b")),
+    ),
+    x-label: "Recall",
+    y-label: "Precision",
+  )
+)
+
+#figure(
+  xy-curve(
+    (
+      (
+        csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+          label: "Thresholding", colour: rgb("#e63946"),
+        x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+      ),
+      (
+        csv: "../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+          label: "CollaboratiVessel", colour: rgb("#457b9d"),
+        x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+      ),
+      (
+        csv: "../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+          label: "Frangi", colour: rgb("#459d6b"),
+        x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+      ),
+    ),
+    x-label: "BG seed accuracy",
+    y-label: "Vessel seed accuracy",
+  )
+)
+
+
+// #v(0.5cm)
+// #figure(
+//   pr-curve((
+//     ("../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", "Thresholding", rgb("#e63946")),
+//     ("../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", "CollaboratiVessel", rgb("#457b9d")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_005/FRANGI_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", "Frangi", rgb("#ff1a1a")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", "Frangi Wider", rgb("#1afbff")),
+//   )),
+//   caption: [CA-RU-R 666],
+// )
+// #v(0.5cm)
 
 
 
+// #v(0.5cm)
+// #figure(
+//   pr-curve((
+//     ("../../../resources/images/sweep_experiment/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", "Thresholding", rgb("#e63946")),
+//     ("../../../resources/images/sweep_experiment/SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", "CollaboratiVessel", rgb("#457b9d")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_005/FRANGI_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", "Frangi", rgb("#ff1a1a")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", "Frangi Wider", rgb("#1afbff")),
+//   )),
+//   caption: [CA-LL-R 427],
+// )
+// #v(0.5cm)
 
 
+// 319
+// #v(0.5cm)
+// #figure(
+//   pr-curve((
+//     ("../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", "Thresholding", rgb("#e63946")),
+//     ("../../../resources/images/sweep_experiment/SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", "CollaboratiVessel", rgb("#457b9d")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_005/FRANGI_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", "Frangi", rgb("#ff1a1a")),
+//     // ("../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", "Frangi Wider", rgb("#1afbff")),
+//   )),
+//   caption: [CA-NM-L 319],
+// )
+// #v(0.5cm)
 
 
+// 957
+// #v(0.5cm)
+// #figure(
+//   pr-curve((
+//     ("../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", "Thresholding", rgb("#e63946")),
+//     ("../../../resources/images/sweep_experiment/SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", "CollaboratiVessel", rgb("#457b9d")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_005/FRANGI_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", "Frangi", rgb("#ff1a1a")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", "Frangi Wider", rgb("#1afbff")),
+//   )),
+//   caption: [CA-NM-L 957],
+// )
+// #v(0.5cm)
 
-
-
-
-
-
-
-
-
-
+// 498
+// #v(0.5cm)
+// #figure(
+//   pr-curve((
+//     ("../../../resources/images/sweep_experiment/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", "Thresholding", rgb("#e63946")),
+//     ("../../../resources/images/sweep_experiment/SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", "CollaboratiVessel", rgb("#457b9d")),
+//     ("../../../resources/images/sweep_experiment/frangi_sweep_005/FRANGI_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", "Frangi", rgb("#ff1a1a")),
+//     // ("../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", "Frangi Wider", rgb("#1afbff")),
+//   )),
+//   caption: [CA-LL-L1 498],
+// )
+// #v(0.5cm)
 
 
 

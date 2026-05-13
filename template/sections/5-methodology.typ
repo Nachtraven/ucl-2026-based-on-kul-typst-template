@@ -240,5 +240,5 @@ After this, a binary segmentation mask is produced and visualized in the 3D View
 
 #figure(
   image("../../resources/images/zoomed_output_region.png", width:90%),
-  caption: [View of the feedback box with segmentation performance measurement based on the providing of a subregion for evaluation.],
+  caption: [View of the feedback box with segmentation performance measurement based on the provided subregion for evaluation.],
 ) <evaluation_window>

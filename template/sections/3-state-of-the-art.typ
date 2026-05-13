@@ -27,6 +27,8 @@
 // https://home.webknossos.org/
 
 
+// TODO: add Precision-Recall discussion: Precision-Recall is a useful measure of success of prediction when the classes are very imbalanced. Our dataset is imbalanced, and our prediction algorithm is supposed to have a lot of FP because the GT is sparsely annotated. So our recall MUST be high with only "relevant" false positives.
+
 #import "@preview/colorful-boxes:1.4.3": *
 
 = State of the art
