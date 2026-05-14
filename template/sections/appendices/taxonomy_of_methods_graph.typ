@@ -131,13 +131,13 @@
     // label-anchor places the text relative to the dot.
     let methods = (
       (0.4, 0.4, "Otsu",                "north"),
-      (1.0, 1.5, "Region-growing",      "east"),
-      (1.2, 4.95, "Frangi",              "north"),
+      (1.0, 1.5, "Region-growing",      "north"),
+      (1.0, 4.95, "Frangi",              "north"),
       (1.8, 6.0, "Minimal-path",        "north"),
       (8.0, 2.2, "U-Net / V-Net",       "north"),
-      (6.0, 4.0, "Hybrid Frangi + U-Net", "south"),
+      (6.0, 6.0, "Hybrid Frangi + U-Net", "north"),
       // (8.0, 8.0, "clDice",              "north"),
-      (2.5, 7.5, "This work: Bootstrapped hybrid",              "north"),
+      (2.5, 7.5, "This work: Bootstrapped hybrid","north"),
     )
 
     for m in methods {

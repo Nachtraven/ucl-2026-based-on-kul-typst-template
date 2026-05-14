@@ -17,6 +17,12 @@
 
 = Results
 
+=== Parameter sweep and selection
+
+As the pipeline contains multiple possible hyperparameters, this presents a search space for different performance tradeoffs. In order to explore this space, a wider 
+
+
+
 The plugin is measured both against thresholding, the method previously used, and against a manually annotated baseline. 
 
 As mentioned, the user is expected to place vessel, background and outside-of-volume points. These act as points used to to guide and define hyperparameters of the algorithms and also as a performance metric: when the pipeline is run, feedback is given with how many vessel points are correctly classified. However this method of performance evaluation has shotcomings: data is evaluated pointwise, ignoring connectivity and vessel size, and it is inherently done in 2D.  //As users also place points generally towards the center of the vessels, there is little measurement of the width of vessels beyond if a background point ends up being caught in the vessel prediction.

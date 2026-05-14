@@ -21,16 +21,18 @@
 
 In a diverse software landscape for analysis of 3D data, this work aims to answer the question _"How can an open-source microvasculature extraction pipeline be developed, able to be used by non computer scientists, leveraging classical segmentation methods and sparse user-driven input to obtain useful segmentations on CECT data across a diverse dataset?"_ and is defined by three principal constraints:
 
+#linebreak()
 *(i)* Data: Contrast-enhanced micro-CT of tumor microvasculature with compression artifacts, intensity gradients and discontinuities, and a highly imbalanced data distribution with small target structures only a few voxels across. 
 
-*(ii)* Segmentation and its two paradigms: _data-driven_ methods (machine learning) with potentially high performance but poor generalization and requiring annotated training data that is difficult to generate high-variance for CECT, and _classical_ methods that encode vessel priors explicitly but require hyperparameter tuning, and reason locally with poor extrapolation resulting in fragmented segmentations and weaker peformance in low-contrast regions.
+#linebreak()
+*(ii)* Segmentation and its two paradigms: _data-driven_ methods (machine learning) with potentially high performance but transfering poorly across datasets and requires annotated training data that is difficult to generate for CECT, and _classical_ methods that encode vessel priors explicitly but require hyperparameter tuning, and reason locally with poor extrapolation resulting in fragmented segmentations and weaker peformance in low-contrast regions.
 
+#linebreak()
 *(iii)* Tooling: existing software is focused on low resolution, on human arteries and organs with large vessels and few disconnections. Microvasculature extraction methods are sparse, rarely bespoke or integrated into available tooling
 
 
-== Goal
-
-We aim to improve on the performance shortcomings of thresholding and other intensity only segmentation methods: to illustrate this, in @fig:pr_methodo a sweep is run across all possible thresholding values, and measure against a manually annotated ground truth on an illustrative subvolume that contains small disconnected vessles, a light gradient, and some noisy elements. The precision-recall curve ignores true negatives and avoids giving them an outsized weight, but still allows us to understand the problem at hand: thresholding, no matter how high, will include false positives (_all high valued pixels are not necessarily vessels, the strucutral gap (1)_) and at low values needed to capture faint vessels, the false positives are very high (_vessel intensities overlap with background, making any thresholding a compromise (2)_).
+#linebreak()
+The principal reference will be grey value based thresholding, as it constitutes the simplest, most accessible method that has previously been used to tackle this issue. The shortcomings are expressed in @fig:pr_methodo a sweep is run across all possible thresholding values, and measure against a manually annotated ground truth on an illustrative subvolume that contains small disconnected vessels, a light gradient, and some noisy elements. The precision-recall curve ignores true negatives and avoids giving them an outsized weight, but still allows us to understand the problem at hand: thresholding, no matter how high, will include false positives (_all high valued voxels are not necessarily vessels, the structural gap (1)_) such as in the shell region in @fig:thresholding_with_shell and at low values needed to capture faint vessels, the false positives are very high (_vessel intensities overlap with background, a challenging extraction situation, making thresholding a compromise (2)_).
 
 // TODO: better explain the trade-off
 
@@ -75,7 +77,7 @@ We aim to improve on the performance shortcomings of thresholding and other inte
       )
       #place(left + top,
         dx: 35pt, dy: 25pt,
-        text(size: 8pt)[_(1) strucutral gap_]
+        text(size: 8pt)[_(1) structural gap_]
       )
 
       // Arrow 2 — points down-right
@@ -94,18 +96,21 @@ We aim to improve on the performance shortcomings of thresholding and other inte
       )
     ]
   ),
-  caption: [*(Left)* Run 2 CA-RU-R subsample *(Right)* Thresholding precision-recall curve showing _(1) strucutral gap_: precision never reaches 1.0, and _(2) challenging extraction_: precision falls off sharply as recall increases, high recall cannot be achieved without sacrificing precision]
+  caption: [*(Left)* Run 2 CA-RU-R subsample *(Right)* Thresholding precision-recall curve showing _(1) structural gap_: precision never reaches 1.0 because there are false positives in high valued areas and _(2) challenging extraction_: precision falls off sharply as recall increases, high recall cannot be achieved without sacrificing precision]
 ) <fig:pr_methodo>
 
 
 
-== Objectives
 
-1. Deliver a user-friendly 3D Slicer extension.
+== Goal
+
+This thesis aims to develop a 3D Slicer extension that produces connected microvasculature segmentations on CECT through a hybrid pipeline combining classical algorithms with sparse user input, achieving high recall and connectivity-preserving accuracy, measured using clDICE, operating across both reliable and unreliable subsets of the dataset.
+
+To do so, the following steps will be carried out:
+1. Deliver a user-friendly 3D Slicer extension able to export in formats useful for downstream analysis.
 2. Leverage a user-in-the-loop approach for point placement & basic vessel-size context to drive automated parameter selection, replacing manual error-prone hyperparameter tuning.
 3. Build the segmentation core on multiple algorithms, combined through a framework that enables per component tuning. //an evidence accumulating framework
-4. Produce a pipeline focusing on perfromance and simplicity first // by running an internal ablation study.
-5. Export useful segmentations for downstream analysis
+4. Produce a pipeline focusing on performance and simplicity first // by running an internal ablation study. -> Evaluate and simplify the pipeline through an ablation study across multiple annotated subvolumes
 
 
 == Scope
@@ -117,6 +122,66 @@ This work delivers the segmentation pipeline in the form of a plugin and measure
 
 
 
+
+// #v(0.2cm)
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     column-gutter: 1em,
+//     align: top,
+//     image("../../resources/images/methodology_pr_curve_data.png", width: 90%),
+    
+    
+//     box[
+//       #xy-curve(
+//         (
+//           (csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//           label: "Thresholding",
+//           colour: rgb("#e63946")),
+//         ),
+//         x-label: "Recall",
+//         y-label: "Precision",
+//         chart-width:180pt,
+//         chart-height:180pt,
+//         pad-left: 12pt,
+//         pad-bottom: 22pt,
+//         legend-width: 100pt,
+//         show-legend: false
+//       )
+
+//       // Arrow 1 — points up-left
+//       #place(left + top,
+//         dx: 30pt, dy: 45pt,
+//         line(
+//           start: (0pt, 20pt),
+//           end: (0pt, -40pt),
+//           stroke: 1pt + black,
+//           // marker-end: "stealth",
+//         )
+//       )
+//       #place(left + top,
+//         dx: 35pt, dy: 25pt,
+//         text(size: 8pt)[_(1) structural gap_]
+//       )
+
+//       // Arrow 2 — points down-right
+//       #place(left + top,
+//         dx: 110pt, dy: 130pt,
+//         line(
+//           start: (0pt, 0pt),
+//           end: (40pt, 30pt),
+//           stroke: 1pt + black,
+//           // marker-end: "stealth",
+//         )
+//       )
+//       #place(left + top,
+//         dx: 130pt, dy: 130pt,
+//         text(size: 8pt)[_(2) challenging extraction_]
+//       )
+//     ]
+//   ),
+//   caption: [*(Left)* Run 2 CA-RU-R subsample *(Right)* Thresholding precision-recall curve showing _(1) structural gap_: precision never reaches 1.0, and _(2) challenging extraction_: precision falls off sharply as recall increases, high recall cannot be achieved without sacrificing precision]
+// ) <fig:pr_methodo>
 
 
 

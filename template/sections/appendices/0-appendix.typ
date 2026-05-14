@@ -232,6 +232,18 @@ i7-13700, 32GB, T1000 8GB
 = Extra figures (TODO: revisit)
 
 #figure(
+  image("../../../resources/software/threshold_131_255_example.png", width: 75%),
+  caption: [The shortcoming of threshold based segmentation visualized, with a "shell" of high valued outside being included whe the threshold accepts the vessel segment.],
+) <fig:thresholding_with_shell>
+
+#figure(
+  image("../../../resources/software/bridging_working_cropped.png", width: 75%),
+  caption: [Structurally aware gap bridging to reconnect predicted vessels: *Red:* vessels as identified by other steps. *Yellow:* Bridges between tubular endpoints. #footnote[3DSlicer smooths visualizations in 3D without combining different classes. The final segmentaton here is unifrom and continuous.]],
+) <fig:gap_bridging>
+
+#v(2.5cm)
+
+#figure(
   image("../../../resources/software/Error_in_external_plugin_VTK_2026-03-30 11-11-14.png"),
   caption: [Demonstration of one of the failing plugins and the lack of user feedback on what went wrong],
 ) <error_in_external_plugins>
