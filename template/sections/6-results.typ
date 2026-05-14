@@ -307,7 +307,8 @@ From this graph we can see that the precision is consistently lower than thresho
     ),
     x-label: "Recall",
     y-label: "Precision",
-  )
+  ),
+  caption:[CA-RU-R 222]
 )
 
 #figure(

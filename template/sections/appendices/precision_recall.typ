@@ -2,12 +2,18 @@
   curves,
   x-label: "Recall",
   y-label: "Precision",
+  chart-width:200pt,
+  chart-height:200pt,
+  pad-left: 36pt,
+  pad-bottom: 30pt,
+  legend-width: 120pt,
+  show-legend: true
 ) = {
-  let chart-width  = 300pt
-  let chart-height = 300pt
-  let pad-left     = 36pt
-  let pad-bottom   = 30pt
-  let legend-width = 120pt
+  // let chart-width  = 300pt
+  // let chart-height = 300pt
+  // let pad-left     = 36pt
+  // let pad-bottom   = 30pt
+  // let legend-width = 120pt
   let axis-colour  = rgb("#555")
   let tick-size    = 7pt
   let n-ticks      = 5
@@ -109,34 +115,36 @@
       text(size: 8pt, fill: axis-colour)[#x-label]
     )
     #place(left + top,
-      dx: -14pt, dy: chart-height / 2 - 6pt,
+      dx: -24pt, dy: chart-height / 2 - 6pt,
       rotate(-90deg, text(size: 8pt, fill: axis-colour)[#y-label])
     )
 
+    #if show-legend {
     // Legend
-    #place(left + top,
-      dx: 35pt + chart-width - legend-width - 8pt,
-      dy: 15pt,
-      box(
-        width: legend-width,
-        fill: rgb(255, 255, 255, 200),
-        inset: (x: 0.4em, y: 0.3em),
-        radius: 2pt,
-        stroke: 0.4pt + rgb("#ccc"),
-        stack(dir: ttb, spacing: 0.4em,
-          ..datasets.map(ds =>
-            stack(dir: ltr, spacing: 0.4em,
-              if ds.dashed {
-                line(length: 12pt, stroke: stroke(
-                  paint: ds.colour, thickness: 1.5pt, dash: "dashed"))
-              } else {
-                line(length: 12pt, stroke: 1.5pt + ds.colour)
-              },
-              text(size: 8pt)[#ds.label]
+      place(left + top,
+        dx: 35pt + chart-width - legend-width - 8pt,
+        dy: 15pt,
+        box(
+          width: legend-width,
+          fill: rgb(255, 255, 255, 200),
+          inset: (x: 0.4em, y: 0.3em),
+          radius: 2pt,
+          stroke: 0.4pt + rgb("#ccc"),
+          stack(dir: ttb, spacing: 0.4em,
+            ..datasets.map(ds =>
+              stack(dir: ltr, spacing: 0.4em,
+                if ds.dashed {
+                  line(length: 12pt, stroke: stroke(
+                    paint: ds.colour, thickness: 1.5pt, dash: "dashed"))
+                } else {
+                  line(length: 12pt, stroke: 1.5pt + ds.colour)
+                },
+                text(size: 8pt)[#ds.label]
+              )
             )
           )
         )
       )
-    )
+    }
   ]
 }

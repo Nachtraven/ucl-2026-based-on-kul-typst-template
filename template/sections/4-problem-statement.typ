@@ -1,3 +1,6 @@
+#import "./appendices/graph_results.typ": results-chart
+#import "appendices/precision_recall.typ" : xy-curve
+
 // Problem statement: 2 pages, contains general goal, objectives
 // summarize points mentioned in SOTA
 // Highligts important remaining research questions, main goal and sub objectives
@@ -14,6 +17,8 @@
 // Microvasculature in CECT Micro-CT data is characterized by small and low contrast vessels with discontinuities and diffusion-induced intensity gradients. Existing extraction methods divide between data-driven approaches that require annotated training data unavailable for this regime, and classical methods that require careful hyperparameter tuning. Existing software pipelines generally target large vasculature or are unintegrated into software tools.
 
 
+// TODO: what I am considering changing here is looking at the data - the SOTA discusses the challenges encountered, but doesn't illustrate them: I think it would be relevant to the reader to see exactly why thresholding alone doesn't work, and why frangi alone doesn't work either. This would mean putting an ROC curve that shows we never reach 100% tp with 0% fp using for example a very high threshold, because the vessel values are intermingled in the grey value histogram. I would also show that frangi alone doesn't work. 
+
 In a diverse software landscape for analysis of 3D data, this work aims to answer the question _"How can an open-source microvasculature extraction pipeline be developed, able to be used by non computer scientists, leveraging classical segmentation methods and sparse user-driven input to obtain useful segmentations on CECT data across a diverse dataset?"_ and is defined by three principal constraints:
 
 *(i)* Data: Contrast-enhanced micro-CT of tumor microvasculature with compression artifacts, intensity gradients and discontinuities, and a highly imbalanced data distribution with small target structures only a few voxels across. 
@@ -25,7 +30,73 @@ In a diverse software landscape for analysis of 3D data, this work aims to answe
 
 == Goal
 
-This work will develop a 3D Slicer extension for microvasculature segmentation from the provided data of CECT imaged murine tumors, intended for use by non computer scientists. The algorithm will be able to infer vessels on both the data previously considered "reliable" as well as those samples labeled "unreliable", without requiring annotated training data. The development will integrate user feedback and consider the limitations of 3DSlicer as well as challenges imposed by dataset size.
+We aim to improve on the performance shortcomings of thresholding and other intensity only segmentation methods: to illustrate this, in @fig:pr_methodo a sweep is run across all possible thresholding values, and measure against a manually annotated ground truth on an illustrative subvolume that contains small disconnected vessles, a light gradient, and some noisy elements. The precision-recall curve ignores true negatives and avoids giving them an outsized weight, but still allows us to understand the problem at hand: thresholding, no matter how high, will include false positives (_all high valued pixels are not necessarily vessels, the strucutral gap (1)_) and at low values needed to capture faint vessels, the false positives are very high (_vessel intensities overlap with background, making any thresholding a compromise (2)_).
+
+// TODO: better explain the trade-off
+
+// PR curve 
+// Precision  = True Positives / (True Positives + False Positives)
+// Recall     = True Positives / (True Positives + False Negatives)
+#v(0.2cm)
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    column-gutter: 1em,
+    align: top,
+    image("../../resources/images/methodology_pr_curve_data.png", width: 90%),
+    
+    
+    box[
+      #xy-curve(
+        (
+          (csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+          label: "Thresholding",
+          colour: rgb("#e63946")),
+        ),
+        x-label: "Recall",
+        y-label: "Precision",
+        chart-width:180pt,
+        chart-height:180pt,
+        pad-left: 12pt,
+        pad-bottom: 22pt,
+        legend-width: 100pt,
+        show-legend: false
+      )
+
+      // Arrow 1 — points up-left
+      #place(left + top,
+        dx: 30pt, dy: 45pt,
+        line(
+          start: (0pt, 20pt),
+          end: (0pt, -40pt),
+          stroke: 1pt + black,
+          // marker-end: "stealth",
+        )
+      )
+      #place(left + top,
+        dx: 35pt, dy: 25pt,
+        text(size: 8pt)[_(1) strucutral gap_]
+      )
+
+      // Arrow 2 — points down-right
+      #place(left + top,
+        dx: 110pt, dy: 130pt,
+        line(
+          start: (0pt, 0pt),
+          end: (40pt, 30pt),
+          stroke: 1pt + black,
+          // marker-end: "stealth",
+        )
+      )
+      #place(left + top,
+        dx: 130pt, dy: 130pt,
+        text(size: 8pt)[_(2) challenging extraction_]
+      )
+    ]
+  ),
+  caption: [*(Left)* Run 2 CA-RU-R subsample *(Right)* Thresholding precision-recall curve showing _(1) strucutral gap_: precision never reaches 1.0, and _(2) challenging extraction_: precision falls off sharply as recall increases, high recall cannot be achieved without sacrificing precision]
+) <fig:pr_methodo>
+
 
 
 == Objectives

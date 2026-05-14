@@ -4,10 +4,19 @@
 
 // In order to maintain interoperability the 3D Slicer plugin needed to export data in one of two ways: *(i)* a fashion that transparently fits into the existing pipeline, namely that of exporting raw binary segmentations that could then be re-imported elsewhere *(ii)* an export format that better enforces scientific rigor and enables easier data sharing, in the form of DICOM. This second option will offer the team growth perspectives in opening the door for easier collaboration with computer scientists as well as other researchers downstream.
 
+// #import "appendices/precision_recall_old.typ": pr-curve
+
+
+#import "./appendices/graph_results.typ": results-chart
+#import "appendices/precision_recall.typ" : xy-curve
+
 
 = Methodology
+// OLD: This chapter documents the development of the 3D Slicer plugin, from the implementation and user interaction, through the method for combining algorithms and the different algorithms explored, and ending in an ablation study to simplify the pipeline and enable usable runtimes and memory use.
 
-This chapter documents the development of the 3D Slicer plugin, from the implementation and user interaction, through the method for combining algorithms and the different algorithms explored, and ending in an ablation study to simplify the pipeline and enable usable runtimes and memory use.
+
+// In order to understand the challenge at hand, it is important to begin by looking at how thresholding performs. In @fig:pr_methodo we run a sweep across all possible thresholding values, and measure against a manually annotated ground truth on an illustrative subvolume that contains small disconnected vessles, a light gradient, and some noisy elements. A precision-recall curve is used as it ignores true negatives and avoids giving them an outsized weight, but still allows us to understand the problem at hand: thresholding, no matter how high, will include false positives (_all high valued pixels are not necessarily voxels, the strucutral gap (1)_) and at low values needed to capture faint vessels, the false positives are very high (_low vessel contrast results in challenging extraction (2)_).
+
 
 == Tooling: 3D Slicer plugin
 

@@ -132,7 +132,7 @@
     let methods = (
       (0.4, 0.4, "Otsu",                "north"),
       (1.0, 1.5, "Region-growing",      "east"),
-      (1.2, 3.0, "Frangi",              "north"),
+      (1.2, 4.95, "Frangi",              "north"),
       (1.8, 6.0, "Minimal-path",        "north"),
       (8.0, 2.2, "U-Net / V-Net",       "north"),
       (6.0, 4.0, "Hybrid Frangi + U-Net", "south"),
@@ -181,8 +181,7 @@
     // )
   }),
   caption: [
-    Vascular segmentation methods. *x-axis:* training-data needed. *y-axis:* level of encoding of vessel topology. Classical methods cluster on the left, requiring no training data, but vary in the priors they encode: Otsu encodes none, Frangi encodes local tubularity but not connectivity,
-    minimal-path methods enforce connectivity by construction at the cost of user-provided seeds. Data-driven methods (U-Net, V-Net) cluster on the right with high data needs and lack topological awareness when trained with voxel-wise losses. _Hybrid approaches_ as used in this thesis combine vesselness inputs with a learned correction stage.
+    Vascular segmentation methods. *x-axis:* input training-data needed. *y-axis:* level of encoding of vessel topology. Classical methods cluster on the left, requiring no training data and some hyperparameters, and vary in the priors they encode: Otsu encodes none, Frangi encodes local tubularity but not connectivity, minimal-path methods enforce connectivity by construction at the cost of user-provided seeds. Data-driven methods (U-Net, V-Net) cluster on the right with high data needs and lack topological awareness when trained with voxel-wise losses. _Hybrid approaches_, as in this thesis, combine image intensity derived vesselness (topological awareness) with two forms of user input: annotation points and adjustable hyperparameters (data needs).
   ],
 ) <fig:segmentation-taxonomy>
 

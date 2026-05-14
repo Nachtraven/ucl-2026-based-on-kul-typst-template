@@ -134,9 +134,9 @@ Tumors also present a particularity in that they are frequently partially or ent
       image-with-line("../../resources/images/ca-rl-l_1489.jpg", blue, "CA-RL-L - Unreliable"),
     ),
   ),
-  caption: [*Top:* Grey values of a reliable scan (Red) and unreliable scan (Blue). An ideal scan would be approximately flat within the tumor.
+  caption: [*Top:* Illustrative grey values of a reliable scan (Red) and unreliable scan (Blue). An ideal scan would be approximately flat within the tumor.
   
-  *Bottom Left:* CA-RL-L, considered previously unreliable. *Bottom Right:* CA-RU-R, considered reliable.],
+  *Bottom Left:* CA-RU-R, considered reliable. *Bottom Right:* CA-RL-L, considered previously unreliable.],
 ) <reliability_of_scans>
 #v(0.2cm)
 
@@ -290,10 +290,41 @@ When data is available it may be used directly, although models trained on one i
 // Stucki et al. 2023 or similar work on Betti-number errors and persistent-homology-based evaluation.
 // VesselGraph (Paetzold et al. 2021, NeurIPS) — provides graph-level metrics for vessel segmentation evaluation.
 
-When training a model, or evaluating a method, it is important to be able to measure performance in a repeatable and objective way independent of human feedback. In binary classification, the error rate can be as simple as the proportion of correctly classified examples, however as dimensionality of outputs increases, so does the complexity of evaluation methods.
+When training a model, or evaluating a method, it is important to be able to measure performance in a repeatable and objective way independent of human feedback. Error can be point wise, as is needed for backpropagation in machine learning, or on an aggregate level, as is needed for evaluating system performance, with complexity increasing as dimensionality increases. //In binary classification, the error rate can be as simple as the proportion of correctly classified examples, however as dimensionality of outputs increases, so does the complexity of evaluation methods.
 
 #linebreak()
-Loss functions such as cross-entropy used for binary classification calculate the loss on a point-by-point basis, based on the predicted distribution. It can be used for segmentation @unet_og_paper, however vessel segmentation has a severe class-imbalance with vessels being a small minority of voxels. The choice of loss function matters as a result: Pixel-independent losses like cross-entropy treat each prediction as independent, meaning for our biased distribution there is a prior of predicting background and producing fragmented or incomplete vessel predictions. V-Net @vnet_paper extended U-Net into 3D and improved performance by using Dice loss, a method better suited for class-imbalanced settings.
+Loss functions such as cross-entropy used for binary classification calculate the loss on a point-by-point basis, based on the predicted distribution. It can be used for segmentation @unet_og_paper, however vessel segmentation has a severe class-imbalance with vessels being a small minority of voxels. The choice of loss function matters as a result: Pixel-independent losses like cross-entropy treat each prediction as independent, meaning for our biased distribution there is a prior of predicting background and producing fragmented or incomplete vessel predictions. V-Net @vnet_paper extended U-Net into 3D and improved performance by using DICE (also known as F1 score), a method better suited for class-imbalanced settings.
+
+#v(0.25cm)
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    column-gutter: 1em,
+    align: top,
+    [
+      $ "Dice" = (2 "TP") / (2 "TP" + "FP" + "FN") $
+    ],
+    [
+      $ "Dice"(A, B) = (2 |A inter B|) / (|A| + |B|) $
+    ],
+  ),
+  caption: [DICE can be used for comparing segmentations A and B, or on binary data. As is shown in the second equation, DICE is agnostic to true negatives (TN) avoiding their outsized weight in heavily imbalanced settings.]
+)
+#v(0.25cm)
+
+DICE has some specific known downsides for 3D medical image segmentation @Taha2015 relevant here are the equal treatment of FP and FN, and unawareness of spatial differences, and the detection gap, where small totally undetected areas are treated the same as small mismatches in large coverage areas.
+
+#import "appendices/DICE_overlap.typ": dice_diagram
+
+#v(0.25cm)
+#figure(
+  dice_diagram(),
+  caption: [A major DICE challenge in the context of vessel segmentation, where many small vessels (orange) are present but detections (green) in one case totally fail to pick up on certain vessels. These situations would have a similar DICE score, showing the bias towards large overlapping regions, as discussed in @Taha2015.]
+) <fig:dice-detection>
+#v(0.35cm)
+
+// Other more simple measures such as precision 
+// TODO: Should the precision recall curve be mentioned here since it is in the problem statement?
 
 For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream, motivating the creation of custom loss function in @clDice_loss_func called clDice, that integrate the prior of connectedness, and build it into the loss function for predictions. In @CFLoss_loss_func clinically relevant vascular features are encoded into the loss function. A collection of topology-aware loss functions is available in @topolosses. Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level @VesselGraph. 
 
@@ -353,32 +384,45 @@ The landscape of vascular segmentation tools reflects a tension in bio-informati
 
 
 
-#pagebreak()
-=== Segmenting large datasets (removable)
+// #pagebreak()
+// === Segmenting large datasets (removable)
 
-I had previously here a SOTA on managing large datasets, as this was a challenge that turned up later and blocked me for a while. Would it be interesting to add?
+// I had previously here a SOTA on managing large datasets, as this was a challenge that turned up later and blocked me for a while. Would it be interesting to add?
 
-#v(0.4cm)
+// #v(0.4cm)
 
-#linebreak()
-Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
-
-
-Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
+// #linebreak()
+// Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
 
 
-Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
+// Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
 
 
-#linebreak()
-Methods exist to handle large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsampling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicers' built in slicing, requires the ability to load the full dataset. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
+// Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
 
-//An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldy for annotation and running the pipeline. 
 
-Handling large datasets can also be done at the format and loading level: HDF5 is intended to _store_ such large multidimensional arrays and efficiently enable loading subsections, however this data storage format is totally incompatible with most medical imaging software, and is not the standard used by CT machines. Standards such as DICOM did not provision for the possibility that data such as those generated by micro-CT may exist in the future in the medical domain, and do not deal well with dynamically loading large datasets from memory. To _operate on_ large multidimensional arrays in Python, there exist libraries such as #link("https://www.dask.org/")[Dask] that enable "chunking" of the data to process smaller areas: this could enable improved scaling to larger scans.
+// #linebreak()
+// Methods exist to handle large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsampling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicers' built in slicing, requires the ability to load the full dataset. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
 
-#linebreak()
-These performance concerns highlight a continuous issue encountered during the writing of this thesis: the complexity of methods able to be tested was limited by the choice of software, volume of data and the hardware available. Lab computers available to students have 32GB of ram, less than the computer used for the testing and writing of code, and it was noted by previous students working on MicroCT imaging that they had struggled to run algorithms across the whole image. In the end, much effort was invested in the research, testing and optimization of the algorithms, and runtime concerns pushed development towards the use of methods implemented in C++ available with Python bindings, such as the SimpleITK Frangi filter used. 
+// //An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldy for annotation and running the pipeline. 
+
+// Handling large datasets can also be done at the format and loading level: HDF5 is intended to _store_ such large multidimensional arrays and efficiently enable loading subsections, however this data storage format is totally incompatible with most medical imaging software, and is not the standard used by CT machines. Standards such as DICOM did not provision for the possibility that data such as those generated by micro-CT may exist in the future in the medical domain, and do not deal well with dynamically loading large datasets from memory. To _operate on_ large multidimensional arrays in Python, there exist libraries such as #link("https://www.dask.org/")[Dask] that enable "chunking" of the data to process smaller areas: this could enable improved scaling to larger scans.
+
+// #linebreak()
+// These performance concerns highlight a continuous issue encountered during the writing of this thesis: the complexity of methods able to be tested was limited by the choice of software, volume of data and the hardware available. Lab computers available to students have 32GB of ram, less than the computer used for the testing and writing of code, and it was noted by previous students working on MicroCT imaging that they had struggled to run algorithms across the whole image. In the end, much effort was invested in the research, testing and optimization of the algorithms, and runtime concerns pushed development towards the use of methods implemented in C++ available with Python bindings, such as the SimpleITK Frangi filter used. 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // #v(0.5cm)
@@ -403,6 +447,8 @@ These performance concerns highlight a continuous issue encountered during the w
 // )[
 //   todo.
 // ]
+
+
 
 
 
