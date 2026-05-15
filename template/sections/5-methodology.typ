@@ -68,7 +68,9 @@ A principled approach was required: in order to select thresholds and evaluate t
 #v(0.4cm)
 #figure(
   image("../../resources/software/overview_seed_vessel_param.png"),
-  caption: [View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported.],
+  caption: [TODO: Update to most recent. 
+  
+  View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported.],
 )
 #v(0.4cm)
 
@@ -87,8 +89,8 @@ A principled approach was required: in order to select thresholds and evaluate t
 
 To obtain a segmentation on the challenging data provided, no clear single method appeared sufficient. There is a need to both segment based on intensity, shape context, as well as be able to extrapolate vessel connections, with each step having separate hyperparameters. The final algorithm is called a _pipeline_ due to its nature of applying steps sequentially to the input data, with the final segmentation resulting from each steps' sequential action. This sequential nature is a requirement due to the size of the scans preventing running multiple algorithms on the data in parallel and each holding its own output map.
 
-==== Gaussian denoising 
-The first step of the pipeline involves using Gaussian denoising to reduce scan and jpeg compression noise, as applied in @wlodarski. The size of the kernel for this step must be carefully chosen as a large denoising will remove small blood vessels.
+// ==== Gaussian denoising 
+// The first step of the pipeline involves using Gaussian denoising to reduce scan and jpeg compression noise, as applied in @wlodarski. The size of the kernel for this step must be carefully chosen as a large denoising will remove small blood vessels.
 
 ==== Frangi vesselness
 The Frangi vesselness filter is applied across multiple scales, to identify tubular structures. As it is a memory hungry process, tiling is optionally used to run Frangi on smaller subregions and then recombine the results, reducing peak memory use.
@@ -101,19 +103,25 @@ The Frangi vesselness filter is applied across multiple scales, to identify tubu
 #v(0.2cm)
 // To go beyond the limitations of threshold based segmentation, the generalized C++ implementation of Frangi in SimpleITK was used. The algorithm was applied at multiple scales (different expected vessel sizes) with the outputs collected together into a probability map. Frangi is known for having multiple hyperparameters that require fine tuning: in order to offer the user a simple solution, the parameters for the minimum and maximum vessel scale are pre-defined, and the vessel parameters fixed. 
 
-==== Intensity likelyhood
+==== Localized intensity probability
+
+TODO: re-write this with updated text. This is stageLocalIntensityProb
 Each pixel calculates a vesselness probability based on the intensity characteristics of the user provided points. From this step and the Frangi vesselness, a combined _likelyhood map_ is created of the vesselness to directly rule out most potential points (a point with a grey value outside of the intensity range of user annotated points and not having a tubular structure is unlikely to be a point providing direct evidence of a vessel).
 
-// These probability maps are the same size as the volume being analuzed, and contain a floating point value for each point [0.0-1.0]. This enabled flexibly weighing and stacking different methods to directly view the segmentation results across different steps in the pipeline. It also enables, by utilizing per method probability maps, for rapidly iterating the weights used to obtain the final segmentation. 
+NOTE: this step, because of its locality, means that a strong signal will drown out surrounding ones. One of the reasons behind needing to rebuild the network
 
-==== Ridge extraction
+
+==== Combining intensity with Frangi
+Combine frangi with intensity map probMap = (frangi x p_intensity).astype(np.float32, copy=False)
+Here talk about how we use the combination of both to remove some of the noise and re-introduce the greyvalue weight since frangi abstracts it
+
+==== Ridge extraction & iteration
+
+TODO: rewirte this based on stageGrowFromPMap. It does stageRidgeExtract, then stageAutoSeed over n_rounds, 
 As the user has already provided vessel points, it is reasonable to assume that high valued points attached to the annotation are vessel. As a result, it makes sense to leverage these points with this prior in mind: ridge following is implemented, using TubeTK ridge extraction. Ridge following involves expanding outward by following high _likelyhood_ ridges. This step runs in multiple loops to iteratively extend the vessels.
 
-==== Seed discovery
-After extending the vessels placed by the user, new potential vessels are discovered using the values of the _likelyhood map_ of user points. High likelyhood points are considered for extension, and are then extended via ridge extraction.
-
-==== Large blob removal
-Large circular or blob shaped detections are removed by filtering based on a defined probability threshold, exploiting the fact that blobs contain multiple tubes connected with low likelyhood to eachother.
+==== Blob removal
+TODO: maybe remove because this is now purely done in the stageGrowFromPMap. OLD: Large circular or blob shaped detections are removed by filtering based on a defined probability threshold, exploiting the fact that blobs contain multiple tubes connected with low likelyhood to eachother.
 
 
 === User feedback
@@ -126,6 +134,16 @@ After the pipeline is run, a binary segmentation mask is produced and visualized
 
 
 // Parameter sweep and selection is in results -> it depends on the data and decides the final parameters used.
+
+=== Hyperparameter sensitivity analysis
+
+In order to explore the region space of possible hyperparameters and develop the pipeline, a set of data were manually annotated using 3D Slicer's built in tool. This was done on a slice by slice basis then a round of closing run (to close the small gaps). Once an initial piece of data was available, it was used for huperparameter exploration
+
+The parameter space was swept at different settings etc etc
+
+=== Final parameters
+
+bla bla these are the params and they are now the default
 
 
 

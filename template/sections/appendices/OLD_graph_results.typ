@@ -1,32 +1,36 @@
+// --- Configuration ---
+#let csv-data = csv("./results.csv")
+#let headers = csv-data.at(0)
+#let rows = csv-data.slice(1)
+
+
+
 #let results-chart(series, maximum, y-label, derived-series: ()) = {
+  let x-col = "chunk_name"
 
-  // Load CSV per series — each series specifies its own csv path and row index
-  let load-cell-val(csv-path, row-idx, col-name) = {
-    let data = csv(csv-path)
-    let hdrs = data.at(0)
-    let rows = data.slice(1)
-    let i = hdrs.position(h => h == col-name)
-    float(rows.at(row-idx).at(i))
+  let col-index(name) = headers.position(h => h == name)
+  let cell-val(row, name) = float(row.at(col-index(name)))
+  let cell-ratio(row, num, den) = {
+    let d = cell-val(row, den)
+    if d == 0.0 { 0.0 } else { cell-val(row, num) / d }
   }
 
-  let load-cell-ratio(csv-path, row-idx, num, den) = {
-    let d = load-cell-val(csv-path, row-idx, den)
-    if d == 0.0 { 0.0 } else { load-cell-val(csv-path, row-idx, num) / d }
-  }
-
+  // Merge direct and derived series into a unified list for rendering.
+  // Direct series: (col, colour, label)
+  // Derived series: (num-col, den-col, colour, label)
+  // Normalised to (value-fn, colour, label) for the bar loop.
   let all-series = (
     ..series.map(s => (
-      value: load-cell-val(s.at("csv"), s.at("row"), s.col),
+      val:    row => cell-val(row, s.col),
       colour: s.colour,
       label:  s.label,
     )),
     ..derived-series.map(s => (
-      value:  load-cell-ratio(s.csv, s.row, s.num, s.den),
+      val:    row => cell-ratio(row, s.num, s.den),
       colour: s.colour,
       label:  s.label,
     )),
   )
-
 
   let chart-width   = 420pt
   let chart-height  = 180pt
@@ -42,11 +46,10 @@
   let y-tick-step = y-max / (n-ticks - 1)
   let y-ticks     = range(n-ticks).map(i => i * y-tick-step)
 
-  // let n-groups    = rows.len()
-  let group-width = chart-width - bar-group-gap * 2
+  let n-groups    = rows.len()
   let n-bars      = all-series.len()
+  let group-width = (chart-width - bar-group-gap * (n-groups + 1)) / n-groups
   let bar-width   = (group-width - bar-gap * (n-bars - 1)) / n-bars
-
 
   block(width: chart-width + 40pt, height: chart-height + 25pt)[
     #set align(left)
@@ -66,14 +69,27 @@
       )
     }
 
-    // Single group of bars — no row iteration since each series has its own CSV/row
-    #for (bi, s) in all-series.enumerate() {
-      let bar-h = chart-height * (s.value / y-max)
-      let bar-x = 30pt + bar-group-gap + bi * (bar-width + bar-gap)
+    #for (gi, row) in rows.enumerate() {
+      let group-x = 30pt + bar-group-gap + gi * (group-width + bar-group-gap)
+      let x-label = row.at(col-index(x-col))
+
       place(left + top,
-        dx: bar-x, dy: chart-height - bar-h,
-        rect(width: bar-width, height: bar-h, fill: s.colour, stroke: none)
+        dx: group-x + group-width / 2 - 20pt,
+        dy: chart-height + 6pt,
+        box(width: 40pt, align(center,
+          text(size: label-size, fill: axis-colour)[#x-label]
+        ))
       )
+
+      for (bi, s) in all-series.enumerate() {
+        let val   = (s.val)(row)
+        let bar-h = chart-height * (val / y-max)
+        let bar-x = group-x + bi * (bar-width + bar-gap)
+        place(left + top,
+          dx: bar-x, dy: chart-height - bar-h,
+          rect(width: bar-width, height: bar-h, fill: s.colour, stroke: none)
+        )
+      }
     }
 
     #place(left + top, dx: 30pt, dy: 0pt,

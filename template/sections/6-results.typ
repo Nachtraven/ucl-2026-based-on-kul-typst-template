@@ -9,21 +9,36 @@
 // Shape based fill the "intensity" gap, and disconnection based fill the "disconnection" gap
 // 
 
+// https://www.learnui.design/tools/data-color-picker.html
+// Colour scale:
+// #00876c
+// #9bb290
+// #e4e2df
+// #d89e78
+// #d43d51
+
+// Palette:
+// #003f5c
+// #78529b
+// #ef537d
+// #ffa600
+
+// Palette 5:
+// #003f5c
+// #575092
+// #bb4e99
+// #ff5f68
+// #ffa600
+
 
 
 #import "./appendices/graph_results.typ": results-chart
-// #import "appendices/precision_recall_old.typ": pr-curve
+#import "./appendices/DICE_results_graph.typ": draw-dice
 #import "appendices/precision_recall.typ" : xy-curve
 
 = Results
 
-=== Parameter sweep and selection
-
-As the pipeline contains multiple possible hyperparameters, this presents a search space for different performance tradeoffs. In order to explore this space, a wider 
-
-
-
-The plugin is measured both against thresholding, the method previously used, and against a manually annotated baseline. 
+In order to provide relevant metrics, the plugin is measured both against thresholding, the method previously used, and against a manually annotated baseline. 
 
 As mentioned, the user is expected to place vessel, background and outside-of-volume points. These act as points used to to guide and define hyperparameters of the algorithms and also as a performance metric: when the pipeline is run, feedback is given with how many vessel points are correctly classified. However this method of performance evaluation has shotcomings: data is evaluated pointwise, ignoring connectivity and vessel size, and it is inherently done in 2D.  //As users also place points generally towards the center of the vessels, there is little measurement of the width of vessels beyond if a background point ends up being caught in the vessel prediction.
 
@@ -112,28 +127,6 @@ However an important caveat is to be kept in mind for the following section: as 
 #v(0.1cm)
 
 
-
-// https://www.learnui.design/tools/data-color-picker.html
-// Colour scale:
-// #00876c
-// #9bb290
-// #e4e2df
-// #d89e78
-// #d43d51
-
-// Palette:
-// #003f5c
-// #78529b
-// #ef537d
-// #ffa600
-
-// Palette 5:
-// #003f5c
-// #575092
-// #bb4e99
-// #ff5f68
-// #ffa600
-
 #pagebreak()
 == Performance results
 
@@ -141,107 +134,342 @@ Performance is analyzed both _quantitatively_ and _qualitatively_: quantative nu
 
 
 === Quantitative analysis 
+// Order:
+// CA-RU-R 222
+// CA-RU-R 666
+// CA-LL-R 427
+// CA-NM-L 319
+// CA-NM-L 957
+// CA-LL-L1 498
+
+
+#figure(
+    xy-curve(
+    (
+      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "Thresholding",      colour: rgb("#e63946")),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "CollaboratiVessel", colour: rgb("#457b9d")),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "Frangi", colour: rgb("#459d6b")),
+    ),
+    x-label: "Recall",
+    y-label: "Precision",
+  ),
+  caption:[CA-RU-R 222]
+)
+
+
+#figure(
+    xy-curve(
+    (
+      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        label: "Thresholding",      colour: rgb("#e63946")),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        label: "CollaboratiVessel", colour: rgb("#457b9d")),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        label: "Frangi", colour: rgb("#459d6b")),
+    ),
+    x-label: "Recall",
+    y-label: "Precision",
+  ),
+  caption:[CA-RU-R 666]
+)
+
+#figure(
+    xy-curve(
+    (
+      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        label: "Thresholding",      colour: rgb("#e63946")),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        label: "CollaboratiVessel", colour: rgb("#457b9d")),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        label: "Frangi", colour: rgb("#459d6b")),
+    ),
+    x-label: "Recall",
+    y-label: "Precision",
+  ),
+  caption:[CA-LL-R 427]
+)
+
+
+
+// #figure(
+//     xy-curve(
+//     (
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "Thresholding",      colour: rgb("#e63946")),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "CollaboratiVessel", colour: rgb("#457b9d")),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "Frangi", colour: rgb("#459d6b")),
+//     ),
+//     x-label: "Recall",
+//     y-label: "Precision",
+//   ),
+//   caption:[CA-NM-L 319]
+// )
+
+// #figure(
+//     xy-curve(
+//     (
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "Thresholding",      colour: rgb("#e63946")),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "CollaboratiVessel", colour: rgb("#457b9d")),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "Frangi", colour: rgb("#459d6b")),
+//     ),
+//     x-label: "Recall",
+//     y-label: "Precision",
+//   ),
+//   caption:[CA-NM-L 957]
+// )
+
+// #figure(
+//     xy-curve(
+//     (
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "Thresholding",      colour: rgb("#e63946")),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "CollaboratiVessel", colour: rgb("#457b9d")),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         label: "Frangi", colour: rgb("#459d6b")),
+//     ),
+//     x-label: "Recall",
+//     y-label: "Precision",
+//   ),
+//   caption:[CA-LL-L1 498]
+// )
+
+#pagebreak()
+Aggregated DICE:
 
 #v(0.5cm)
+#let RES = "../../../resources/images/results/new_pipeline_may_15"
 #figure(
-  results-chart((
-    (col: "pred_gt_vol", colour: rgb("#003f5c"), label: "Pred Ratio"),
-    (col: "thr_gt_vol",  colour: rgb("#ffa600"), label: "Thr Ratio"),
-  ), 24.0, "Ratio"),
-  caption: [Ratio of segmentation to ground truth volume, offering a quantification for extrapolation (higher = more extrapolation/false positives).],
+  draw-dice(
+    (
+      (name: "CA-RU-R\n916/901/222",
+       tool_csv: RES + "/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", tool_row: 8,
+       thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", thr_row: 89),
+      (name: "CA-RU-R\n687/451/666",
+       tool_csv: RES + "/PIPE_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", tool_row: 19,
+       thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", thr_row: 73),
+      (name: "CA-LL-R\n298/233/427",
+       tool_csv: RES + "/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", tool_row: 36,
+       thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
+      
+
+    ),
+  ),
+  caption: [DICE and clDICE of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE]
 )
 #v(0.5cm)
 
 
-As shown, the algorithm produces in 2 of 6 cases an extreme extrapolation. In 4 of 6 cases, extrapolation is a lot more closely aligned with thresholding.Next, classical DICE and connection weighted clDICE scores are interesing to obseve, although they suffer from the extrapolation, for the four closely matched cases. Here it can be seen that in those 4 cases, the DICE and clDICE scores are close.
-#v(0.5cm)
+
+
+
+
+
+// #v(0.5cm)
+// #figure(
+// results-chart((
+//   (col: "cl_len_pred_mm", colour: rgb("#003f5c"), label: "Tool"),
+//   (col: "cl_len_thr_mm",  colour: rgb("#78529b"), label: "Threshold"),
+//   (col: "gt_len",  colour: rgb("#ef537d"), label: "Ground truth"),
+// ), 60.0, "mm"),
+//   caption: [Continuous length estimates of predicted vessels],
+// )
+// #v(0.5cm)
+
+
+// #figure(
+//   results-chart(
+//     (
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, col: "pred_gt_dice",   colour: rgb("#003f5c"), label: "Tool Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, col: "pred_gt_dice",   colour: rgb("#78529b"), label: "Thr Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, col: "pred_gt_cldice", colour: rgb("#ffa600"), label: "Thr clDice"),
+
+//         (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+//         row: 19, col: "pred_gt_dice",   colour: rgb("#003f5c"), label: "Tool Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+//         row: 73, col: "pred_gt_dice",   colour: rgb("#78529b"), label: "Thr Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+//         row: 19, col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+//         row: 73, col: "pred_gt_cldice", colour: rgb("#ffa600"), label: "Thr clDice"),
+
+//         (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 36, col: "pred_gt_dice",   colour: rgb("#003f5c"), label: "Tool Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 64, col: "pred_gt_dice",   colour: rgb("#78529b"), label: "Thr Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 36, col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 64, col: "pred_gt_cldice", colour: rgb("#ffa600"), label: "Thr clDice"),
+//     ),
+//     1.0,
+//     "Score",
+//   ),
+//   caption: [DICE and clDICE of pipeline against thresholding, using the optimal threshold for the higest DICE/clDICE],
+// )
+
+
+
+
+
+
+
+
+
+
+// #figure(
+//   results-chart(
+//     (
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, col: "pred_gt_dice",   colour: rgb("#003f5c"), label: "Tool Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, col: "pred_gt_dice",   colour: rgb("#78529b"), label: "Thr Dice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, col: "pred_gt_cldice", colour: rgb("#ffa600"), label: "Thr clDice"),
+//     ),
+//     1.0,
+//     "Score",
+//     // derived-series: (
+//     //   (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//     //     row: 8, num: "vessel_seeds_correct", den: "vessel_seeds_total",   
+//     //     colour: rgb("#003f5c"), label: "Pipeline Vessel seeds"),
+//     //   (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//     //     row: 89, num: "bg_seeds_correct",     den: "bg_seeds_total",   
+//     //     colour: rgb("#78529b"), label: "Pipeline BG seeds"),
+//     //   (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//     //     row: 8, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//     //     colour: rgb("#ef537d"), label: "Threshold Vessel seeds"),
+//     //   (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//     //     row: 89, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//     //      colour: rgb("#ffa600"), label: "Threshold BG seeds"),
+//     // )
+//   ),
+//   caption: [DICE and clDICE of pipeline against thresholding, using the optimal threshold for the higest DICE/clDICE],
+// )
+
+
+
+
+
+
+
+
+
+// #v(0.5cm)
 // #figure(
 //   results-chart((
-//     (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
-//     (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
-//     (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
-//     (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
-//   ), 1.0, "DICE"),
-//   caption: [DICE and clDICE results],
+//     (col: "pred_gt_vol", colour: rgb("#003f5c"), label: "Pred Ratio"),
+//     (col: "thr_gt_vol",  colour: rgb("#ffa600"), label: "Thr Ratio"),
+//   ), 24.0, "Ratio"),
+//   caption: [Ratio of segmentation to ground truth volume, offering a quantification for extrapolation (higher = more extrapolation/false positives).],
 // )
-// DICE + seed agreement on the same chart:
-#figure(
-  results-chart(
-    (
-      (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
-      (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
-      (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
-      (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
-    ),
-    1.0,
-    "Score",
-    derived-series: (
-      // (num: "vessel_seeds_correct", den: "vessel_seeds_total", colour: rgb("#ef537d"), label: "Pipeline Vessel seeds"),
-      // (num: "bg_seeds_correct",     den: "bg_seeds_total",     colour: rgb("#ffa600"), label: "Pipeline BG seeds"),
-      // (num: "thr_vessel_seeds_correct", den: "thr_vessel_seeds_total", colour: rgb("#ef537d"), label: "Threshold Vessel seeds"),
-      // (num: "thr_bg_seeds_correct",     den: "thr_bg_seeds_total",     colour: rgb("#ffa600"), label: "Threshold BG seeds"),
-    )
-  ),
-  caption: [DICE vs seed agreement],
-)
-#v(0.5cm)
-
-This shows what appears to be substantially better performance than our tool, however when evaluating the length of predicted vessels within the ground truth:
+// #v(0.5cm)
 
 
-#v(0.5cm)
-#figure(
-  results-chart(
-    (
-      // (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
-      // (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
-      // (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
-      // (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
-    ),
-    1.0,
-    "Score",
-    derived-series: (
-      (num: "vessel_seeds_correct", den: "vessel_seeds_total", colour: rgb("#003f5c"), label: "Pipeline Vessel seeds"),
-      (num: "bg_seeds_correct",     den: "bg_seeds_total",     colour: rgb("#78529b"), label: "Pipeline BG seeds"),
-      (num: "thr_vessel_seeds_correct", den: "thr_vessel_seeds_total", colour: rgb("#ef537d"), label: "Threshold Vessel seeds"),
-      (num: "thr_bg_seeds_correct",     den: "thr_bg_seeds_total",     colour: rgb("#ffa600"), label: "Threshold BG seeds"),
-    )
-  ),
-  caption: [seed agreement],
-)
-#v(0.5cm)
+// As shown, the algorithm produces in 2 of 6 cases an extreme extrapolation. In 4 of 6 cases, extrapolation is a lot more closely aligned with thresholding.Next, classical DICE and connection weighted clDICE scores are interesing to obseve, although they suffer from the extrapolation, for the four closely matched cases. Here it can be seen that in those 4 cases, the DICE and clDICE scores are close.
+// #v(0.5cm)
+// // #figure(
+// //   results-chart((
+// //     (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
+// //     (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
+// //     (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+// //     (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
+// //   ), 1.0, "DICE"),
+// //   caption: [DICE and clDICE results],
+// // )
+// // DICE + seed agreement on the same chart:
+// #figure(
+//   results-chart(
+//     (
+//       (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
+//       (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
+//       (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+//       (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
+//     ),
+//     1.0,
+//     "Score",
+//     derived-series: (
+//       // (num: "vessel_seeds_correct", den: "vessel_seeds_total", colour: rgb("#ef537d"), label: "Pipeline Vessel seeds"),
+//       // (num: "bg_seeds_correct",     den: "bg_seeds_total",     colour: rgb("#ffa600"), label: "Pipeline BG seeds"),
+//       // (num: "thr_vessel_seeds_correct", den: "thr_vessel_seeds_total", colour: rgb("#ef537d"), label: "Threshold Vessel seeds"),
+//       // (num: "thr_bg_seeds_correct",     den: "thr_bg_seeds_total",     colour: rgb("#ffa600"), label: "Threshold BG seeds"),
+//     )
+//   ),
+//   caption: [DICE vs seed agreement],
+// )
+// #v(0.5cm)
+
+// This shows what appears to be substantially better performance than our tool, however when evaluating the length of predicted vessels within the ground truth:
+
+
+// #v(0.5cm)
+// #figure(
+//   results-chart(
+//     (
+//       (col: "pred_gt_dice", colour: rgb("#003f5c"), label: "Tool Dice"),
+//       (col: "thr_gt_dice",  colour: rgb("#78529b"), label: "Thr Dice"),
+//       (col: "pred_gt_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+//       (col: "thr_gt_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
+//     ),
+//     1.0,
+//     "Score",
+//     derived-series: (
+//       (num: "vessel_seeds_correct", den: "vessel_seeds_total", colour: rgb("#003f5c"), label: "Pipeline Vessel seeds"),
+//       (num: "bg_seeds_correct",     den: "bg_seeds_total",     colour: rgb("#78529b"), label: "Pipeline BG seeds"),
+//       (num: "thr_vessel_seeds_correct", den: "thr_vessel_seeds_total", colour: rgb("#ef537d"), label: "Threshold Vessel seeds"),
+//       (num: "thr_bg_seeds_correct",     den: "thr_bg_seeds_total",     colour: rgb("#ffa600"), label: "Threshold BG seeds"),
+//     )
+//   ),
+//   caption: [DICE, clDICE & seed agreement],
+// )
+// #v(0.5cm)
 
 
 
 
 
-#v(0.5cm)
-#figure(
-results-chart((
-  (col: "cl_len_pred_mm", colour: rgb("#003f5c"), label: "Tool"),
-  (col: "cl_len_thr_mm",  colour: rgb("#78529b"), label: "Threshold"),
-  (col: "gt_len",  colour: rgb("#ef537d"), label: "Ground truth"),
-), 60.0, "mm"),
-  caption: [Continuous length estimates of predicted vessels],
-)
-#v(0.5cm)
+// #v(0.5cm)
+// #figure(
+// results-chart((
+//   (col: "cl_len_pred_mm", colour: rgb("#003f5c"), label: "Tool"),
+//   (col: "cl_len_thr_mm",  colour: rgb("#78529b"), label: "Threshold"),
+//   (col: "gt_len",  colour: rgb("#ef537d"), label: "Ground truth"),
+// ), 60.0, "mm"),
+//   caption: [Continuous length estimates of predicted vessels],
+// )
+// #v(0.5cm)
 
 
-Precision / recall allow us to disentangle the issue of false positives and oversegmentation:
+// Precision / recall allow us to disentangle the issue of false positives and oversegmentation:
 
-#v(0.5cm)
-#figure(
-  results-chart((
-    (col: "pred_gt_precision", colour: rgb("#003f5c"), label: "Tool precision"),
-    (col: "thr_gt_precision",  colour: rgb("#78529b"), label: "Thresh precision"),
-    (col: "pred_gt_recall",  colour: rgb("#ef537d"), label: "Tool recall"),
-    (col: "thr_gt_recall",  colour: rgb("#ffa600"), label: "Thresh recall"),
-  ), 1.0, "mm"),
-  caption: [Precision/recall analysis],
-)
-#v(0.5cm)
+// #v(0.5cm)
+// #figure(
+//   results-chart((
+//     (col: "pred_gt_precision", colour: rgb("#003f5c"), label: "Tool precision"),
+//     (col: "thr_gt_precision",  colour: rgb("#78529b"), label: "Thresh precision"),
+//     (col: "pred_gt_recall",  colour: rgb("#ef537d"), label: "Tool recall"),
+//     (col: "thr_gt_recall",  colour: rgb("#ffa600"), label: "Thresh recall"),
+//   ), 1.0, "mm"),
+//   caption: [Precision/recall analysis],
+// )
+// #v(0.5cm)
 
-From this graph we can see that the precision is consistently lower than thresholding, however recall is higher. 
+// From this graph we can see that the precision is consistently lower than thresholding, however recall is higher. 
 
 
 === Qualitative analysis
@@ -299,50 +527,70 @@ From this graph we can see that the precision is consistently lower than thresho
 
 
 
+// Intermediary old may 15 15h15
+// Evaluation against ground-truth chunks
+// (metrics on GT>0 bbox + 5-voxel margin)
+//   • VSA_Eval_1: Dice=0.277, clDice=0.400, IoU=0.161, P=0.602, R=0.180, vol(pred/gt)=0.30
+//      GT=109,490 vox, pred=32,697 vox, shape=(222, 216, 229), src IJK=[0:229, 0:216, 0:222]
+//      Centerlines: pred=19.7mm (79 br, avg 0.2mm), gt=27.0mm (131 br, avg 0.2mm)
+//      Threshold (151) vs GT: Dice=0.173, clDice=0.178, IoU=0.095, P=0.099, R=0.697, vol(thr/gt)=7.07, thr=774,304 vox
+//      Pred vs Threshold: Dice=0.048, clDice=0.075, IoU=0.025, vol(pred/thr)=0.04
+//      Threshold centerline: thr=189.1mm (958 br, avg 0.2mm)
+// Mean — Pred vs GT: Dice=0.277, clDice=0.400, IoU=0.161, P=0.602, R=0.180, vol=0.30
+// Mean centerline length: pred=19.7mm, gt=27.0mm
+// Threshold diag: threshold=151; total thresh voxels in volume: 790,886; source value range: [0.0, 255.0]
+// Mean — Threshold vs GT: Dice=0.173, clDice=0.178, IoU=0.095, P=0.099, R=0.697, vol=7.07
+// Mean — Pred vs Threshold: Dice=0.048, clDice=0.075, IoU=0.025
+// Mean threshold centerline: thr=189.1mm
+
+// CSV:
+// chunk,vessel_size,vessel_std,frangi_tiles_per_axis,intensity_likelihood,vessel_prior,ridge_threshold,ridge_iterations,auto_seed,auto_seed_rounds,auto_seed_max,auto_seed_intensity_sigma,component_min_prob,median_intensity,std_intensity,vessel_seeds_correct,vessel_seeds_total,bg_seeds_correct,bg_seeds_total,pred_gt_dice,pred_gt_cldice,pred_gt_iou,pred_gt_precision,pred_gt_recall,pred_gt_vol,thr_gt_dice,thr_gt_cldice,thr_gt_iou,thr_gt_precision,thr_gt_recall,thr_gt_vol,pred_thr_dice,pred_thr_cldice,pred_thr_iou,pred_thr_precision,pred_thr_recall,pred_thr_vol,cl_len_gt_mm,cl_len_pred_mm,cl_match_pred_mm,cl_len_thr_mm,cl_match_thr_mmVSA_Eval_1,4,3,1,True,0.1,0.01,5,True,8,200,1.2,0.05,163.00,30.05,23,27,11,11,0.2769,0.4004,0.1607,0.6022,0.1798,0.299,0.1727,0.1779,0.0945,0.0986,0.6970,7.072,0.0480,0.0749,0.0246,0.5923,0.0250,0.042,26.99,19.72,10.06,189.10,19.33
+// Intermediary old may 15 15h15
+
 
 // PR curve 
-#figure(
-    xy-curve(
-    (
-      (csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-        label: "Thresholding",      colour: rgb("#e63946")),
-      (csv: "../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-        label: "CollaboratiVessel", colour: rgb("#457b9d")),
-      (csv: "../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-        label: "Frangi", colour: rgb("#459d6b")),
-    ),
-    x-label: "Recall",
-    y-label: "Precision",
-  ),
-  caption:[CA-RU-R 222]
-)
+// #figure(
+//     xy-curve(
+//     (
+//       (csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         label: "Thresholding",      colour: rgb("#e63946")),
+//       (csv: "../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         label: "CollaboratiVessel", colour: rgb("#457b9d")),
+//       (csv: "../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         label: "Frangi", colour: rgb("#459d6b")),
+//     ),
+//     x-label: "Recall",
+//     y-label: "Precision",
+//   ),
+//   caption:[CA-RU-R 222]
+// )
 
-#figure(
-  xy-curve(
-    (
-      (
-        csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-          label: "Thresholding", colour: rgb("#e63946"),
-        x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
-        y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
-      ),
-      (
-        csv: "../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-          label: "CollaboratiVessel", colour: rgb("#457b9d"),
-        x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
-        y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
-      ),
-      (
-        csv: "../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-          label: "Frangi", colour: rgb("#459d6b"),
-        x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
-        y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
-      ),
-    ),
-    x-label: "BG seed accuracy",
-    y-label: "Vessel seed accuracy",
-  )
-)
+// #figure(
+//   xy-curve(
+//     (
+//       (
+//         csv: "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//           label: "Thresholding", colour: rgb("#e63946"),
+//         x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+//         y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+//       ),
+//       (
+//         csv: "../../../resources/images/sweep_experiment/SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//           label: "CollaboratiVessel", colour: rgb("#457b9d"),
+//         x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+//         y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+//       ),
+//       (
+//         csv: "../../../resources/images/sweep_experiment/frangi_sweep_0025_and_vessel_diversity/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//           label: "Frangi", colour: rgb("#459d6b"),
+//         x: (num: "bg_seeds_correct",     den: "bg_seeds_total"),
+//         y: (num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+//       ),
+//     ),
+//     x-label: "BG seed accuracy",
+//     y-label: "Vessel seed accuracy",
+//   )
+// )
 
 
 // #v(0.5cm)
@@ -370,7 +618,6 @@ From this graph we can see that the precision is consistently lower than thresho
 //   caption: [CA-LL-R 427],
 // )
 // #v(0.5cm)
-
 
 // 319
 // #v(0.5cm)
