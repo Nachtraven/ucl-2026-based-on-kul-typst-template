@@ -133,8 +133,6 @@ After the pipeline is run, a binary segmentation mask is produced and visualized
 ) <evaluation_window>
 
 
-// Parameter sweep and selection is in results -> it depends on the data and decides the final parameters used.
-
 === Hyperparameter sensitivity analysis
 
 In order to explore the region space of possible hyperparameters and develop the pipeline, a set of data were manually annotated using 3D Slicer's built in tool. This was done on a slice by slice basis then a round of closing run (to close the small gaps). Once an initial piece of data was available, it was used for huperparameter exploration

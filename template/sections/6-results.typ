@@ -34,7 +34,9 @@
 
 #import "./appendices/graph_results.typ": results-chart
 #import "./appendices/DICE_results_graph.typ": draw-dice
-#import "appendices/precision_recall.typ" : xy-curve
+#import "./appendices/precision_recall.typ" : xy-curve
+#import "./appendices/scatterplot.typ" : scatterplot-chart
+#import "./appendices/heatmaps.typ":scatterpanel-chart
 
 = Results
 
@@ -144,6 +146,9 @@ Performance is analyzed both _quantitatively_ and _qualitatively_: quantative nu
 
 
 #figure(
+  grid(
+    columns: 2,
+    rows: 3,
     xy-curve(
     (
       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
@@ -156,12 +161,8 @@ Performance is analyzed both _quantitatively_ and _qualitatively_: quantative nu
     x-label: "Recall",
     y-label: "Precision",
   ),
-  caption:[CA-RU-R 222]
-)
 
-
-#figure(
-    xy-curve(
+  xy-curve(
     (
       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
         label: "Thresholding",      colour: rgb("#e63946")),
@@ -173,11 +174,8 @@ Performance is analyzed both _quantitatively_ and _qualitatively_: quantative nu
     x-label: "Recall",
     y-label: "Precision",
   ),
-  caption:[CA-RU-R 666]
-)
 
-#figure(
-    xy-curve(
+  xy-curve(
     (
       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
         label: "Thresholding",      colour: rgb("#e63946")),
@@ -189,7 +187,8 @@ Performance is analyzed both _quantitatively_ and _qualitatively_: quantative nu
     x-label: "Recall",
     y-label: "Precision",
   ),
-  caption:[CA-LL-R 427]
+  ),
+  caption:[CA-RU-R 222, CA-RU-R 666, CA-LL-R 427 CA-NM-L 319 CA-NM-L 957]
 )
 
 
@@ -226,21 +225,22 @@ Performance is analyzed both _quantitatively_ and _qualitatively_: quantative nu
 //   caption:[CA-NM-L 957]
 // )
 
-// #figure(
-//     xy-curve(
-//     (
-//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
-//         label: "Thresholding",      colour: rgb("#e63946")),
-//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
-//         label: "CollaboratiVessel", colour: rgb("#457b9d")),
-//       (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
-//         label: "Frangi", colour: rgb("#459d6b")),
-//     ),
-//     x-label: "Recall",
-//     y-label: "Precision",
-//   ),
-//   caption:[CA-LL-L1 498]
-// )
+#figure(
+    xy-curve(
+    (
+      (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        label: "Thresholding",      colour: rgb("#e63946")),
+      (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        label: "CollaboratiVessel", colour: rgb("#457b9d")),
+      (csv: "../../../resources/images/results/vessel_exps_15_may/FRANGI_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        label: "Frangi", colour: rgb("#459d6b")),
+    ),
+    x-label: "Recall",
+    y-label: "Precision",
+  ),
+  caption:[CA-LL-L1 498]
+)
+
 
 #pagebreak()
 Aggregated DICE:
@@ -266,6 +266,217 @@ Aggregated DICE:
   caption: [DICE and clDICE of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE]
 )
 #v(0.5cm)
+
+
+#v(0.5cm)
+#let RES = "../../../resources/images/results/vessel_exps_15_may"
+#figure(
+  draw-dice(
+    (
+      (name: "CA-LL-R\n559/604/498",
+       tool_csv: RES + "/PIPE_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", tool_row: 220,
+       thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
+
+    ),
+  ),
+  caption: [DICE and clDICE of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE]
+)
+#v(0.5cm)
+      
+
+// points on xy: vessel volume in x, vessel length in y, coloured by method
+#figure(
+  scatterplot-chart(
+    "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+    x-col: "volume_voxels",
+    y-col: "length_mm",
+    group-col: "method",
+    x-label: "Vessel volume (voxels)",
+    y-label: "Vessel length (mm)",
+  ),
+  caption: [Comparison of CA-LL-L1_498 vessel characteristic distribution]
+)
+
+#figure(
+  scatterpanel-chart(
+    "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+    x-label: "Vessel volume (voxels)",
+    y-label: "Vessel length (mm)",
+  ),
+  caption: [Vessel volume vs length density by method for CA-LL-L1_498. The pipeline detects more vessels overall; the distribution shape shows whether they cover the same regions.]
+)
+
+
+
+
+
+
+// Order:
+// CA-RU-R 222
+// CA-RU-R 666
+// CA-LL-R 427
+// CA-NM-L 319
+// CA-NM-L 957
+// CA-LL-L1 498
+
+
+//Updated 17 may: CA-RU-R 222
+Evaluation against ground-truth chunks
+(metrics on GT>0 bbox + 5-voxel margin)
+  • VSA_Eval_1: Dice=0.297, clDice=0.425, IoU=0.174, P=0.589, R=0.199, vol(pred/gt)=0.34
+     GT=109,490 vox, pred=36,910 vox, shape=(222, 216, 229), src IJK=[0:229, 0:216, 0:222]
+     Centerlines: pred=22.1mm (101 br, avg 0.2mm), gt=27.0mm (131 br, avg 0.2mm)
+     Threshold (151) vs GT: Dice=0.173, clDice=0.178, IoU=0.095, P=0.099, R=0.697, vol(thr/gt)=7.07, thr=774,304 vox
+     Pred vs Threshold: Dice=0.052, clDice=0.081, IoU=0.027, vol(pred/thr)=0.05
+     Threshold centerline: thr=189.1mm (958 br, avg 0.2mm)
+Mean — Pred vs GT: Dice=0.297, clDice=0.425, IoU=0.174, P=0.589, R=0.199, vol=0.34
+Mean centerline length: pred=22.1mm, gt=27.0mm
+Threshold diag: threshold=151; total thresh voxels in volume: 790,886; source value range: [0.0, 255.0]
+Mean — Threshold vs GT: Dice=0.173, clDice=0.178, IoU=0.095, P=0.099, R=0.697, vol=7.07
+Mean — Pred vs Threshold: Dice=0.052, clDice=0.081, IoU=0.027
+Mean threshold centerline: thr=189.1mm
+
+chunk,vessel_size,vessel_std,frangi_tiles_per_axis,ridge_threshold,ridge_iterations,auto_seed_rounds,auto_seed_max,median_intensity,std_intensity,vessel_seeds_correct,vessel_seeds_total,bg_seeds_correct,bg_seeds_total,pred_gt_dice,pred_gt_cldice,pred_gt_iou,pred_gt_precision,pred_gt_recall,pred_gt_vol,thr_gt_dice,thr_gt_cldice,thr_gt_iou,thr_gt_precision,thr_gt_recall,thr_gt_vol,pred_thr_dice,pred_thr_cldice,pred_thr_iou,pred_thr_precision,pred_thr_recall,pred_thr_vol,cl_len_gt_mm,cl_len_pred_mm,cl_match_pred_mm,cl_len_thr_mm,cl_match_thr_mmVSA_Eval_1,4,3,2,0.01,5,8,200,163.00,30.05,24,27,11,11,0.2969,0.4246,0.1743,0.5888,0.1985,0.337,0.1727,0.1779,0.0945,0.0986,0.6970,7.072,0.0521,0.0808,0.0268,0.5730,0.0273,0.048,26.99,22.13,11.23,189.10,19.33
+
+
+//Updated 17 may: CA-RU-R 666
+Evaluation against ground-truth chunks
+(metrics on GT>0 bbox + 5-voxel margin)
+  • VSA_Eval_1: Dice=0.205, clDice=0.216, IoU=0.114, P=0.156, R=0.299, vol(pred/gt)=1.92
+     GT=15,954 vox, pred=30,648 vox, shape=(215, 225, 229), src IJK=[0:229, 0:225, 0:215]
+     Centerlines: pred=28.8mm (256 br, avg 0.1mm), gt=5.3mm (34 br, avg 0.2mm)
+     Threshold (130) vs GT: Dice=0.037, clDice=0.027, IoU=0.019, P=0.019, R=0.838, vol(thr/gt)=44.51, thr=710,177 vox
+     Pred vs Threshold: Dice=0.059, clDice=0.074, IoU=0.030, vol(pred/thr)=0.04
+     Threshold centerline: thr=397.4mm (9980 br, avg 0.0mm)
+Mean — Pred vs GT: Dice=0.205, clDice=0.216, IoU=0.114, P=0.156, R=0.299, vol=1.92
+Mean centerline length: pred=28.8mm, gt=5.3mm
+Threshold diag: threshold=130; total thresh voxels in volume: 732,055; source value range: [49.0, 197.0]
+Mean — Threshold vs GT: Dice=0.037, clDice=0.027, IoU=0.019, P=0.019, R=0.838, vol=44.51
+Mean — Pred vs Threshold: Dice=0.059, clDice=0.074, IoU=0.030
+Mean threshold centerline: thr=397.4mm
+
+chunk,vessel_size,vessel_std,frangi_tiles_per_axis,ridge_threshold,ridge_iterations,auto_seed_rounds,auto_seed_max,median_intensity,std_intensity,vessel_seeds_correct,vessel_seeds_total,bg_seeds_correct,bg_seeds_total,pred_gt_dice,pred_gt_cldice,pred_gt_iou,pred_gt_precision,pred_gt_recall,pred_gt_vol,thr_gt_dice,thr_gt_cldice,thr_gt_iou,thr_gt_precision,thr_gt_recall,thr_gt_vol,pred_thr_dice,pred_thr_cldice,pred_thr_iou,pred_thr_precision,pred_thr_recall,pred_thr_vol,cl_len_gt_mm,cl_len_pred_mm,cl_match_pred_mm,cl_len_thr_mm,cl_match_thr_mmVSA_Eval_1,4,3,2,0.01,5,8,200,138.00,9.16,9,9,7,7,0.2048,0.2155,0.1141,0.1557,0.2991,1.921,0.0368,0.0267,0.0188,0.0188,0.8377,44.514,0.0591,0.0739,0.0305,0.7144,0.0308,0.043,5.29,28.77,3.82,397.41,5.38
+
+
+
+//Updated 17 may: CA-LL-R 427
+// Old data:
+Evaluation against ground-truth chunks
+(metrics on GT>0 bbox + 5-voxel margin)
+  • VSA_Eval_1: Dice=0.220, clDice=0.220, IoU=0.124, P=0.133, R=0.641, vol(pred/gt)=4.82
+     GT=2,643 vox, pred=12,732 vox, shape=(91, 95, 99), src IJK=[0:99, 0:95, 51:142]
+     Centerlines: pred=10.1mm (79 br, avg 0.1mm), gt=1.4mm (15 br, avg 0.1mm)
+     Threshold (109) vs GT: Dice=0.032, clDice=0.040, IoU=0.016, P=0.016, R=0.989, vol(thr/gt)=60.10, thr=158,836 vox
+     Pred vs Threshold: Dice=0.131, clDice=0.199, IoU=0.070, vol(pred/thr)=0.08
+     Threshold centerline: thr=68.0mm (399 br, avg 0.2mm)
+Mean — Pred vs GT: Dice=0.220, clDice=0.220, IoU=0.124, P=0.133, R=0.641, vol=4.82
+Mean centerline length: pred=10.1mm, gt=1.4mm
+Threshold diag: threshold=109; total thresh voxels in volume: 379,224; source value range: [89.0, 156.0]
+Mean — Threshold vs GT: Dice=0.032, clDice=0.040, IoU=0.016, P=0.016, R=0.989, vol=60.10
+Mean — Pred vs Threshold: Dice=0.131, clDice=0.199, IoU=0.070
+Mean threshold centerline: thr=68.0mm
+
+chunk,vessel_size,vessel_std,frangi_tiles_per_axis,ridge_threshold,ridge_iterations,auto_seed_rounds,auto_seed_max,median_intensity,std_intensity,vessel_seeds_correct,vessel_seeds_total,bg_seeds_correct,bg_seeds_total,pred_gt_dice,pred_gt_cldice,pred_gt_iou,pred_gt_precision,pred_gt_recall,pred_gt_vol,thr_gt_dice,thr_gt_cldice,thr_gt_iou,thr_gt_precision,thr_gt_recall,thr_gt_vol,pred_thr_dice,pred_thr_cldice,pred_thr_iou,pred_thr_precision,pred_thr_recall,pred_thr_vol,cl_len_gt_mm,cl_len_pred_mm,cl_match_pred_mm,cl_len_thr_mm,cl_match_thr_mmVSA_Eval_1,4,3,1,0.01,5,8,200,125.00,7.82,5,7,3,3,0.2205,0.2203,0.1239,0.1331,0.6413,4.817,0.0324,0.0398,0.0164,0.0165,0.9886,60.097,0.1314,0.1994,0.0703,0.8850,0.0709,0.080,1.37,10.12,1.27,68.03,1.38
+// New data: TODO
+
+
+
+//Updated 17 may: CA-NM-L 319
+Evaluation against ground-truth chunks
+(metrics on GT>0 bbox + 5-voxel margin)
+  • VSA_Eval_1: Dice=0.298, clDice=0.508, IoU=0.175, P=0.626, R=0.196, vol(pred/gt)=0.31
+     GT=11,115 vox, pred=3,474 vox, shape=(197, 124, 124), src IJK=[0:124, 0:124, 122:319]
+     Centerlines: pred=3.2mm (26 br, avg 0.1mm), gt=2.5mm (17 br, avg 0.1mm)
+     Threshold (154) vs GT: Dice=0.055, clDice=0.016, IoU=0.028, P=0.028, R=0.921, vol(thr/gt)=32.41, thr=360,260 vox
+     Pred vs Threshold: Dice=0.017, clDice=0.012, IoU=0.009, vol(pred/thr)=0.01
+     Threshold centerline: thr=444.5mm (4208 br, avg 0.1mm)
+Mean — Pred vs GT: Dice=0.298, clDice=0.508, IoU=0.175, P=0.626, R=0.196, vol=0.31
+Mean centerline length: pred=3.2mm, gt=2.5mm
+Threshold diag: threshold=154; total thresh voxels in volume: 655,371; source value range: [0.0, 255.0]
+Mean — Threshold vs GT: Dice=0.055, clDice=0.016, IoU=0.028, P=0.028, R=0.921, vol=32.41
+Mean — Pred vs Threshold: Dice=0.017, clDice=0.012, IoU=0.009
+Mean threshold centerline: thr=444.5mm
+
+chunk,vessel_size,vessel_std,frangi_tiles_per_axis,ridge_threshold,ridge_iterations,auto_seed_rounds,auto_seed_max,median_intensity,std_intensity,vessel_seeds_correct,vessel_seeds_total,bg_seeds_correct,bg_seeds_total,pred_gt_dice,pred_gt_cldice,pred_gt_iou,pred_gt_precision,pred_gt_recall,pred_gt_vol,thr_gt_dice,thr_gt_cldice,thr_gt_iou,thr_gt_precision,thr_gt_recall,thr_gt_vol,pred_thr_dice,pred_thr_cldice,pred_thr_iou,pred_thr_precision,pred_thr_recall,pred_thr_vol,cl_len_gt_mm,cl_len_pred_mm,cl_match_pred_mm,cl_len_thr_mm,cl_match_thr_mmVSA_Eval_1,4,3,2,0.01,5,8,200,191.00,33.73,6,7,10,10,0.2979,0.5078,0.1750,0.6255,0.1955,0.313,0.0551,0.0159,0.0283,0.0284,0.9206,32.412,0.0170,0.0119,0.0086,0.8898,0.0086,0.010,2.48,3.19,1.52,444.49,3.56
+
+
+
+// Updated 17 may: SLICES CA-NM-L 957
+// WARN: increased vessel sizes
+Evaluation against ground-truth chunks
+(metrics on GT>0 bbox + 5-voxel margin)
+  • VSA_Eval_1: Dice=0.626, clDice=0.756, IoU=0.455, P=0.830, R=0.502, vol(pred/gt)=0.60
+     GT=109,713 vox, pred=66,354 vox, shape=(301, 409, 450), src IJK=[0:450, 41:450, 0:301]
+     Centerlines: pred=8.9mm (11 br, avg 0.8mm), gt=8.1mm (15 br, avg 0.5mm)
+     Threshold (171) vs GT: Dice=0.833, clDice=0.817, IoU=0.714, P=0.904, R=0.773, vol(thr/gt)=0.86, thr=93,806 vox
+     Pred vs Threshold: Dice=0.667, clDice=0.699, IoU=0.500, vol(pred/thr)=0.71
+     Threshold centerline: thr=8.0mm (129 br, avg 0.1mm)
+Mean — Pred vs GT: Dice=0.626, clDice=0.756, IoU=0.455, P=0.830, R=0.502, vol=0.60
+Mean centerline length: pred=8.9mm, gt=8.1mm
+Threshold diag: threshold=171; total thresh voxels in volume: 93,852; source value range: [43.0, 255.0]
+Mean — Threshold vs GT: Dice=0.833, clDice=0.817, IoU=0.714, P=0.904, R=0.773, vol=0.86
+Mean — Pred vs Threshold: Dice=0.667, clDice=0.699, IoU=0.500
+Mean threshold centerline: thr=8.0mm
+
+chunk,vessel_size,vessel_std,frangi_tiles_per_axis,ridge_threshold,ridge_iterations,auto_seed_rounds,auto_seed_max,median_intensity,std_intensity,vessel_seeds_correct,vessel_seeds_total,bg_seeds_correct,bg_seeds_total,pred_gt_dice,pred_gt_cldice,pred_gt_iou,pred_gt_precision,pred_gt_recall,pred_gt_vol,thr_gt_dice,thr_gt_cldice,thr_gt_iou,thr_gt_precision,thr_gt_recall,thr_gt_vol,pred_thr_dice,pred_thr_cldice,pred_thr_iou,pred_thr_precision,pred_thr_recall,pred_thr_vol,cl_len_gt_mm,cl_len_pred_mm,cl_match_pred_mm,cl_len_thr_mm,cl_match_thr_mmVSA_Eval_1,8,6,1,0.01,5,8,200,213.00,39.27,13,14,9,9,0.6258,0.7562,0.4554,0.8302,0.5021,0.605,0.8333,0.8166,0.7142,0.9039,0.7729,0.855,0.6667,0.6992,0.5000,0.8046,0.5691,0.707,8.08,8.86,6.89,7.99,6.86
+
+
+
+// Updated 16 may: SLICES CA-LL-L1_x+559_y+604_z+498
+Evaluation against ground-truth chunks
+(metrics on GT>0 bbox + 5-voxel margin)
+  • VSA_Eval_1: Dice=0.254, clDice=0.417, IoU=0.146, P=0.432, R=0.180, vol(pred/gt)=0.42
+     GT=59,974 vox, pred=24,985 vox, shape=(249, 201, 186), src IJK=[0:186, 0:201, 0:249]
+     Centerlines: pred=16.0mm (92 br, avg 0.2mm), gt=9.4mm (73 br, avg 0.1mm)
+     Threshold (152) vs GT: Dice=0.043, clDice=0.042, IoU=0.022, P=0.022, R=0.881, vol(thr/gt)=39.91, thr=2,393,476 vox
+     Pred vs Threshold: Dice=0.014, clDice=0.016, IoU=0.007, vol(pred/thr)=0.01
+     Threshold centerline: thr=1394.4mm (1118 br, avg 1.2mm)
+Mean — Pred vs GT: Dice=0.254, clDice=0.417, IoU=0.146, P=0.432, R=0.180, vol=0.42
+Mean centerline length: pred=16.0mm, gt=9.4mm
+Threshold diag: threshold=152; total thresh voxels in volume: 2,393,476; source value range: [104.0, 255.0]
+Mean — Threshold vs GT: Dice=0.043, clDice=0.042, IoU=0.022, P=0.022, R=0.881, vol=39.91
+Mean — Pred vs Threshold: Dice=0.014, clDice=0.016, IoU=0.007
+Mean threshold centerline: thr=1394.4mm
+
+chunk,vessel_size,vessel_std,frangi_tiles_per_axis,ridge_threshold,ridge_iterations,auto_seed_rounds,auto_seed_max,median_intensity,std_intensity,vessel_seeds_correct,vessel_seeds_total,bg_seeds_correct,bg_seeds_total,pred_gt_dice,pred_gt_cldice,pred_gt_iou,pred_gt_precision,pred_gt_recall,pred_gt_vol,thr_gt_dice,thr_gt_cldice,thr_gt_iou,thr_gt_precision,thr_gt_recall,thr_gt_vol,pred_thr_dice,pred_thr_cldice,pred_thr_iou,pred_thr_precision,pred_thr_recall,pred_thr_vol,cl_len_gt_mm,cl_len_pred_mm,cl_match_pred_mm,cl_len_thr_mm,cl_match_thr_mmVSA_Eval_1,4,3,2,0.01,5,8,200,176.00,23.51,8,9,14,14,0.2543,0.4166,0.1457,0.4324,0.1801,0.417,0.0431,0.0415,0.0220,0.0221,0.8814,39.909,0.0139,0.0164,0.0070,0.6730,0.0070,0.010,9.43,15.95,6.55,1394.45,29.66
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// BAD: same as what's above but ugly
+// #figure(
+//   results-chart(
+//     (
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, col: "pred_gt_precision",   colour: rgb("#003f5c"), label: "Tool Precision"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, col: "pred_gt_precision",   colour: rgb("#78529b"), label: "Thr Precision"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, col: "pred_gt_recall", colour: rgb("#ef537d"), label: "Tool Recall"),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, col: "pred_gt_precision", colour: rgb("#ffa600"), label: "Thr Recall"),
+//     ),
+//     1.0,
+//     "Score",
+//   ),
+//   caption: [Precision/recall of pipeline against thresholding, using the optimal threshold for the higest DICE/clDICE],
+// )
 
 
 
