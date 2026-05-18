@@ -91,9 +91,7 @@ A principled approach was required: in order to select thresholds and evaluate t
 #v(0.4cm)
 #figure(
   image("../../resources/software/overview_seed_vessel_param.png"),
-  caption: [TODO: Update to most recent. 
-  
-  View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported.],
+  caption: [View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported.],
 )
 #v(0.4cm)
 

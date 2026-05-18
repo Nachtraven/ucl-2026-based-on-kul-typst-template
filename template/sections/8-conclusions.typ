@@ -9,6 +9,7 @@
 The work laid out in this thesis set out to bring a user friendly segmentation tool for the extraction of low contrast blood vessels from 3D CECT data. The final software is usable without needing to code in a widely available free software and able to extract vessels effectively that are robust to small disconnections, enabling downstream analysis of the parameters. 
 
 
+
 The initial goal, being very wide in scope and problem definition, is naturally satisfied within certain constraints: the memory limitations as well as the implementation of 3D Slicer restricts analysis to smaller volumes, with steps taken to mitigate this, the output 2D Slices still require downstream analysis by an expert and specialized software to enable extraction of more detailed clinical results, and the user adjustable hyperparameters still require the user to interact and iteratively act as a member of the pipeline, injecting some subjectivity and bias. Prospective users were involved and interviewed during development, but it is challenging to change an established protocol.
 
 == Future steps
