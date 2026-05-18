@@ -1,3 +1,6 @@
+
+#import "./heatmaps.typ":vessel-heatmap
+
 = Appendices
 
 == List of software for working with 3D data
@@ -60,24 +63,65 @@
 
 
 
-== CECT dataset performance challenges (TODO: revisit, this was excised from the main text) <performance_and_memory>
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
 
-// TODO: Compress/review this
-Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
 
-#linebreak()
-Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
 
-Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "pipeline", variant: "default",
+      title: "Pipeline",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  caption: [CA-LL-L1 heatmap]
+) <fig:appendix_individual_heatmaps>
 
-// TODO: this is moved from elsewhere, to be reviewed
-#linebreak()
-The total data required for an uncompressed scan can reach into the tens or hundreds of GB. During the initial software evaluation, 3D Slicer was successful in loading all datasets on the development machine - however it was not verified at the time how much memory was being used. The testing of the pipeline on other datasets revealed the performance limitations of the implemented approach: with initial end to end runtime being about an hour and requiring 24GB of system memory, larger datasets saw an increase in inference time to un-manageable levels, as well as limitations of system memory. 
-
-These performance issues have multiple sources: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity (this fact extends to other 3D Slicer functions such as loading and saving). When running on a large scan, combined with the generation of probability maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on here the forums]].
 
 
-TODO: Increasing SWAP size as a mitigation
+// == CECT dataset performance challenges (TODO: revisit, this was excised from the main text) <performance_and_memory>
+
+// // TODO: Compress/review this
+// Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
+
+// #linebreak()
+// Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
+
+// Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
+
+// // TODO: this is moved from elsewhere, to be reviewed
+// #linebreak()
+// The total data required for an uncompressed scan can reach into the tens or hundreds of GB. During the initial software evaluation, 3D Slicer was successful in loading all datasets on the development machine - however it was not verified at the time how much memory was being used. The testing of the pipeline on other datasets revealed the performance limitations of the implemented approach: with initial end to end runtime being about an hour and requiring 24GB of system memory, larger datasets saw an increase in inference time to un-manageable levels, as well as limitations of system memory. 
+
+// These performance issues have multiple sources: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity (this fact extends to other 3D Slicer functions such as loading and saving). When running on a large scan, combined with the generation of probability maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on here the forums]].
+
+
+// TODO: Increasing SWAP size as a mitigation
 
 
 

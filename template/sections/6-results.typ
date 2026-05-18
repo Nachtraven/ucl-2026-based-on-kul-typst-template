@@ -133,21 +133,10 @@
 #import "./appendices/DICE_results_graph.typ": draw-dice
 #import "./appendices/precision_recall.typ" : xy-curve
 #import "./appendices/scatterplot.typ" : scatterplot-chart
-#import "./appendices/heatmaps.typ":scatterpanel-chart
+#import "./appendices/heatmaps.typ":vessel-heatmap
 #import "./appendices/precision-recall_results_graph.typ":draw-pr-or-recall
+#import "./appendices/vessel_stats.typ": vessel-length-distribution
 
-= Results
-
-== Performance results
-
-Performance is analyzed first _quantitatively_ on the samples having manually annotated ground truths, then _qualitatively_. In depth quantitative analysis is limited due to the time required to annotate large regions, although they provide a good quantification of the improvements numerically when compared to thresholding. Qualitative results allow highlighting the structural improvements of the pipeline to vessel shape and connectivity and are visually compared to thresholding with a minor quantitative analysis of vessel length distribution.
-
-//quantative numbers as they are evaluated here can fail to properly weigh the negative impact of vessels with variable sizes, or disconnections, and the ground truths as mentioned above are imperfect and conservative which impacts the performance of an algorithm designed to extrapolate. 
-
-
-=== Quantitative analysis
-
-==== DICE and clDICE
 // Order:
 // CA-RU-R 222
 // CA-RU-R 666
@@ -156,7 +145,78 @@ Performance is analyzed first _quantitatively_ on the samples having manually an
 // CA-NM-L 957
 // CA-LL-L1 498
 
-Thresholding is compared to our pipeline when using both the mean user annotated vessel value for thresholding, and the peak performance clDICE value following a sweep of the possible thresholding values. Pipeline performance is measured as if used by an end user: default parameters are tested, and only iterated on if deemed necessary to improve performance. 
+= Results
+
+== Performance results
+
+Performance is analyzed first _quantitatively_ on the samples having manually annotated ground truths, then _qualitatively_. Quantitative analysis is carried out on the manually annotated subsamples, and although small in volume offer valuable insight into performance, and enable the evaluation of thresholding directly. Qualitative results allow highlighting the structural improvements of the pipeline to vessel shape and connectivity and are visually compared to the ground truth on small samples and thresholding on larger ones. 
+
+We measure pipeline performance as if used by an end user: default parameters are tested, and only adjusted on if deemed necessary to improve performance.
+
+//quantative numbers as they are evaluated here can fail to properly weigh the negative impact of vessels with variable sizes, or disconnections, and the ground truths as mentioned above are imperfect and conservative which impacts the performance of an algorithm designed to extrapolate. 
+
+=== Quantitative analysis
+// How can I integrate that evaluation methods either enable point to point comparison i.e. one run vs one run, or as in precision/recall can analyze a whole sweep
+
+For quantitative analysis vessel metrics are examined first that aim to highlight the advantages that clDICE struggel to capture:
+1. Vessel length and size distrubution
+2. Vessel positive coverage
+
+Following this clDICE, prediction ratio, iou, and precision/recall are analyzed.
+
+==== Vessel metrics
+
+In order to measure the impact on vessel extraction beyond simple voxel level metrics, we begin by examining vessel characteristics (volume, length) extracted by observing the collated distribution of volume and length @fig:heatmaps_ca-ll-l1. Detailed per run heatmaps are visible in @fig:appendix_individual_heatmaps. 
+
+#v(0.2cm)
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "pipeline", variant: "default",
+      title: "Pipeline",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  // TODO: add an image here of the overall stats?
+  caption: [TODO: collate data across all runs.
+  
+  Heatmaps of vessel volume/vessel length. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes.]
+) <fig:heatmaps_ca-ll-l1>
+#v(0.2cm)
+
+
+
+==== Voxel metrics
+
+Thresholding is compared to our pipeline when using the grey value achieving peak clDICE performance, following a sweep of all possible threshold values. This value is used as it presents a low false positive ratio.
 
 
 // #v(0.5cm)
@@ -205,23 +265,23 @@ Thresholding is compared to our pipeline when using both the mean user annotated
       (name: "CA-LL-R\n298/233/427",
        tool_csv: "./results.csv", tool_row: 2,
        thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
-      // (name: "SLICES CA-NM-L_x+1800_y+1800_z+319",
-      //  tool_csv: "./results.csv", tool_row: 4,
-      //  thr_csv:  "/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 64),
-      // (name: "SLICES CA-NM-L_x+900_y+900_z+957",
-      //  tool_csv: "./results.csv", tool_row: 5,
-      //  thr_csv:  "/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 64),
+      (name: "CA-NM-L\n1800/1800/319",
+       tool_csv: "./results.csv", tool_row: 3,
+       thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 103),
+      (name: "CA-NM-L\n900/900/957",
+       tool_csv: "./results.csv", tool_row: 4,
+       thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 90),
       
       (name: "CA-LL-L1\n559/604/498",
        tool_csv: "./results.csv", tool_row: 5,
        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
     ),
-    // Uncomment to add pred_gt_volume
+    // // Uncomment to add pred_gt_volume
     // annotate-col: "pred_gt_vol",
     // annotate-label: "vol ratio (pred/gt)",
     // annotate-digits: 2,
   ),
-  caption: [DICE and clDICE comparison of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE. Tool DICE falls bellow the thresholding DICE, and thresholding achieves high clDICE.]//highlighting the bias of clDICE towards higher numbers in situations of under
+  caption: [DICE and clDICE comparison of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE. Results highlight two volumes for which thresholding substantially outperforms the model: two volumes where the grey value of the vessels are substantially different to the background.]//highlighting the bias of clDICE towards higher numbers in situations of under
 )
 #v(0.25cm)
 
@@ -242,13 +302,19 @@ Thresholding is compared to our pipeline when using both the mean user annotated
       (name: "CA-LL-R\n298/233/427",
        tool_csv: "./results.csv", tool_row: 2,
        thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
+      (name: "CA-NM-L\n1800/1800/319",
+       tool_csv: "./results.csv", tool_row: 3,
+       thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 103),
+      (name: "CA-NM-L\n900/900/957",
+       tool_csv: "./results.csv", tool_row: 4,
+       thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 90),
       (name: "CA-LL-L1\n559/604/498",
        tool_csv: "./results.csv", tool_row: 5,
        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
     ),
-    annotate-col: "pred_gt_vol",
-    annotate-label: "vol ratio",
-    annotate-digits: 2,
+    // annotate-col: "pred_gt_vol",
+    // annotate-label: "vol ratio",
+    // annotate-digits: 2,
   ),
   caption: [Precision and recall of pipeline against thresholding. Numbers above each bar show the volume ratio (pred / GT): values near 1.0 indicate a closely matched volume, larger values indicate over-segmentation. Tool precision suffers when over segmenting] //Despite comparable Dice scores in the previous figure, thresholding shows characteristic over-prediction.
 )
@@ -256,9 +322,6 @@ Thresholding is compared to our pipeline when using both the mean user annotated
 
 
 
-==== Vessel characteristics
-
-TODO: vessel length distribution graphs
 
 
 
@@ -311,7 +374,7 @@ TODO: vessel length distribution graphs
     ),
 
   ),
-  caption: [Comparison of pipeline with thresholding based on (a) median user point value (b) optimal value for maximizing clDICE with known ground truth. Example shows ideal scenario for thresholding: vessels are segmented (although weakly) and pipeline under segments one large vessel],
+  caption: [CA-RU-R: Comparison of pipeline with thresholding based on (a) median user point value (b) optimal value for maximizing clDICE with known ground truth. Example shows ideal scenario for thresholding: vessels are segmented (although weakly) and pipeline under segments one large vessel],
 ) <CA-RU-R_222_2d>
 
 
@@ -359,7 +422,7 @@ TODO: vessel length distribution graphs
     ),
 
   ),
-  caption: [Comparison of 3D Views: thresholding captures large plates, has gaps and holes. Pipeline output is more continuous, although conservative on vessel size. Ground truth shows the variance introduced by manual annotation, and the limitations of using it as a comparison point.],
+  caption: [CA-RU-R: Comparison of 3D Views: thresholding captures large plates, has gaps and holes. Pipeline output is more continuous, although conservative on vessel size. Ground truth shows the variance introduced by manual annotation, and the limitations of using it as a comparison point.],
 ) <CA-RU-R_222_3d>
 
 

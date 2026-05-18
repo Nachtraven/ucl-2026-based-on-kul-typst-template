@@ -1,8 +1,14 @@
 #let draw-dice(samples, maximum: 1.0, y-label: "Score",
+              //  metrics: (
+              //   //  (key: "tool_dice",   colour: rgb("#003f5c"), label: "Tool Dice"),
+              //   //  (key: "thr_dice",    colour: rgb("#78529b"), label: "Thr Dice"),
+              //    (key: "tool_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+              //    (key: "thr_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
+              //  ),
                metrics: (
-                 (key: "tool_dice",   colour: rgb("#003f5c"), label: "Tool Dice"),
-                 (key: "thr_dice",    colour: rgb("#78529b"), label: "Thr Dice"),
-                 (key: "tool_cldice", colour: rgb("#ef537d"), label: "Tool clDice"),
+                //  (key: "tool_dice",   colour: rgb("#003f5c"), label: "Tool Dice"),
+                //  (key: "thr_dice",    colour: rgb("#78529b"), label: "Thr Dice"),
+                 (key: "tool_cldice", colour: rgb("#003f5c"), label: "Tool clDice"),
                  (key: "thr_cldice",  colour: rgb("#ffa600"), label: "Thr clDice"),
                ),
                annotate-col: none,        // CSV column name to display above bars

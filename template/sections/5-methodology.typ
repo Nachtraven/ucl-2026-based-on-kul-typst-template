@@ -197,6 +197,7 @@ Annotations were produced by a non-domain expert using 3D Slicer's built-in 2D b
 Annotation took approximately 60 hours across two rounds, a first blind annotation round and a second after reviewing the outputs of thresholding and the application of a Gaussian smoothing kernel to reduce visual noise.
 
 
+
 // TODO: Mention I am the annotator?
 
 // The annotations were created by a non domain expert using the built in 3D Slicer tools in 2D and 3D. As a result they are biased towards what is visible in the image (i.e. context is not always able to be fully taken into account), the painting tool (vessel annotation does not always stop at the same gradient value) and disconnections when not visible were not guessed. This means that any algorithm carrying out extrapolation will automatically receive a certain negative performance hit. The total annotation time was approximately 60 hours including two rounds of annotation: a blind annotation and a re-annotation after looking at the results from a round of thresholding and the application of a gaussian blur to smooth out the image.
@@ -347,36 +348,55 @@ Additionally for evaluation purposes there is the possibility of loading a manua
 
 
 
-#pagebreak()
-== Hyperparameter sensitivity analysis
+// #pagebreak()
+== Hyperparameter sensitivity analysis ?
 
-// TODO: expand! 
+// // TODO: expand! 
 
-// What parameters were swept with explicit ranges (you mention vessel_size, vessel_std, structure_strength but not the values tested — currently a reader has to look at your code).
-// How many points in the sweep (10 variants × 50 thresholds × 6 scans = 3000 evaluations? Make this concrete).
-// What "best parameters" means operationally — best mean Dice across all 6 scans? Best worst-case scan? Best per scan separately? The current text says "combination of precision-recall, DICE/clDICE and qualitative visual evaluation" which is honest but vague.
-// A table of final parameters with brief justification for each. This is what reproducers will copy.
-// Either a heatmap or per-parameter line plot showing how performance varies along one axis. The current PR curve only shows pipeline vs thresholding for one scan — not a sensitivity analysis. Add a small-multiples chart (one panel per parameter, x-axis = parameter value, y-axis = Dice) using your sweep data.
+// // What parameters were swept with explicit ranges (you mention vessel_size, vessel_std, structure_strength but not the values tested — currently a reader has to look at your code).
+// // How many points in the sweep (10 variants × 50 thresholds × 6 scans = 3000 evaluations? Make this concrete).
+// // What "best parameters" means operationally — best mean Dice across all 6 scans? Best worst-case scan? Best per scan separately? The current text says "combination of precision-recall, DICE/clDICE and qualitative visual evaluation" which is honest but vague.
+// // A table of final parameters with brief justification for each. This is what reproducers will copy.
+// // Either a heatmap or per-parameter line plot showing how performance varies along one axis. The current PR curve only shows pipeline vs thresholding for one scan — not a sensitivity analysis. Add a small-multiples chart (one panel per parameter, x-axis = parameter value, y-axis = Dice) using your sweep data.
 
-In order to explore the region space of possible hyperparameters and develop the pipeline, a grid search of possible settings was done and evaluated based on precision and recall metrics for a collection of annotated data containing both small vessels, large vessels, high and low noise as well as outside regions with shell effect. It is noted during the exploration that large vessels were the main obstacle - they are effectively removed when the range of vessel size and standard deviation is set low (this is intentional and meant to remove areas of noise). Bellow is an illustrative demonstration of the results of the sweep: 
+// In order to explore the region space of possible hyperparameters and develop the pipeline, a grid search of possible settings was done and evaluated based on precision and recall metrics for a collection of annotated data containing both small vessels, large vessels, high and low noise as well as outside regions with shell effect. It is noted during the exploration that large vessels were the main obstacle - they are effectively removed when the range of vessel size and standard deviation is set low (this is intentional and meant to remove areas of noise). Bellow is an illustrative demonstration of the results of the sweep: 
 
-#figure(
-    xy-curve(
-    (
-      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-        label: "Thresholding",      colour: rgb("#e63946")),
-      (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-        label: "CollaboratiVessel", colour: rgb("#457b9d")),
-      // (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-      //   label: "Frangi", colour: rgb("#459d6b")),
-    ),
-    x-label: "Recall",
-    y-label: "Precision",
-  ),
-  caption: [Parameter sweep results on CA-RU-R]
-)
+// #figure(
+//     xy-curve(
+//     (
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         label: "Thresholding",      colour: rgb("#e63946")),
+//       (csv: "../../../resources/images/results/new_pipeline_may_15/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         label: "CollaboratiVessel", colour: rgb("#457b9d")),
+//       // (csv: "../../../resources/images/results/new_pipeline_may_15/FRANGI_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//       //   label: "Frangi", colour: rgb("#459d6b")),
+//     ),
+//     x-label: "Recall",
+//     y-label: "Precision",
+//   ),
+//   caption: [Parameter sweep results on CA-RU-R]
+// )
 
-Optimal parameters were selected based on a combination of the precision-recall tradeoff as well as DICE/clDICE and qualitative visual evaluation of the 3D results. The final parameters are an average vessel size of 4 voxels, a standard deviation of 3, and a _Frangi strength_ (the required gradient to detect a vessel) of 3. Notably this frangi value is lower than the 5 default found in many common implementations of Frangi, highlighting the fact that our gradients are weaker than usual. 
+// Optimal parameters were selected based on a combination of the precision-recall tradeoff as well as DICE/clDICE and qualitative visual evaluation of the 3D results. The final parameters are an average vessel size of 4 voxels, a standard deviation of 3, and a _Frangi strength_ (the required gradient to detect a vessel) of 3. Notably this frangi value is lower than the 5 default found in many common implementations of Frangi, highlighting the fact that our gradients are weaker than usual. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
