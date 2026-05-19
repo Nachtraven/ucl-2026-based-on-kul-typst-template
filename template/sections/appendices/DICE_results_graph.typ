@@ -114,6 +114,13 @@
       )
     }
 
+    // // x-axis pseudo label
+    // #place(left + bottom,
+    //   dx: -5pt, dy: -30pt,// legend-height + annot-headroom + chart-height / 2 - 6pt,
+    //   rotate(0deg, text(size: 9pt, fill: axis-colour)[Vol Ratio:]
+    //   )
+    // )
+
     // Bars and per-group sample labels
     #for (gi, sample) in sample-values.enumerate() {
       let group-x = chart-pad-left + group-gap + gi * (group-width + group-gap)
@@ -140,7 +147,7 @@
           rect(width: bar-width, height: bar-h, fill: m.colour, stroke: none)
         )
 
-        // Annotation above the bar (if present)
+        // Annotation under the bar (if present)
         if sample.annot != none {
           let annot-val = sample.annot.at(m.key)
           place(left + bottom,
@@ -148,7 +155,21 @@
             dy: -30pt, //bar-y - 10pt,
             box(width: 28pt, align(center,
               text(size: annot-size, fill: annot-colour, weight: "bold")[
-                #calc.round(annot-val, digits: annotate-digits)
+                #calc.round(annot-val, digits: annotate-digits)x
+              ]
+            ))
+          )
+        }
+
+        // Annotation above the bar
+        if sample.annot != none {
+          let annot-val = sample.annot.at(m.key)
+          place(left + top,
+            dx: bar-x + bar-width / 2 - 14pt,
+            dy: bar-y - 10pt,
+            box(width: 28pt, align(center,
+              text(size: annot-size, fill: annot-colour, weight: "bold")[
+                #calc.round(val, digits: annotate-digits)
               ]
             ))
           )

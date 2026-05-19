@@ -28,7 +28,7 @@
 
 = Methodology
 
-// TODO: Add mention of DICOM data conversion and IJK measurements
+// TODO: Add mention of DICOM data conversion?
 // https://www.slicer.org/wiki/Coordinate_systems
 == Tooling: 3D Slicer plugin
 
@@ -66,7 +66,7 @@ To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs
 
 === Unifying data representations
 
-// The provided data was in JPEG form, an image format that contains no information about pixel spacing between slices, and is lossy. All data was converted to DICOM format with appropriate pixel spacing and formatting: the co-ordinate systems were unified into the standard for 3D Slicer #footnote[https://www.slicer.org/wiki/Coordinate_systems] where voxel indices (IJK) are used in the code. Physical-world coordinates, as commonly used in medical imaging in millimetres (RAS — right/anterior/superior) were used  to offer scale and are saved in the DICOM files. RAS is used by all geometry-aware primitives such as markup points and segmentation transforms. In our usecase, the volumes are isotropic (voxels are squares) meaning that conversion is simple, but care must be taken if the plugin is used for non isotropic data. Seed points placed by the user are stored in RAS and converted to IJK at the point of pipeline use, ensuring annotations survive resampling or coordinate-space changes
+// The provided data was in JPEG form, an image format that contains no information about pixel spacing between slices, and is lossy. All data was converted to DICOM format with appropriate pixel spacing and formatting: the co-ordinate systems were unified into the standard for 3D Slicer #footnote[https://www.slicer.org/wiki/Coordinate_systems] where voxel indices (IJK) are used in the code. Physical-world coordinates, as commonly used in medical imaging in millimetres (RAS — right/anterior/superior) were used  to offer scale and are saved in the DICOM files. RAS is used by all geometry-aware primitives such as markup points and segmentation transforms. In our usecase, the volumes are isotropic (voxels are squares) meaning that conversion is simple, but care must be taken if the plugin is used for non isotropic data. user points placed by the user are stored in RAS and converted to IJK at the point of pipeline use, ensuring annotations survive resampling or coordinate-space changes
 
 The provided data was stored as JPEG slices, a lossy format that carries no information about physical pixel spacing between slices. All volumes were converted to DICOM with explicit isotropic spacing of 6 µm per voxel, matching the original acquisition.
 
@@ -86,7 +86,7 @@ Having the user in the loop is essential to software development, and during the
 3. Any user without knowledge of the downstream steps or what to look out for will not be able to make a fully informed decision for the hyperparameters to select, requiring iteration and potentially falling into local optima.
 
 #linebreak()
-A principled approach was required: in order to select thresholds and evaluate the performance of the algorithm "in the loop", as well as offer the user immediate feedback, a system of anchor points was implemented. These anchors are the first step in the process, and are obtained by having the user click "add" for any of the three categories, followed by placing the point in any of the 2D windows. These "Vessel", "Background" and "outside" co-ordinates can be saved and exported, as well as imported in a universal CSV format. Following the receival of the data, and from the aforementioned interviews, it was also noted that users often do not take the time to properly name files and folders. Consequently, naming when exporting is automatically constructed from the current data series name and description, as well as the full current date and time. The second key user feedback element implemented to guide downstream steps was the expected vessel size and deviation in voxels. This parameter is easy to measure and provides critical context for automated hyperparameter selection.
+A principled approach was required: in order to select thresholds and evaluate the performance of the algorithm "in the loop", as well as offer the user immediate feedback, a system of user anchor points was implemented. These are the first step in the process, and are obtained by having the user click "add" for any of the three categories, followed by placing the point in any of the 2D windows. These "Vessel", "Background" and "outside" co-ordinates can be saved and exported, as well as imported in a universal CSV format. Following the receival of the data, and from the aforementioned interviews, it was also noted that users often do not take the time to properly name files and folders. Consequently, naming when exporting is automatically constructed from the current data series name and description, as well as the full current date and time. The second key user feedback element implemented to guide downstream steps was the expected vessel size and deviation in voxels. This parameter is easy to measure and provides critical context for automated hyperparameter selection.
 
 // #v(0.4cm)
 #figure(
@@ -100,17 +100,19 @@ A principled approach was required: in order to select thresholds and evaluate t
 #pagebreak()
 == Annotation methodology and limitations
 
-Obtaining a ground truth is key for evaluating algorithmic performance and guiding optimisation. Two complementary forms of ground truth are used by the plugin and are relevant for different stages of the work: user placed annotation points in two or three classes, as is done in regular plugin use, and pixel wise binary ground truth.
+Obtaining a ground truth is key for evaluating algorithmic performance and guiding optimisation. Two complementary forms of ground truth are used by the plugin and are relevant for different stages of the work: user placed annotation points in two or three classes, as is done in regular plugin use, and pixel wise binary annotated ground truth.
 
 The vessel, background, and optional outside-of-volume points guide hyperparameter selection (vessel size and standard deviation) and provide direct in-the-loop feedback by reporting how many vessel points are correctly classified after the pipeline runs. This method is fast and accessible but is limited when used in the development process: evaluation is pointwise rather than spatial, connectivity is ignored entirely, vessel size is not captured, and the inherent 2D nature of point placement makes coverage of small vessels uneven.
 
 === Voxel ground truth
 
-In order to obtain a second more granular ground truth do so four scans were selected then subdivided into a 6x6x6 grid of regions from which, for each scan, three were selected with one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels and a diversity of samples inside the volume, outside and at boundaries, with both small and large vessels and more or less noisy tumors.
+In order to obtain a second more granular ground truth do so four scans were selected then subdivided into a 6x6x6 grid of regions from which, for each scan, three were selected: one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision method was chosen as guarantees a sample from the center, one from the edge our outer center and one from the extremity of the volume, while also enabling annotation in a reasonable amount of time with enough context for evaluating vessels. Both small and large vessels land in these areas, gradients are captured and samples present a diversity of noise.
 
 
 === Limitations of ground truth
+// TODO: Mention I am the annotator?
 
+// The annotations were created by a non domain expert using the built in 3D Slicer tools in 2D and 3D. As a result they are biased towards what is visible in the image (i.e. context is not always able to be fully taken into account), the painting tool (vessel annotation does not always stop at the same gradient value) and disconnections when not visible were not guessed. This means that any algorithm carrying out extrapolation will automatically receive a certain negative performance hit. The total annotation time was approximately 60 hours including two rounds of annotation: a blind annotation and a re-annotation after looking at the results from a round of thresholding and the application of a gaussian blur to smooth out the image.
 
 Annotations were produced by a non-domain expert using 3D Slicer's built-in 2D brush tool, with two known sources of bias:
 
@@ -201,35 +203,23 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 
 
 
-// TODO: Mention I am the annotator?
-
-// The annotations were created by a non domain expert using the built in 3D Slicer tools in 2D and 3D. As a result they are biased towards what is visible in the image (i.e. context is not always able to be fully taken into account), the painting tool (vessel annotation does not always stop at the same gradient value) and disconnections when not visible were not guessed. This means that any algorithm carrying out extrapolation will automatically receive a certain negative performance hit. The total annotation time was approximately 60 hours including two rounds of annotation: a blind annotation and a re-annotation after looking at the results from a round of thresholding and the application of a gaussian blur to smooth out the image.
-
-//30 regions were manually  annotated from the 5 smallest scans of Run 1 and Run 2 respectively: amongst the 16 data samples (of which 4/16 were considered "reliable") of Run 1, 5 were selected, with 3 being "unreliable", a representative sample, and 5 of the 16 of Run 2 (all considered reliable). These scans were subdivided into 6x6x6 regions from which, for each scan, three subregions were selected with one at each distance step from the center as visualized in @fig:annotation_grid. This method was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels.
-
-
-
-
-
-
-
-
 #pagebreak()
 == Creating a Pipeline
 === Design overview
-// [seed points] [vessel size]
+// [user points] [vessel size]
 //        ↓           ↓
 // [raw] → [bg-removed] → [Frangi] → [intensity] → [probMap]
 //                                                     ↓
 //                               [final mask] ← [reconnect] ← [reconstruct]
-
-Due to the challenges of the data, no single classical method offered satisfactory performance. The final algorithm is a sequential pipeline that combines complementary signals across steps, relying on the underlying assumption that vessels offer a higher signal than surrounding tissue. Shape (tubularity) based on intensity is used through Frangi, and connectivity is increased over pure intensity signals by using the prior that vessels ends connect to eachother and local intensity. Each step iterates and contributes to a probability map; a technique used to paliate memory constraints. 3D Slicer has no method of chunking or streaming large data, meaning that scans and all intermediary work must fit into working memory.
+// Add rvesselx as a tool that does stepwise extraction?
+Due to the challenges of the data, no single classical method offered satisfactory performance, as has been noted in other vessel extraction tools such as @vesselknife. The final algorithm is a sequential pipeline that combines complementary signals across steps, relying on the underlying assumption that vessels offer a higher signal than surrounding tissue. Shape (tubularity) based on intensity is used through Frangi, and connectivity is increased over pure intensity signals by using the prior that vessels ends connect to eachother and local intensity. Each step iterates and contributes to a probability map; a technique used to paliate memory constraints. 3D Slicer has no method of chunking or streaming large data, meaning that scans and all intermediary work must fit into working memory. 
+//Total pipeline runtime varies: 326s/11438550vox or 35087vox/second
 
 // The pipeline produces both a final binary mask with associated segmentation in the 3D Slicer viewer and a soft probability map intended for development and post-hoc analysis
 
 #figure(
-  image("../../resources/images/testdiagram.svg", width: 68%),
-  caption: [TODO: revisit. Pipeline illustrating flow through each stage: (1) user point placement enabling outside masking, (2) configuration of hyperparameters and running of pipeline, triggering (a) Frangi, (b) intensity probability, (c) reconnection and reconstruction, (d) the final segmentation and 3D output],
+  image("../../resources/images/thesis_flow_diagram.svg", width: 68%),
+  caption: [Pipeline illustrating flow through each stage: (1) user point placement enabling outside masking, (2) configuration of hyperparameters and running of pipeline, triggering (a) Frangi, (b) intensity probability, (c) reconnection and reconstruction, (d) the final segmentation and 3D output], //TODO: revisit
 ) <fig:pipeline_flow>
 
 === Background removal and ROI extraction
@@ -279,11 +269,11 @@ Initial ridge extraction starts from the user-placed vessel seeds. To capture ve
 To improve connectivity between the vessel candidates produced by the previous steps, two complementary post-processing steps are used:
 
 1. *Morphological closing* (dilation followed by erosion) merges fragments separated by gaps smaller than twice the structuring element radius, without inflating vessel diameters. This handles the cheap, geometry-only case where two fragments are physically adjacent.
-
+// TODO: revisit the cost aspect
 2. *Skeleton based bridging* identifies disconnected vessel tips via skeletonisation, finds pairs within a maximum gap distance, and routes a minimum-cost path through ```1 - probMap```. A bridge is accepted only if its cost is below a threshold, enforcing a meaningful probability to support connection. This handles larger gaps where closing alone would over-connect, by requiring evidence from the underlying signal.
 
 Morphological closing is fast and and reduces the number of endpoints the costly bridging step has to evaluate.
-
+//TODO: source this claim?
 
 === Final segmentation
 
@@ -351,14 +341,16 @@ Additionally for evaluation purposes there is the possibility of loading a manua
 
 
 
-// #pagebreak()
+#pagebreak()
 == Hyperparameter sensitivity analysis
 
 Is this relevant to detail?
 
-== Bipartite matching
+== Metrics calculation and extraction //Bipartite matching
 
-Relevant to place here or results?
+In order to better understand the performance of the system being developped, 
+panoptic quality (PQ) metric? @panoptic_seg_og
+
 
 // // TODO: expand! 
 

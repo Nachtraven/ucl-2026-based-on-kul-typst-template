@@ -138,6 +138,9 @@
 #import "./appendices/vessel_stats.typ": vessel-length-distribution
 
 #import "./appendices/intro_cect_image_annotations.typ": image-with-circles
+#import "./appendices/stacked_bar.typ": vessel-match-bars
+
+// #import "./appendices/bipartite.typ": vessel-bipartite // Non working atm
 
 // Order:
 // CA-RU-R 222
@@ -212,12 +215,55 @@ In order to measure the impact on vessel extraction beyond simple voxel level me
   
   Heatmaps of vessel volume/vessel length. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes.]
 ) <fig:heatmaps_ca-ll-l1>
-#v(0.2cm)
+#v(0.25cm)
 
 
-Beyond vessel size and length, it is interesting to investigate the known issue of DICE discussed in @fig:dice-detection: the vessels are not considered unitary, meaning that it is possible to miss vessels entirely without it being evident in the results. To paliate this, a simple bipartite analysis is run: for each prediction, the correspondng contiguous ground truth vessel(s) are identified. This 0 to N matching allows us to identify how many vessels have no GT support, and inversely how many vessels are being connected. It also enables a better understanding of the data put forth by the previous heatmap:
+Beyond vessel size and length, it is interesting to investigate the known issue of DICE discussed in @fig:dice-detection: the vessels are not considered unitary, meaning that it is possible to miss vessels entirely without it being evident in the results. To paliate this, a simple bipartite analysis is run: for each prediction, the correspondng contiguous ground truth vessel(s) are identified. This 0 to N matching allows us to identify how many vessels have no GT support, and inversely how many vessels are being connected:
 
-TODO: figure() bipartite matching
+
+// #v(1.2cm)
+// #figure(
+//   vessel-match-bars(
+//     "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//     (
+//       ("threshold", "best_dice", "Threshold"),
+//       ("pipeline",  "default",   "Pipeline"),
+//       ("pipeline",  "vsize_-1",  "Pipeline\nvsize-1"),
+//     ),
+//     merge-mode: "A",   // "B" for prediction-side fragmentation
+//   ),
+//   caption: [CA-LL-L1 Vessel match quality per method. Numbers above bars show total
+//             vessel count. GT bar shows reference vessel count.]
+// )<fig:matching_rate>
+// #v(0.2cm)
+
+
+// #figure(
+//   vessel-bipartite(
+//     "../../resources/.../VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//     left-method:   "pipeline",
+//     left-variant:  "default",
+//     left-label:    "Pipeline",
+//     right-method:  "threshold",
+//     right-variant: "best_dice",
+//     right-label:   "Thresholding",
+//     node-size:     "volume",
+//     col-gap:       170pt,
+//     line-opacity:  80,
+//   ),
+//   caption: [Vessel correspondence between pipeline (left), ground truth (center), and thresholding (right). Node size encodes vessel volume. Unmatched nodes are pushed outward and rendered transparent. Lines show which predicted vessels overlap which GT vessels.]
+// )<fig:bipartite>
+
+
+#figure(
+  image("./appendices/bipartite/bipartite_ca_ll_l1.svg", width: 90%),
+  caption: [CA-LL-L1 Vessel correspondence between pipeline (left), ground truth (center), and thresholding (right). Node size encodes vessel volume, unmatched nodes in grey. Lines show which predicted vessels overlap which GT vessels: 28/35 vessels are matched by the pipeline for 20/35 on the ground truth: the pipeline has better vessel sensitivity. Also visible: the ground truth contains many vessels that are detected as individual smaller vessels by the pipeline or thresholding: predictions are still fragmented.]
+)<fig:bipartite_balls_lines>
+
+
+
+
+
 
 
 ==== Voxel metrics
