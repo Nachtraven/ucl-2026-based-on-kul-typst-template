@@ -79,7 +79,7 @@ It is important to note that in the present work all volumes are isotropic: anis
 
 == User interaction model
 
-Having the user in the loop is essential to software development, and during the thesis multiple consultations were done. During the user interview concerning the current pipeline of data processing, it was noted that decisions such as hyperparameter selection, windowing and grey value were often made without a principled, replicable and data driven decision method. This is problematic for multiple reasons:
+Having the user in the loop is essential to software development, and during the thesis multiple consultations were done. During interviews concerning the current pipeline of data processing, it was noted that decisions such as hyperparameter selection, windowing and grey value were often made without a principled, replicable and data driven decision method. This is problematic for multiple reasons:
 
 1. As the selected values are not data driven, decisions and pipelines cannot easily be replicated, and are more fragile
 2. As the user acts as the evaluator to the actions done, they induce bias in the subsequent steps
@@ -88,12 +88,12 @@ Having the user in the loop is essential to software development, and during the
 #linebreak()
 A principled approach was required: in order to select thresholds and evaluate the performance of the algorithm "in the loop", as well as offer the user immediate feedback, a system of anchor points was implemented. These anchors are the first step in the process, and are obtained by having the user click "add" for any of the three categories, followed by placing the point in any of the 2D windows. These "Vessel", "Background" and "outside" co-ordinates can be saved and exported, as well as imported in a universal CSV format. Following the receival of the data, and from the aforementioned interviews, it was also noted that users often do not take the time to properly name files and folders. Consequently, naming when exporting is automatically constructed from the current data series name and description, as well as the full current date and time. The second key user feedback element implemented to guide downstream steps was the expected vessel size and deviation in voxels. This parameter is easy to measure and provides critical context for automated hyperparameter selection.
 
-#v(0.4cm)
+// #v(0.4cm)
 #figure(
-  image("../../resources/software/overview_seed_vessel_param.png"),
+  image("../../resources/software/overview_seed_vessel_param.png", width: 76%),
   caption: [View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported.],
 )
-#v(0.4cm)
+// #v(0.4cm)
 
 
 
@@ -106,7 +106,20 @@ The vessel, background, and optional outside-of-volume points guide hyperparamet
 
 === Voxel ground truth
 
-In order to obtain a second more granular ground truth do so four scans were selected then subdivided into a 6x6x6 grid of regions from which, for each scan, three were selected with one at each distance step from the center as visualized in @Annotation_grid. This subdivision was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels and a diversity of samples inside the volume, outside and at boundaries, with both small and large vessels and more or less noisy tumors.
+In order to obtain a second more granular ground truth do so four scans were selected then subdivided into a 6x6x6 grid of regions from which, for each scan, three were selected with one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels and a diversity of samples inside the volume, outside and at boundaries, with both small and large vessels and more or less noisy tumors.
+
+
+=== Limitations of ground truth
+
+
+Annotations were produced by a non-domain expert using 3D Slicer's built-in 2D brush tool, with two known sources of bias:
+
+- *Visibility*: Vessels that are not clearly visible in a slice or by moving between slices are not annotated, meaning that gaps are not filled. This results in a performance hit for algorithms performing principled extrapolation across gaps.
+- *Boundary uncertainty*: The brush has a fixed size and is moved bu the user, meaning vessels do not necessarily always stop at the same intensity gradient. Vessel edges in the annotation therefore have some noise, which affects Dice-based metrics.
+
+#linebreak()
+Annotation took approximately 60 hours across two rounds, a first blind annotation round and a second after reviewing the outputs of thresholding and the application of a Gaussian smoothing kernel to reduce visual noise.
+
 
 #let image-with-grid(path, colour, label, gridsize, annotations: ()) = block(width: auto, height: auto)[
 #set align(center)
@@ -182,19 +195,9 @@ In order to obtain a second more granular ground truth do so four scans were sel
       annotations: ((-0.2, -0.2, "1"),(0.8, 0.8, "2"),(2.8, 2.8, "3"))),
   ),
   caption: [6x6x6 Grid subsample of tumors used for annotation and performance evaluation, showing the locations of the three subregions selected for annotation at three distances from the center. Full greyscale range visualized.],
-) <Annotation_grid>
+) <fig:annotation_grid>
 #v(0.1cm)
 
-
-=== Limitations of ground truth
-
-
-Annotations were produced by a non-domain expert using 3D Slicer's built-in 2D brush tool, with two known sources of bias:
-
-- *Visibility*: Vessels that are not clearly visible in a slice or by moving between slices are not annotated, meaning that gaps are not filled. This results in a performance hit for algorithms performing principled extrapolation across gaps.
-- *Boundary uncertainty*: The brush has a fixed size and is moved bu the user, meaning vessels do not necessarily always stop at the same intensity gradient. Vessel edges in the annotation therefore have some noise, which affects Dice-based metrics.
-
-Annotation took approximately 60 hours across two rounds, a first blind annotation round and a second after reviewing the outputs of thresholding and the application of a Gaussian smoothing kernel to reduce visual noise.
 
 
 
@@ -202,7 +205,7 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 
 // The annotations were created by a non domain expert using the built in 3D Slicer tools in 2D and 3D. As a result they are biased towards what is visible in the image (i.e. context is not always able to be fully taken into account), the painting tool (vessel annotation does not always stop at the same gradient value) and disconnections when not visible were not guessed. This means that any algorithm carrying out extrapolation will automatically receive a certain negative performance hit. The total annotation time was approximately 60 hours including two rounds of annotation: a blind annotation and a re-annotation after looking at the results from a round of thresholding and the application of a gaussian blur to smooth out the image.
 
-//30 regions were manually  annotated from the 5 smallest scans of Run 1 and Run 2 respectively: amongst the 16 data samples (of which 4/16 were considered "reliable") of Run 1, 5 were selected, with 3 being "unreliable", a representative sample, and 5 of the 16 of Run 2 (all considered reliable). These scans were subdivided into 6x6x6 regions from which, for each scan, three subregions were selected with one at each distance step from the center as visualized in @Annotation_grid. This method was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels.
+//30 regions were manually  annotated from the 5 smallest scans of Run 1 and Run 2 respectively: amongst the 16 data samples (of which 4/16 were considered "reliable") of Run 1, 5 were selected, with 3 being "unreliable", a representative sample, and 5 of the 16 of Run 2 (all considered reliable). These scans were subdivided into 6x6x6 regions from which, for each scan, three subregions were selected with one at each distance step from the center as visualized in @fig:annotation_grid. This method was chosen as it enables annotation in a reasonable amount of time with enough context for evaluating vessels.
 
 
 
@@ -211,22 +214,23 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 
 
 
-
+#pagebreak()
 == Creating a Pipeline
+=== Design overview
 // [seed points] [vessel size]
 //        ↓           ↓
 // [raw] → [bg-removed] → [Frangi] → [intensity] → [probMap]
 //                                                     ↓
 //                               [final mask] ← [reconnect] ← [reconstruct]
-=== Design overview
 
-Due to the challenges of the data, no single classical method offered satisfactory performance. The final algorithm is a sequential pipeline that combines complementary signals across steps, relying on the underlying assumption that vessels offer a higher signal than surrounding tissue. Shape (tubularity) based on intensity is used, and connectivity is increased over pure intensity signals by using the prior of vessels ending and local intensity. Each step iterates and contributes to a probability map; a technique used to paliate memory constraints. 3D Slicer has no method of chunking large data, meaning that scans and all intermediary work must fit into working memory.
+Due to the challenges of the data, no single classical method offered satisfactory performance. The final algorithm is a sequential pipeline that combines complementary signals across steps, relying on the underlying assumption that vessels offer a higher signal than surrounding tissue. Shape (tubularity) based on intensity is used through Frangi, and connectivity is increased over pure intensity signals by using the prior that vessels ends connect to eachother and local intensity. Each step iterates and contributes to a probability map; a technique used to paliate memory constraints. 3D Slicer has no method of chunking or streaming large data, meaning that scans and all intermediary work must fit into working memory.
 
-The pipeline produces both a final binary mask with associated segmentation in the 3D Slicer viewer and a soft probability map intended for development and post-hoc analysis
-// #figure(
-//   // TODO: pipeline data-flow diagram showing the stages and what each consumes
-//   caption: [Pipeline data flow illustrating each stage. Modularity and extendability is central to the design process, allowing future modifications to the work],
-// ) <pipeline_flow>
+// The pipeline produces both a final binary mask with associated segmentation in the 3D Slicer viewer and a soft probability map intended for development and post-hoc analysis
+
+#figure(
+  image("../../resources/images/testdiagram.svg", width: 68%),
+  caption: [TODO: revisit. Pipeline illustrating flow through each stage: (1) user point placement enabling outside masking, (2) configuration of hyperparameters and running of pipeline, triggering (a) Frangi, (b) intensity probability, (c) reconnection and reconstruction, (d) the final segmentation and 3D output],
+) <fig:pipeline_flow>
 
 === Background removal and ROI extraction
 
@@ -238,12 +242,12 @@ This removal introduces a high-gradient artificial boundary between zeroed and p
 === Frangi vesselness
 // in obtaining the eigenvalues of the local Hessian matrix. A tube manifests as one small and two large negative eigenvalues (curvature is small along the vessel axis and large perpendicular to it).
 
-The Frangi vesselness filter @frangi_og_paper identifies tubular structures on a local scale using the intensity and its change. The implementation of SimpleITK written in C++ is used for efficiency. Frangi is memory hungry due to its multiscale nature, with each scale requiring a full-volume Hessian, resulting in the need for multiples of the original volume to be kept in memory. To address this, the volume is optionally cut into subregions and processed in halo-padded tiles whose halo equals four times the largest vessel standard deviation, ensuring no information is lost at tile edges. The tile outputs are reassembled into a single volume before the final p99 normalisation, which scales the response into [0, 1] to make thresholds comparable across scans.
+The Frangi vesselness filter @frangi_og_paper identifies tubular structures on a local scale using the intensity and its change. The implementation of SimpleITK written in C++ is used for efficiency. Frangi is memory hungry due to its multiscale nature, with each scale requiring a full-volume Hessian, resulting in the need for multiples of the original volume to be kept in memory. To address this, the volume is optionally cut into subregions and processed in halo-padded tiles whose halo equals four times the largest vessel standard deviation, ensuring no information is lost at tile edges. The tile outputs are reassembled into a single volume before normalizing and scaling the response into [0, 1] to make thresholds comparable across scans. // final p99 normalisation, 
 
 #figure(
-  image("../../resources/software/frangi_probability_map.png", width: 100%),
+  image("../../resources/software/frangi_probability_map.png", width: 80%),
   caption: [Frangi vesselness map. Intensity corresponds to vesselness probability; user-placed seeds are also visible.],
-) <frangi_map>
+) <fig:frangi_map>
 
 
 === Localised intensity probability
@@ -257,10 +261,9 @@ A known limitation of this localized signal approach is that window regions with
 
 === Combined evidence map
 
-The Frangi map and the local intensity probability are multiplied elementwise to produce the combined evidence map: ```probMap = frangi ×
-P_intensity```
+The Frangi map and the local intensity probability are multiplied elementwise to produce the combined evidence map: ``` probMap = frangi x P_intensity```
 
-The product is high where both signals agree, providing evidence for tubularity *and* a local intensity difference. It suppresses voxels supported by only one signal. This filters out two common false-positive sources: (i) noise that happens to look tubular to Frangi but has no intensity support, and (ii) bright artefacts that have no tubular structure, or that are disconnected by the aforementioned high local signal from large vessels. This ```probMap``` is used as the input to the structural reconstruction stage.
+The product is high where both signals agree, providing evidence for tubularity *and* a local intensity difference. It suppresses voxels supported by only one signal. This filters out two common false-positive sources: (i) noise that happens to look tubular to Frangi but has no intensity support, and (ii) bright artefacts that have no tubular structure, or that are disconnected by the aforementioned high local signal from large vessels. This ``` probMap``` is used as the input to the structural reconstruction stage.
 
 
 === Reconstruction by ridge extraction
@@ -349,7 +352,13 @@ Additionally for evaluation purposes there is the possibility of loading a manua
 
 
 // #pagebreak()
-== Hyperparameter sensitivity analysis ?
+== Hyperparameter sensitivity analysis
+
+Is this relevant to detail?
+
+== Bipartite matching
+
+Relevant to place here or results?
 
 // // TODO: expand! 
 

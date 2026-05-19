@@ -32,14 +32,14 @@ In a diverse software landscape for analysis of 3D data, this work aims to answe
 
 
 #linebreak()
-The principal reference will be grey value based thresholding, as it constitutes the simplest, most accessible method that has previously been used to tackle this issue. The shortcomings are expressed in @fig:pr_methodo a sweep is run across all possible thresholding values, and measure against a manually annotated ground truth on an illustrative subvolume that contains small disconnected vessels, a light gradient, and some noisy elements. The precision-recall curve ignores true negatives and avoids giving them an outsized weight, but still allows us to understand the problem at hand: thresholding, no matter how high, will include false positives (_all high valued voxels are not necessarily vessels, the structural gap (1)_) such as in the shell region in @fig:thresholding_with_shell and at low values needed to capture faint vessels, the false positives are very high (_vessel intensities overlap with background, a challenging extraction situation, making thresholding a compromise (2)_).
+Baseline will be grey value based thresholding, as it constitutes the simplest, most accessible method that has previously been used to tackle this issue. The shortcomings are expressed in @fig:pr_methodo: a sweep is run across all possible thresholding values, and measure against a manually annotated ground truth on an illustrative subvolume that contains small disconnected vessels, a light gradient, and some noisy elements. The precision-recall curve ignores true negatives and avoids giving them an outsized weight, but still allows us to understand the problem at hand: thresholding, no matter how high, will include false positives (_all high valued voxels are not necessarily vessels, the structural gap (1)_) such as in the shell region in @fig:thresholding_with_shell and at low values needed to capture faint vessels, the false positives are very high (_vessel intensities overlap with background, a challenging extraction situation, making thresholding a compromise (2)_).
 
 // TODO: better explain the trade-off
 
 // PR curve 
 // Precision  = True Positives / (True Positives + False Positives)
 // Recall     = True Positives / (True Positives + False Negatives)
-#v(0.2cm)
+#v(0.15cm)
 #figure(
   grid(
     columns: (1fr, 1fr),
@@ -96,7 +96,7 @@ The principal reference will be grey value based thresholding, as it constitutes
       )
     ]
   ),
-  caption: [*(Left)* Run 2 CA-RU-R subsample *(Right)* Thresholding precision-recall curve showing _(1) structural gap_: precision never reaches 1.0 because there are false positives in high valued areas and _(2) challenging extraction_: precision falls off sharply as recall increases, high recall cannot be achieved without sacrificing precision]
+  caption: [*(Left)* Run 2 CA-RU-R *(Right)* Thresholding precision-recall curve showing _(1) structural gap_: precision never reaches 1.0 because there are false positives in high valued areas and _(2) challenging extraction_: precision falls off sharply as recall increases due to the rapid increase in false positives; high recall cannot be achieved without sacrificing precision]
 ) <fig:pr_methodo>
 
 
@@ -104,18 +104,18 @@ The principal reference will be grey value based thresholding, as it constitutes
 
 == Goal
 
-This thesis aims to develop a 3D Slicer extension that produces connected microvasculature segmentations on CECT through a hybrid pipeline combining classical algorithms with sparse user input, achieving high recall and connectivity-preserving accuracy, measured using clDICE, operating across both reliable and unreliable subsets of the dataset.
+This thesis aims to develop a 3D Slicer extension that produces connected microvasculature segmentations on CECT through a hybrid pipeline combining classical algorithms with sparse user input, achieving higher vessel retrieval rates than thresholding while  also improving connectivity, measured using a bipartite matching and clDICE, operating across both reliable and unreliable subsets of the dataset.
 
 To do so, the following steps will be carried out:
 1. Deliver a user-friendly 3D Slicer extension able to export in formats useful for downstream analysis.
 2. Leverage a user-in-the-loop approach for point placement & basic vessel-size context to drive automated parameter selection, replacing manual error-prone hyperparameter tuning.
-3. Build the segmentation core on multiple algorithms, combined through a framework that enables per component tuning. //an evidence accumulating framework
-4. Produce a pipeline focusing on performance and simplicity first // by running an internal ablation study. -> Evaluate and simplify the pipeline through an ablation study across multiple annotated subvolumes
+3. Build the segmentation core on multiple algorithms, combined through a framework that enables per component tuning, evaluation and allows for future extension. //an evidence accumulating framework
+// 4. Produce a pipeline focusing on performance and simplicity first. // by running an internal ablation study. -> Evaluate and simplify the pipeline through an ablation study across multiple annotated subvolumes
 
 
 == Scope
-
-This work delivers the segmentation pipeline in the form of a plugin and measures results on manually annotated data, with downstream quantitative analysis left to existing tools by exporting binary masks. Deep learning in its most common form is not utilized due to a lack of available reference data, training data and usability concerns. The plugin is intended for use in a research setting and tested on the set of data provided with its known shortcomings.
+// and measures results against manually annotated data,
+This work delivers the segmentation pipeline in the form of a plugin with downstream quantitative research analysis left to existing tools by exporting binary masks. Deep learning in its most common form is not utilized due to a lack of available reference data, training data and usability concerns. The plugin is intended for use in a research setting and tested on the set of data provided with its known shortcomings.
 
 //Not compared with deep-learning baselines as annotated training data sufficient for fair comparison is not available. 
 // The plugin is a research tool, not a clinical one.

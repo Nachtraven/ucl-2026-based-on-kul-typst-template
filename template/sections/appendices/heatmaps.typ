@@ -31,6 +31,10 @@
   colour-max:     none,           // density value mapped to darkest; auto if none
   colour-low:     rgb("#f0f4f8"), // lightest (empty / low density)
   colour-high:    rgb("#003f5c"), // darkest  (peak density)
+
+  // Blue to orange/yellow
+  // colour-low:     rgb("#003f5c"), // lightest (empty / low density)
+  // colour-high:    rgb("#ffb700"), // darkest  (peak density)
   // --- Layout ---
   cell-size:      8pt,            // size of each heatmap cell
   axis-colour:    rgb("#555"),
@@ -217,7 +221,7 @@
     // X-axis label
     #place(left + top,
       dx: pad-left + plot-w / 2 - 30pt,
-      dy: pad-top + plot-h + 18pt,
+      dy: pad-top + plot-h + 14pt,
       text(size: 8pt, fill: axis-colour)[#x-label]
     )
 

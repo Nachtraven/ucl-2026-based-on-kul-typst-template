@@ -62,48 +62,6 @@
 ) <3d_software_oss>
 
 
-
-#figure(
-  grid(
-    columns: (auto, auto),
-    rows:(auto, auto),
-    column-gutter: 2.8em,
-
-    vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
-      method: "ground_truth", variant: "",
-      title: "Ground Truth",
-      x-min: 0.001, x-max: 2.0,
-      y-min: 1,     y-max: 5000,
-      colour-max: 30,           // fix scale so all panels are comparable
-      x-log: true, y-log: true,
-    ),
-
-    vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
-      method: "threshold", variant: "best_dice",
-      title: "Thresholding",
-      x-min: 0.001, x-max: 2.0,
-      y-min: 1,     y-max: 5000,
-      colour-max: 30,
-      x-log: true, y-log: true,
-    ),
-
-    vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
-      method: "pipeline", variant: "default",
-      title: "Pipeline",
-      x-min: 0.001, x-max: 2.0,
-      y-min: 1,     y-max: 5000,
-      colour-max: 30,
-      x-log: true, y-log: true,
-    ),
-  ),
-  caption: [CA-LL-L1 heatmap]
-) <fig:appendix_individual_heatmaps>
-
-
-
 // == CECT dataset performance challenges (TODO: revisit, this was excised from the main text) <performance_and_memory>
 
 // // TODO: Compress/review this
@@ -143,29 +101,31 @@
 //   })
 // )
 
-#v(0.5cm)
-#figure(
-  image("../../../resources/misc/uncompressed_image_folder_sizes.png", width:90%),
-  caption: [TODO: This is a placeholder. TODO: Add horizontal lines for the RAM of computers. 
+
+// TODO: Re-add these??
+// #v(0.5cm)
+// #figure(
+//   image("../../../resources/misc/uncompressed_image_folder_sizes.png", width:90%),
+//   caption: [TODO: This is a placeholder, Add horizontal lines for the RAM of computers. 
   
-  Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
-) <uncompressed_dataset_size>
-#v(0.5cm)
+//   Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
+// ) <uncompressed_dataset_size>
+// #v(0.5cm)
 
-RAM use: originally discussed in the methodology
+// RAM use: originally discussed in the methodology
 
-#v(0.5cm)
-#figure(
-  grid(
-    rows: 2,
-    // columns: 2,
-    gutter: 3pt,
-    image("../../../resources/misc/RAM_cpu_use_during_a_run_cropped_ram_only.png", width: 90%),
-    image("../../../resources/misc/RAM-cb-luru-r.png", width: 90%),
-  ),
-  caption: [*Top:* CA-LL-L2 RAM utilization during segmentation: baseline after loading dataset, below 24GB utilization, during processing 100% RAM and swap are used, *Bottom:* CB-LURU-R showing full RAM and SWAP utilization when loaded (no inference)],
-) <system_performance>
-#v(0.5cm)
+// #v(0.5cm)
+// #figure(
+//   grid(
+//     rows: 2,
+//     // columns: 2,
+//     gutter: 3pt,
+//     image("../../../resources/misc/RAM_cpu_use_during_a_run_cropped_ram_only.png", width: 90%),
+//     image("../../../resources/misc/RAM-cb-luru-r.png", width: 90%),
+//   ),
+//   caption: [*Top:* CA-LL-L2 RAM utilization during segmentation: baseline after loading dataset, below 24GB utilization, during processing 100% RAM and swap are used, *Bottom:* CB-LURU-R showing full RAM and SWAP utilization when loaded (no inference)],
+// ) <system_performance>
+// #v(0.5cm)
 
 
 // Other 3D Slicer threads about large file loading:
@@ -173,7 +133,7 @@ RAM use: originally discussed in the methodology
 
 
 
-
+#pagebreak()
 == Environmental and CO2 impact of the thesis (TODO: revisit)
 
 The main sources of CO2 impact of this thesis are the use of computational resources and the human factor.
@@ -198,29 +158,31 @@ As for AI - a rough impact is estimated using the computer of the writer as a ba
 
 // Talk about naming conventions, data versionning methods and saving
 
+
+#pagebreak()
 == Use of LLMs and AIs <llm_and_ai>
 
 // Discuss claude code and closing the loop of coding, how it can be used to achieve more in a shorter time but still requiring compsci to guide and structure things
 
 The main two AI assistants used in this thesis were Piccolo, offered by UCLouvain and used for writing feedback, and ClaudeCode, by Anthropic, for the expansion and creation of the plugin.
 
+#linebreak()
 When using Claude Code, multiple events of note occured:
-1. The use of claude code for code audits in performance increases generally resulted in many more code changes and solution adjacent changes. For example, when auditing the code to improve performance on subsampled sections, ClaudeCode carried out over one hundred minor modifications on top of the proscribed main changes
+1. The use of claude code for code audits in performance increases generally resulted in many more code changes and solution adjacent changes. For example, when auditing the code to improve performance on subsampled sections, ClaudeCode carried out over hundreds of minor modifications on top of the proscribed main changes
 2. The use of coding assistants (Piccolo and Claude) for scripts to help in data management (subsampling and transformations) often resulted in minor discrepancies in outputs that required manual revision
-3. The process of requesting Claude Code to add comments also resulted in a re-organization of the code. Readability improved from the perspective of the writer, but the question of originality remained.
+3. The process of requesting Claude Code to add comments also resulted in a re-organization of the code. Readability improved from the perspective of the writer, but the question of originality remains.
+4. AI assistants were exceptionally relevant and helpful for the creation of diverse data visualizations and graphing, as well as the creation of validation loops and tools.
 
-
-talk about the branching effect - using models allows exploring more ideas but requires stronger motivation for the pruning of them & selection process   
+TODO: talk about the branching effect - using models allows exploring more ideas but requires stronger motivation for the pruning of them & selection process   
 
 == Development computer specifications <pc_specs>
 
-Development computer:
-
+*Development computer:*
+#linebreak()
 Lenovo legion 7i slim, 48GB DDR5, i7-13700H, 8GB RTX4070
-
-laboratory computer provided to students:
-
-// 32GB 4400mhz
+#linebreak()
+*Laboratory computer provided to students:*
+#linebreak()
 i7-13700, 32GB, T1000 8GB
 
 
@@ -276,40 +238,84 @@ i7-13700, 32GB, T1000 8GB
 = Extra figures (TODO: revisit)
 
 #figure(
-  image("../../../resources/software/threshold_131_255_example.png", width: 75%),
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "pipeline", variant: "default",
+      title: "Pipeline",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  caption: [CA-LL-L1 heatmap]
+) <fig:appendix_individual_heatmaps>
+
+
+
+
+
+#figure(
+  image("../../../resources/software/threshold_131_255_example.png", width: 65%),
   caption: [The shortcoming of threshold based segmentation visualized, with a "shell" of high valued outside being included whe the threshold accepts the vessel segment.],
 ) <fig:thresholding_with_shell>
 
+
 #figure(
-  image("../../../resources/software/bridging_working_cropped.png", width: 75%),
+  image("../../../resources/software/bridging_working_cropped.png", width: 65%),
   caption: [Structurally aware gap bridging to reconnect predicted vessels: *Red:* vessels as identified by other steps. *Yellow:* Bridges between tubular endpoints. #footnote[3DSlicer smooths visualizations in 3D without combining different classes. The final segmentaton here is unifrom and continuous.]],
 ) <fig:gap_bridging>
 
 #v(2.5cm)
 
 #figure(
-  image("../../../resources/software/Error_in_external_plugin_VTK_2026-03-30 11-11-14.png"),
+  image("../../../resources/software/Error_in_external_plugin_VTK_2026-03-30 11-11-14.png", width:90%),
   caption: [Demonstration of one of the failing plugins and the lack of user feedback on what went wrong],
 ) <error_in_external_plugins>
 
 
-#figure(
-  image("../../../resources/software/error_looks_like_vessels_because_of_holes.png"),
-  caption: [Areas of CA-LL-R where vessels are detected because of the black holes around it],
-) <holes_causing_errors>
+// #figure(
+//   image("../../../resources/software/error_looks_like_vessels_because_of_holes.png"),
+//   caption: [Areas of CA-LL-R where vessels are detected because of the black holes around it],
+// ) <holes_causing_errors>
 
 
-#figure(
-  image("../../../resources/software/imprted_seeds_message.png"),
-  caption: [Import process],
-) <importing>
+// #figure(
+//   image("../../../resources/software/imprted_seeds_message.png"),
+//   caption: [Import process],
+// ) <importing>
+
+// #figure(
+//   image("../../../resources/misc/RAM_cpu_use_during_a_run.png"),
+//   caption: [RAM and CPU use during a run of the initial pipeline on CA-LL-R showing the efficiency issues that Python and 3D Slicer cause],
+// ) <inefficient>
 
 #figure(
-  image("../../../resources/misc/RAM_cpu_use_during_a_run.png"),
-  caption: [RAM and CPU use during a run of the initial pipeline on CA-LL-R showing the efficiency issues that Python and 3D Slicer cause],
-) <inefficient>
-
-#figure(
-  image("../../../resources/misc/RAM_use_large_dataset.png"),
-  caption: [RAM use loading a large dataset, showcasing the issue with 3D Slicers method of loading data into memory],
+  image("../../../resources/misc/RAM_use_large_dataset.png", width:90%),
+  caption: [RAM use when loading a large dataset, showcasing the issue with 3D Slicers method of loading data into memory: the entire volume must be kept alive, meaning that other operations are not possible.],
 ) <large_dataset>

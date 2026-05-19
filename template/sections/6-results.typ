@@ -137,6 +137,8 @@
 #import "./appendices/precision-recall_results_graph.typ":draw-pr-or-recall
 #import "./appendices/vessel_stats.typ": vessel-length-distribution
 
+#import "./appendices/intro_cect_image_annotations.typ": image-with-circles
+
 // Order:
 // CA-RU-R 222
 // CA-RU-R 666
@@ -206,49 +208,21 @@ In order to measure the impact on vessel extraction beyond simple voxel level me
     ),
   ),
   // TODO: add an image here of the overall stats?
-  caption: [TODO: collate data across all runs.
+  caption: [TODO: collate data across all runs will make colours more intense
   
   Heatmaps of vessel volume/vessel length. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes.]
 ) <fig:heatmaps_ca-ll-l1>
 #v(0.2cm)
 
 
+Beyond vessel size and length, it is interesting to investigate the known issue of DICE discussed in @fig:dice-detection: the vessels are not considered unitary, meaning that it is possible to miss vessels entirely without it being evident in the results. To paliate this, a simple bipartite analysis is run: for each prediction, the correspondng contiguous ground truth vessel(s) are identified. This 0 to N matching allows us to identify how many vessels have no GT support, and inversely how many vessels are being connected. It also enables a better understanding of the data put forth by the previous heatmap:
+
+TODO: figure() bipartite matching
+
 
 ==== Voxel metrics
 
 Thresholding is compared to our pipeline when using the grey value achieving peak clDICE performance, following a sweep of all possible threshold values. This value is used as it presents a low false positive ratio.
-
-
-// #v(0.5cm)
-// #let RES = "../../../resources/images/results/new_pipeline_may_15"
-// #figure(
-//   draw-dice(
-//     (
-//       (name: "CA-RU-R\n916/901/222",
-//        tool_csv: "./results.csv", tool_row: 0,
-//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", thr_row: 89),
-//       (name: "CA-RU-R\n687/451/666",
-//        tool_csv: "./results.csv", tool_row: 1,
-//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", thr_row: 73),
-//       (name: "CA-LL-R\n298/233/427",
-//        tool_csv: "./results.csv", tool_row: 2,
-//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
-//       // (name: "SLICES CA-NM-L_x+1800_y+1800_z+319",
-//       //  tool_csv: "./results.csv", tool_row: 4,
-//       //  thr_csv:  "/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 64),
-//       // (name: "SLICES CA-NM-L_x+900_y+900_z+957",
-//       //  tool_csv: "./results.csv", tool_row: 5,
-//       //  thr_csv:  "/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 64),
-      
-//       (name: "CA-LL-L1\n559/604/498",
-//        tool_csv: "./results.csv", tool_row: 5,
-//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
-//     ),
-//   ),
-//   caption: [DICE and clDICE of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE]
-// )
-// #v(0.5cm)
-
 
 
 #v(0.25cm)
@@ -276,12 +250,12 @@ Thresholding is compared to our pipeline when using the grey value achieving pea
        tool_csv: "./results.csv", tool_row: 5,
        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
     ),
-    // // Uncomment to add pred_gt_volume
-    // annotate-col: "pred_gt_vol",
-    // annotate-label: "vol ratio (pred/gt)",
-    // annotate-digits: 2,
+    // Uncomment to add pred_gt_volume
+    annotate-col: "pred_gt_vol",
+    annotate-label: "vol ratio (pred/gt)",
+    annotate-digits: 2,
   ),
-  caption: [DICE and clDICE comparison of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE. Results highlight two volumes for which thresholding substantially outperforms the model: two volumes where the grey value of the vessels are substantially different to the background.]//highlighting the bias of clDICE towards higher numbers in situations of under
+  caption: [clDICE comparison of pipeline against thresholding, using the optimal threshold for the highest clDICE. Volume ratio (prediction/ground truth) presented numerically. The results highlight two volumes for which thresholding substantially outperforms the model: these volumes have marked oversegmentation with regard to the ground truth, predicting 1.92 and 4.82 times more voxels respectively. These highlight two volumes for which there is substantial extrapolation, analyzed qualitatively in fig:qualitative-ca-ru-r-666 and fig:qualitative-ca-ll-r-427 (TODO). Other volumes show closely matched clDICE values.] //Numbers above each bar show the volume ratio (pred / GT): values near 1.0 indicate a closely matched volume, larger values indicate over-segmentation. Tool precision suffers when over segmenting
 )
 #v(0.25cm)
 
@@ -316,7 +290,9 @@ Thresholding is compared to our pipeline when using the grey value achieving pea
     // annotate-label: "vol ratio",
     // annotate-digits: 2,
   ),
-  caption: [Precision and recall of pipeline against thresholding. Numbers above each bar show the volume ratio (pred / GT): values near 1.0 indicate a closely matched volume, larger values indicate over-segmentation. Tool precision suffers when over segmenting] //Despite comparable Dice scores in the previous figure, thresholding shows characteristic over-prediction.
+  caption: [TODO: this doesn't tell a good story, revisit -> talk about recall and iou? or stick with clDICE but also explore clDICE pipeline on thresh? 
+  
+  Precision and recall of pipeline against thresholding.] //Despite comparable Dice scores in the previous figure, thresholding shows characteristic over-prediction.
 )
 #v(0.25cm)
 
@@ -327,8 +303,101 @@ Thresholding is compared to our pipeline when using the grey value achieving pea
 
 === Qualitative analysis
 
+We begin by analyzing the two volumes with large over-segmentation identified previously: CA-RU-R 687/451/666 and CA-LL-R 298/233/427. These show marked over-segmentation ...
 
-#import "./appendices/intro_cect_image_annotations.typ": image-with-circles
+// #let img-path = "../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/"
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     rows: 2,
+//     column-gutter: 0.4em,
+//     row-gutter: 0.6em,
+
+//     figure(
+//       // image-with-circles(
+//       //   "../" + img-path + "base.png",
+//       //   (
+//       //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+//       //   ),
+//       // ),
+//       image(img-path + "base.png", width: 100%),
+//       caption: [base],
+//       supplement: none,
+//       numbering: none,
+//     ),
+  
+//     figure(
+//       image(img-path + "vessels.png", width: 100%),
+//       caption: [pipeline output, default settings],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//     figure(
+//       image(img-path + "median_thr.png", width: 100%),
+//       caption: [(a) threshold: median annotation value],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//     figure(
+//       image(img-path + "thr.png", width: 100%),
+//       caption: [(b) threshold: peak clDICE],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//   ),
+//   caption: [TODO: CA-RU-R, subregion 687/451/666: ],
+// ) <fig:qualitative-ca-ru-r-666>
+
+
+// #let img-path = "../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/"
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     rows: 2,
+//     column-gutter: 0.4em,
+//     row-gutter: 0.6em,
+
+//     figure(
+//       // image-with-circles(
+//       //   "../" + img-path + "base.png",
+//       //   (
+//       //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+//       //   ),
+//       // ),
+//       image(img-path + "base.png", width: 100%),
+//       caption: [base],
+//       supplement: none,
+//       numbering: none,
+//     ),
+  
+//     figure(
+//       image(img-path + "vessels.png", width: 100%),
+//       caption: [pipeline output, default settings],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//     figure(
+//       image(img-path + "median_thr.png", width: 100%),
+//       caption: [(a) threshold: median annotation value],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//     figure(
+//       image(img-path + "thr.png", width: 100%),
+//       caption: [(b) threshold: peak clDICE],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//   ),
+//   caption: [TODO: CA-LL-R subregion 298/233/427: ],
+// ) <fig:qualitative-ca-ll-r-427>
+
 
 
 #let img-path = "../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/"
@@ -374,10 +443,11 @@ Thresholding is compared to our pipeline when using the grey value achieving pea
     ),
 
   ),
-  caption: [CA-RU-R: Comparison of pipeline with thresholding based on (a) median user point value (b) optimal value for maximizing clDICE with known ground truth. Example shows ideal scenario for thresholding: vessels are segmented (although weakly) and pipeline under segments one large vessel],
-) <CA-RU-R_222_2d>
+  caption: [CA-RU-R: Comparison of pipeline with thresholding based on (a) median user point value (b) optimal value for maximizing clDICE with known ground truth. Example shows ideal scenario for thresholding: vessels are segmented (although weakly, and present disconnections for the fainter vessels), while the pipeline under segments one large vessel.],
+) <fig:CA-RU-R_222_2d>
 
 
+// TODO: 3D analysis
 
 #let img-path = "../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p1/"
 #figure(
@@ -422,9 +492,43 @@ Thresholding is compared to our pipeline when using the grey value achieving pea
     ),
 
   ),
-  caption: [CA-RU-R: Comparison of 3D Views: thresholding captures large plates, has gaps and holes. Pipeline output is more continuous, although conservative on vessel size. Ground truth shows the variance introduced by manual annotation, and the limitations of using it as a comparison point.],
-) <CA-RU-R_222_3d>
+  caption: [CA-RU-R: Comparison of 3D Views: thresholding captures large plates, has gaps and holes. Pipeline output is more continuous, although conservative on vessel size. Ground truth shows the variance introduced by non expert manual annotation highlighting its limitations as a comparison point.],
+) <fig:CA-RU-R_222_3d>
 
+
+
+
+
+
+// #v(0.5cm)
+// #let RES = "../../../resources/images/results/new_pipeline_may_15"
+// #figure(
+//   draw-dice(
+//     (
+//       (name: "CA-RU-R\n916/901/222",
+//        tool_csv: "./results.csv", tool_row: 0,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", thr_row: 89),
+//       (name: "CA-RU-R\n687/451/666",
+//        tool_csv: "./results.csv", tool_row: 1,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", thr_row: 73),
+//       (name: "CA-LL-R\n298/233/427",
+//        tool_csv: "./results.csv", tool_row: 2,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
+//       // (name: "SLICES CA-NM-L_x+1800_y+1800_z+319",
+//       //  tool_csv: "./results.csv", tool_row: 4,
+//       //  thr_csv:  "/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 64),
+//       // (name: "SLICES CA-NM-L_x+900_y+900_z+957",
+//       //  tool_csv: "./results.csv", tool_row: 5,
+//       //  thr_csv:  "/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 64),
+      
+//       (name: "CA-LL-L1\n559/604/498",
+//        tool_csv: "./results.csv", tool_row: 5,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
+//     ),
+//   ),
+//   caption: [DICE and clDICE of pipeline against thresholding, using the optimal threshold for the highest DICE/clDICE]
+// )
+// #v(0.5cm)
 
 
 // #v(0.5cm)

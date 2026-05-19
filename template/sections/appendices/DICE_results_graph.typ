@@ -55,7 +55,7 @@
   let annot-colour   = rgb("#222")
   let tick-size      = 8pt
   let label-size     = 8pt
-  let annot-size     = 6pt
+  let annot-size     = 8pt
 
   // Reserve a few pt above the bars for the annotation text when present
   let annot-headroom = if annotate-col != none { 12pt } else { 0pt }
@@ -93,7 +93,7 @@
       place(left + top,
         dx: chart-pad-left + plot-width - 140pt, dy: 4pt,
         align(right, text(size: 9pt, fill: annot-colour,
-          style: "italic")[Number above bar: #annotate-label])
+          style: "italic")[Number under bar: #annotate-label])
       )
     }
 
@@ -121,7 +121,7 @@
       // Sample label below bars
       place(left + top,
         dx: group-x + group-width / 2 - 40pt,
-        dy: legend-height + annot-headroom + chart-height + 6pt,
+        dy: legend-height + annot-headroom + chart-height + 18pt,
         box(width: 80pt, align(center,
           text(size: label-size, fill: axis-colour)[#sample.name]
         ))
@@ -143,9 +143,9 @@
         // Annotation above the bar (if present)
         if sample.annot != none {
           let annot-val = sample.annot.at(m.key)
-          place(left + top,
+          place(left + bottom,
             dx: bar-x + bar-width / 2 - 14pt,
-            dy: bar-y - 10pt,
+            dy: -30pt, //bar-y - 10pt,
             box(width: 28pt, align(center,
               text(size: annot-size, fill: annot-colour, weight: "bold")[
                 #calc.round(annot-val, digits: annotate-digits)

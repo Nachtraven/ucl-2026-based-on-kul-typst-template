@@ -344,9 +344,7 @@ When evaluating a segmentation method, consideration of the downstream analysis 
   ),
   radius: 4pt,
   width: auto
-)[
-  Evaluation of a segmentation performance requires integrating the structure of the problem. Our evaluation methodology should make use of prior aware losses when calculating error rates.
-]
+)[  Evaluation of a segmentation performance requires integrating the structure of the problem. Our evaluation methodology should make use of prior aware losses when calculating voxel error rates.]
 
 // Our method of evaluation must be based on data that is feasible for non-expert annotators to generate using existing 3D Slicer tooling, namely landmark placement, and be calculable in 3D Slicer. To enable downstream performance analysis, segmentations should exportable into a shared format, as well as being evaluated on relevant challenging scenarios.
 
