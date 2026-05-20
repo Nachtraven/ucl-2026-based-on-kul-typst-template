@@ -30,6 +30,7 @@
 // TODO: add Precision-Recall discussion: Precision-Recall is a useful measure of success of prediction when the classes are very imbalanced. Our dataset is imbalanced, and our prediction algorithm is supposed to have a lot of FP because the GT is sparsely annotated. So our recall MUST be high with only "relevant" false positives.
 
 #import "@preview/colorful-boxes:1.4.3": *
+#import "appendices/bipartite/illustrate_bipartite.typ" : matching-illustration
 
 = State of the art
 
@@ -323,15 +324,25 @@ DICE has some specific known downsides for 3D medical image segmentation @Taha20
 ) <fig:dice-detection>
 #v(0.35cm)
 
-// Other more simple measures such as precision 
-// TODO: Should the precision recall curve be mentioned here since it is in the problem statement?
 
-For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream, motivating the creation of a purpose built loss function in @clDice_loss_func called clDice, that integrate the prior of connectedness, and build it into the loss function for predictions. In @CFLoss_loss_func clinically relevant vascular features are encoded into the loss function. A collection of topology-aware loss functions is available in @topolosses. Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level @VesselGraph. 
+In @CFLoss_loss_func clinically relevant vascular features are encoded into the loss function. A collection of topology-aware loss functions is available in @topolosses, able to place emphasis on different topological features. For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream, motivating the creation of a purpose built loss function in @clDice_loss_func called _centerlineDice_ (clDice), that emphasizes and integrates the prior of connectedness by first skeletonizing, then calculating a score based on these skeletons.
+
+// Tprec(SP , VL) = |SP ∩ VL| / |SP |
+// Tsens(SL, VP ) = |SL ∩ VP | / |SL|
+
+Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level @VesselGraph. In instance segmentation @panoptic_seg_og, where the goal is to not only segment a structure but also individually identify it, graph inspired methods are used to calculate a score based on the matching between the ground truth and predictions on a per object basis, combatting the issue highlighted in @fig:dice-detection at the cost of needing predictions to be individual objects, a problem for vessels that are _by nature_ continuous.
+
+
+#figure(
+  matching-illustration(),
+  caption: [Vessel matching illustration: *Left* good matching, predictions correspond cleanly to GT vessels (1:1 or 1:few) *Center:* ground truth *Right* poor matching, GT reference vessels are fragmented across multiple small predictions, and several predictions have no GT support (grey, offset).
+  ]
+)<fig:matching_illustration>
 
 // Segmentation also presents a subtype where predictions are done on a unitary basis, as in _Panoptic Segmentation_ @panoptic_seg_og. This translates to seeing the vessels as individual predictions and allows the use of _panoptic quality_, a measure of error associated with pixel wise predictions on a per vessel level, combatting the bias discussed earlier in @fig:dice-detection.
 
 #linebreak()
-When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features, such as tortuosity and branching ratio, is important to consider. As a result, and driven by the expert-in-the-loop approach, outputs will be evaluated based on point-wise loss of user annotated points, as well as on a manually annotated pixel level baseline relevant for connectivity analysis, an area difficult to capture in the loss.
+When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features, such as tortuosity and branching ratio, is important to consider. As a result, outputs will be evaluated based on 3 characteristics: *(1)* the user placed points during the _vessel_ and _background_ point placement step, *(2)* on a voxel level connectivity aware loss: clDice, based on annotated binary ground truth and *(3)* on the matching ratio of individual vessels to combat the biases of voxel based methods.
 
 //In light of these considerations, and following the analytical needs of the laboratory researchers
 // Graphs metrics are particularly relevant when the goal is biological interpretation rather than pixel-perfect overlap --> evaluate my method on this if time allows
@@ -346,7 +357,8 @@ When evaluating a segmentation method, consideration of the downstream analysis 
   ),
   radius: 4pt,
   width: auto
-)[  Evaluation of a segmentation performance requires integrating the structure of the problem. Our evaluation methodology should make use of prior aware losses when calculating voxel error rates.]
+)[Evaluation of a segmentation performance requires integrating the structure of the problem. Our evaluation methodology should make use of prior aware losses when calculating voxel error rates, and should consider higher order matching ratios to avoid the voxel level bias.]
+
 
 // Our method of evaluation must be based on data that is feasible for non-expert annotators to generate using existing 3D Slicer tooling, namely landmark placement, and be calculable in 3D Slicer. To enable downstream performance analysis, segmentations should exportable into a shared format, as well as being evaluated on relevant challenging scenarios.
 

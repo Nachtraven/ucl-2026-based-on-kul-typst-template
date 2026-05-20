@@ -183,7 +183,7 @@
     }),
   ),
   caption: [
-    The Frangi vesselness filter: Figure dapted from @frangi_og_paper.
+    The Frangi vesselness filter: Figure adapted from @frangi_og_paper.
     
     *Left:* The second-order derivative of a Gaussian kernel $G''_sigma$ probes inside-versus-outside contrast over the spatial range $(-sigma, sigma)$; here $sigma = 1$. Convolving an image with this kernel measures for each point how strongly intensity curves over the scale _sigma_: high response means a detected peak or valley of width comparable to _sigma_ - "matching" vessels.
     

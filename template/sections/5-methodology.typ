@@ -49,6 +49,9 @@ Additionally many available plugins were either unmaintained, throwing errors du
 #linebreak()
 With these issues in mind, development of the plugin began: 3D Slicer is multi platform and built around plugins to carry out tasks, communicating using the Medical Reality Markup Language (MRML) @MRML_diagram, where modules read and write to MRML nodes to enable interoperability. These plugins can be implemented in one of three forms: as command line interface (CLI) tools where they may be called as an encapsulated piece of code, the most abstracted way of working with external code or a C++/Scripted (Python) loadable module @SlicerTutorialPerkins. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, ability to use the UI features of 3D Slicer, and having access to the full slicer API. Work was carried out in Visual Studio Code under Ubuntu 24.04.
 
+#linebreak()
+To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs.io/en/latest/user_guide/modules/extensionwizard.html#extension-wizard] was used to generate the required extension boilerplate, and the ScriptedLoadableModule was used as a starting point for the implementation code. 3D Slicer implements a user interface development module in QT, enabling near drag and drop creation of UI elements, making it the natural method of developing a seamless UI experience. Although basic, this radically simplifies the process of creating a cross platform UI.
+
 #v(0.4cm)
 #figure(
   image("../../resources/software/Scripted_Module_Implementation.png", width: 65%),
@@ -56,11 +59,9 @@ With these issues in mind, development of the plugin began: 3D Slicer is multi p
 ) <MRML_diagram>
 #v(0.4cm)
 
-To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs.io/en/latest/user_guide/modules/extensionwizard.html#extension-wizard] was used to generate the required extension boilerplate, and the ScriptedLoadableModule was used as a starting point for the implementation code. 3D Slicer implements a user interface development module in QT, enabling near drag and drop creation of UI elements, making it the natural method of developing a seamless UI experience. Although basic, this radically simplifies the process of creating a cross platform UI.
-
 #figure(
   image("../../resources/misc/QT_ui_designer.png", width: 85%),
-  caption: [The QT user interface designer, as seen during the development of the plugin. Key elements of this UI development method are the drag and drop nature as well as limited styling options.],
+  caption: [The QT user interface designer, as used during the development of the plugin. Key advantages of this UI creation method are the drag and drop nature, integration into 3DSlicer and limited styling options.],
 ) <QT_ui> 
 #v(0.4cm)
 
@@ -91,7 +92,7 @@ A principled approach was required: in order to select thresholds and evaluate t
 // #v(0.4cm)
 #figure(
   image("../../resources/software/overview_seed_vessel_param.png", width: 76%),
-  caption: [View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported.],
+  caption: [View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported in a CSV format with RAS co-ordinates.],
 )
 // #v(0.4cm)
 

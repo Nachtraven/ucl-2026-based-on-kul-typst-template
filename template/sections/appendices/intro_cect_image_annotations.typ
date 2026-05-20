@@ -14,6 +14,46 @@
 //   thickness — stroke thickness (default: 1.5pt)
 // ------------------------------------------------------------
 
+
+
+
+#let image-with-line(path, colour, label) = block(width: 100%, height: auto)[
+  #set align(center + horizon)
+  #image(path, width: 100%)
+  #place(center + horizon, line(length: 100%, stroke: 0.8pt + colour))
+  #place(
+    bottom + right,
+    dx: -0.4em, dy: -0.4em,
+    box(
+      fill: rgb(0, 0, 0, 160),
+      inset: (x: 0.4em, y: 0.2em),
+      radius: 2pt,
+      text(fill: white, size: 9pt, weight: "bold")[#label],
+    ),
+  )
+]
+
+// #figure(
+//   stack(
+//     spacing: 0.6em,
+//     chart,
+//     grid(
+//       columns: (1fr, 1fr),
+//       column-gutter: 0.6em,
+//       image-with-line("../../resources/images/ca-ru-r_0864.jpg", red, "CA-RU-R - Reliable"),
+//       image-with-line("../../resources/images/ca-rl-l_1489.jpg", blue, "CA-RL-L - Unreliable"),
+//     ),
+//   ),
+//   caption: [*Top:* Illustrative grey values of a reliable scan (Red) and unreliable scan (Blue). An ideal scan would be approximately flat within the tumor.
+  
+//   *Bottom Left:* CA-RU-R, considered reliable. *Bottom Right:* CA-RL-L, considered previously unreliable.],
+// ) <reliability_of_scans>
+// #v(0.2cm)
+
+
+
+
+
 #let image-with-circles(path, circles, label: none, label-colour: red) = block(
   width: 100%,
   breakable: false,
@@ -100,7 +140,9 @@
     // (c) Many small vessels in cross-section, 2-8 voxels across
     figure(
       image(img-path + "ca-ll-r_2297_crop.jpg", width: 100%),
-      caption: [(c) Small vessels in cross-section],
+      caption: [(c) Small vessels in 
+      
+      cross-section],
       supplement: none,
       numbering: none,
     ),
@@ -129,6 +171,6 @@
     ),
   ),
   caption: [
-    Slices illustrating the principal challenges: *(a)* A large high contrast vessel of approximately 14 voxels. *(b)* A large high-intensity region not corresponding to vasculature, illustrating staining artefacts. *(c)* Upper, left: many small vessels in cross-section, ranging from 2 to 8 voxels in diameter, where the partial-volume effect is present, as well as compression artifacts. *(d)* Outter surface: the "shell effect", a high-intensity boundary surrounding the tumor caused by the diffusion of the contrast agent - also visible: a strong gradient between outside and center *(e, f)* Two slices from the same volume, separated by 5 voxels along the z-axis. The vessel indicated appears discontinuous in (e) but continuous in (f), highlighting the relevance of 3D methods.
+    Slices illustrating the principal challenges: *(a)* A large high contrast vessel of approximately 14 voxels. *(b)* A large high-intensity non vessel-like structure resulting from hemorrage. *(c)* Upper, left: many small vessels in cross-section, ranging from 2 to 8 voxels in diameter, where the partial-volume effect is present, as well as compression artifacts. *(d)* Outter surface: the "shell effect", a high-intensity boundary surrounding the tumor caused by the diffusion of the contrast agent - also visible: a strong gradient between outside and center *(e, f)* Two slices from the same volume, separated by 5 voxels along the z-axis. The vessel indicated appears discontinuous in (e) but continuous in (f), highlighting the relevance of 3D methods.
   ],
 ) <cect-data-examples>

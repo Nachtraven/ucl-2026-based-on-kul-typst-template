@@ -171,7 +171,54 @@ Following this clDICE, prediction ratio, iou, and precision/recall are analyzed.
 
 ==== Vessel metrics
 
-In order to measure the impact on vessel extraction beyond simple voxel level metrics, we begin by examining vessel characteristics (volume, length) extracted by observing the collated distribution of volume and length @fig:heatmaps_ca-ll-l1. Detailed per run heatmaps are visible in @fig:appendix_individual_heatmaps. 
+In order to measure the impact on vessel extraction beyond simple voxel level metrics, we begin by examining vessel characteristics (volume, length) extracted by observing the collated distribution of volume and length @fig:collated_heatmaps. Detailed per run heatmaps are visible in @fig:appendix_individual_heatmaps. 
+
+// #v(0.2cm)
+// #figure(
+//   grid(
+//     columns: (auto, auto),
+//     rows:(auto, auto),
+//     column-gutter: 2.8em,
+
+//     vessel-heatmap(
+//       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//       method: "ground_truth", variant: "",
+//       title: "Ground Truth",
+//       x-min: 0.005, x-max: 2.0,
+//       y-min: 1,     y-max: 5000,
+//       colour-max: 30,           // fix scale so all panels are comparable
+//       x-log: true, y-log: true,
+//     ),
+
+//     vessel-heatmap(
+//       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//       method: "threshold", variant: "best_dice",
+//       title: "Thresholding",
+//       x-min: 0.005, x-max: 2.0,
+//       y-min: 1,     y-max: 5000,
+//       colour-max: 30,
+//       x-log: true, y-log: true,
+//     ),
+
+//     vessel-heatmap(
+//       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//       method: "pipeline", variant: "default",
+//       title: "Pipeline",
+//       x-min: 0.005, x-max: 2.0,
+//       y-min: 1,     y-max: 5000,
+//       colour-max: 30,
+//       x-log: true, y-log: true,
+//     ),
+//   ),
+//   // TODO: add an image here of the overall stats?
+//   caption: [TODO: collate data across all runs will make colours more intense
+  
+//   Heatmaps of vessel volume/vessel length. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes.]
+// ) <fig:heatmaps_ca-ll-l1>
+// #v(0.25cm)
+
+
+
 
 #v(0.2cm)
 #figure(
@@ -181,40 +228,128 @@ In order to measure the impact on vessel extraction beyond simple voxel level me
     column-gutter: 2.8em,
 
     vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
       method: "ground_truth", variant: "",
       title: "Ground Truth",
-      x-min: 0.001, x-max: 2.0,
+      x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,           // fix scale so all panels are comparable
       x-log: true, y-log: true,
     ),
 
     vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
       method: "threshold", variant: "best_dice",
       title: "Thresholding",
-      x-min: 0.001, x-max: 2.0,
+      x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,
       x-log: true, y-log: true,
     ),
 
     vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
       method: "pipeline", variant: "default",
       title: "Pipeline",
-      x-min: 0.001, x-max: 2.0,
+      x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,
       x-log: true, y-log: true,
     ),
   ),
   // TODO: add an image here of the overall stats?
-  caption: [TODO: collate data across all runs will make colours more intense
-  
-  Heatmaps of vessel volume/vessel length. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes.]
-) <fig:heatmaps_ca-ll-l1>
+  caption: [*Heatmaps of vessel volume/vessel length - all predictions*. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes. The pipeline shows a tendency of predicting thinner vessels than the ground truth (a lower volume for a given vessel length)]
+) <fig:collated_heatmaps>
+#v(0.25cm)
+
+
+
+
+#v(0.2cm)
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.005, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding with\nmatching GT",
+      matched-only: true,
+      x-min: 0.005, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+      method: "pipeline", variant: "default",
+      matched-only: true,
+      title: "Pipeline with\nmatching GT",
+      x-min: 0.005, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  // TODO: add an image here of the overall stats?
+  caption: [*Heatmaps of vessel volume/vessel length - only true predictions*: vessels for thresholding and pipeline are only plotted if they correspond to at least one GT vessel, showing that many of the small predictions in thresholding and pipeline are outside of the ground truth.]
+) <fig:collated_heatmaps_only_true>
 #v(0.25cm)
 
 
@@ -307,40 +442,41 @@ Thresholding is compared to our pipeline when using the grey value achieving pea
 
 
 
-#v(0.25cm)
-#let RES = "../../../resources/images/results/new_pipeline_may_15"
+// OLD - removed may 20: PR graph for each method
+// #v(0.25cm)
+// #let RES = "../../../resources/images/results/new_pipeline_may_15"
 
-#figure(
-  draw-pr-or-recall(
-    (
-      (name: "CA-RU-R\n916/901/222",
-       tool_csv: "./results.csv", tool_row: 0,
-       thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", thr_row: 89),
-      (name: "CA-RU-R\n687/451/666",
-       tool_csv: "./results.csv", tool_row: 1,
-       thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", thr_row: 73),
-      (name: "CA-LL-R\n298/233/427",
-       tool_csv: "./results.csv", tool_row: 2,
-       thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
-      (name: "CA-NM-L\n1800/1800/319",
-       tool_csv: "./results.csv", tool_row: 3,
-       thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 103),
-      (name: "CA-NM-L\n900/900/957",
-       tool_csv: "./results.csv", tool_row: 4,
-       thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 90),
-      (name: "CA-LL-L1\n559/604/498",
-       tool_csv: "./results.csv", tool_row: 5,
-       thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
-    ),
-    // annotate-col: "pred_gt_vol",
-    // annotate-label: "vol ratio",
-    // annotate-digits: 2,
-  ),
-  caption: [TODO: this doesn't tell a good story, revisit -> talk about recall and iou? or stick with clDICE but also explore clDICE pipeline on thresh? 
+// #figure(
+//   draw-pr-or-recall(
+//     (
+//       (name: "CA-RU-R\n916/901/222",
+//        tool_csv: "./results.csv", tool_row: 0,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", thr_row: 89),
+//       (name: "CA-RU-R\n687/451/666",
+//        tool_csv: "./results.csv", tool_row: 1,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", thr_row: 73),
+//       (name: "CA-LL-R\n298/233/427",
+//        tool_csv: "./results.csv", tool_row: 2,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
+//       (name: "CA-NM-L\n1800/1800/319",
+//        tool_csv: "./results.csv", tool_row: 3,
+//        thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 103),
+//       (name: "CA-NM-L\n900/900/957",
+//        tool_csv: "./results.csv", tool_row: 4,
+//        thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 90),
+//       (name: "CA-LL-L1\n559/604/498",
+//        tool_csv: "./results.csv", tool_row: 5,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
+//     ),
+//     // annotate-col: "pred_gt_vol",
+//     // annotate-label: "vol ratio",
+//     // annotate-digits: 2,
+//   ),
+//   caption: [TODO: this doesn't tell a good story, revisit -> talk about recall and iou? or stick with clDICE but also explore clDICE pipeline on thresh? 
   
-  Precision and recall of pipeline against thresholding.] //Despite comparable Dice scores in the previous figure, thresholding shows characteristic over-prediction.
-)
-#v(0.25cm)
+//   Precision and recall of pipeline against thresholding.] //Despite comparable Dice scores in the previous figure, thresholding shows characteristic over-prediction.
+// )
+// #v(0.25cm)
 
 
 

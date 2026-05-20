@@ -38,7 +38,7 @@
   preface: include "sections/0-preface.typ",
   abstract: include "sections/1-abstract.typ",
   // dutch-summary: include "sections/main-text/dutch-abstract.typ",
-  list-of-figures: true,
+  list-of-figures: false,
   list-of-listings: false,
   abbreviations: include "sections/appendices/list-of-abbreviations-and-symbols.typ",
   symbols: none,

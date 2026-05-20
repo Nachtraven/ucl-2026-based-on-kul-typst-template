@@ -25,6 +25,57 @@ python template/sections/appendices/bipartite/bipartite.py \
   --col-gap 190 \
   --line-opacity 0.35
   
+  
+python template/sections/appendices/bipartite/bipartite.py \
+  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv \
+  template/sections/appendices/bipartite/bipartite_ca-ll-r.svg \
+  --left-method pipeline --left-variant default --left-label "Pipeline" \
+  --right-method threshold --right-variant best_dice --right-label "Threshold" \
+  --node-size volume \
+  --col-gap 190 \
+  --line-opacity 0.35
+  
+  
+python template/sections/appendices/bipartite/bipartite.py \
+  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv \
+  template/sections/appendices/bipartite/bipartite_ca-ru-r_666.svg \
+  --left-method pipeline --left-variant default --left-label "Pipeline" \
+  --right-method threshold --right-variant best_dice --right-label "Threshold" \
+  --node-size volume \
+  --col-gap 190 \
+  --line-opacity 0.35
+  
+  
+python template/sections/appendices/bipartite/bipartite.py \
+  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv \
+  template/sections/appendices/bipartite/bipartite_ca-ru-r_222.svg \
+  --left-method pipeline --left-variant default --left-label "Pipeline" \
+  --right-method threshold --right-variant best_dice --right-label "Threshold" \
+  --node-size volume \
+  --col-gap 190 \
+  --line-opacity 0.35
+  
+  
+  
+  
+  python template/sections/appendices/bipartite/bipartite.py \
+  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv \
+  template/sections/appendices/bipartite/bipartite_ca_ll_l1.svg \
+  --left-method pipeline --left-variant default --left-label "Pipeline" \
+  --right-method threshold --right-variant best_dice --right-label "Threshold" \
+  --node-size volume \
+  --col-gap 190 \
+  --line-opacity 0.35
+  
+  python template/sections/appendices/bipartite/bipartite.py \
+  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv \
+  template/sections/appendices/bipartite/bipartite_ca_ll_l1.svg \
+  --left-method pipeline --left-variant default --left-label "Pipeline" \
+  --right-method threshold --right-variant best_dice --right-label "Threshold" \
+  --node-size volume \
+  --col-gap 190 \
+  --line-opacity 0.35
+  
 """
 
 # Rolled using claude because NetworkX was challenging
@@ -136,7 +187,7 @@ def render(
     col_gap:        int   = 200,
     line_opacity:   float = 0.35,
     top_margin:     int   = 30,
-    bottom_margin:  int   = 100,
+    bottom_margin:  int   = 180,
 ):
     df = pd.read_csv(csv_path, dtype={"corresponding_ids": str, "variant": str})
     df["variant"]          = df["variant"].fillna("")

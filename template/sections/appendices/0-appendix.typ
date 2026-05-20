@@ -237,6 +237,9 @@ i7-13700, 32GB, T1000 8GB
 
 = Extra figures (TODO: revisit)
 
+
+
+#v(0.2cm)
 #figure(
   grid(
     columns: (auto, auto),
@@ -244,7 +247,13 @@ i7-13700, 32GB, T1000 8GB
     column-gutter: 2.8em,
 
     vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+
       method: "ground_truth", variant: "",
       title: "Ground Truth",
       x-min: 0.001, x-max: 2.0,
@@ -254,7 +263,12 @@ i7-13700, 32GB, T1000 8GB
     ),
 
     vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
       method: "threshold", variant: "best_dice",
       title: "Thresholding",
       x-min: 0.001, x-max: 2.0,
@@ -264,7 +278,55 @@ i7-13700, 32GB, T1000 8GB
     ),
 
     vessel-heatmap(
-      "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+      method: "pipeline", variant: "default",
+      title: "Pipeline",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  // TODO: add an image here of the overall stats?
+  caption: [Heatmaps of vessel volume/vessel length. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes.]
+)<fig:appendix_individual_heatmaps>
+
+
+Individual heatmaps:
+
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
       method: "pipeline", variant: "default",
       title: "Pipeline",
       x-min: 0.001, x-max: 2.0,
@@ -274,12 +336,167 @@ i7-13700, 32GB, T1000 8GB
     ),
   ),
   caption: [CA-LL-L1 heatmap]
-) <fig:appendix_individual_heatmaps>
+) <fig:heatmaps_ca-ll-l1>
+
+
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+      method: "pipeline", variant: "default",
+      title: "Pipeline",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  caption: [CA-LL-L1 heatmap]
+) <fig:heatmap_ca-ll-r>
+
+
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+      method: "pipeline", variant: "default",
+      title: "Pipeline",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  caption: [CA-LL-L1 heatmap]
+) <fig:heatmap_ca-ru-r-666>
+
+
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      method: "pipeline", variant: "default",
+      title: "Pipeline",
+      x-min: 0.001, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  caption: [CA-LL-L1 heatmap]
+) <fig:heatmap_ca-ru-r-222>
+
+
+
+#figure(
+  image("./bipartite/bipartite_ca_ll_l1.svg", width: 90%),
+  caption: [CA-LL-L1 Vessel correspondence between pipeline (left), ground truth (center), and thresholding (right). Node size encodes vessel volume, unmatched nodes in grey. Lines show which predicted vessels overlap which GT vessels: 28/35 vessels are matched by the pipeline for 20/35 on the ground truth: the pipeline has better vessel sensitivity. Also visible: the ground truth contains many vessels that are detected as individual smaller vessels by the pipeline or thresholding: predictions are still fragmented.]
+)<fig:bipartite_ca-ll-l1>
+
+#figure(
+  image("./bipartite/bipartite_ca-ll-r.svg", width: 90%),
+  caption: [CA-LL-R ]
+)<fig:bipartite_ca-ll-r>
+
+#figure(
+  image("./bipartite/bipartite_ca-ru-r_222.svg", width: 90%),
+  caption: [CA-RU-R 222]
+)<fig:bipartite_ca-ru-r-222>
+
+#figure(
+  image("./bipartite/bipartite_ca-ru-r_666.svg", width: 90%),
+  caption: [CA-RU-R 666]
+)<fig:bipartite_ca-ru-r-666>
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+#pagebreak()
 #figure(
   image("../../../resources/software/threshold_131_255_example.png", width: 65%),
   caption: [The shortcoming of threshold based segmentation visualized, with a "shell" of high valued outside being included whe the threshold accepts the vessel segment.],

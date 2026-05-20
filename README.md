@@ -136,7 +136,7 @@ degree: (
 language: "en",
 electronic-version: false,
 english-master: false,
-list-of-figures: true,
+list-of-figures: false,
 list-of-listings: false,
 font-size: 11pt,
 preface: [#lorem(100)],
