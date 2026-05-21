@@ -68,9 +68,7 @@ Each candidate platform was tested for the practicality of implementing a plugin
   ),
   radius: 4pt,
   width: auto
-)[
-  Existing tools for 3D analysis are split between proprietary paid software and open-source platforms, neither having bespoke microvascular support. The pipeline must therefore integrate into an open-source software for 3D analysis: 3D Slicer.
-]
+)[Existing tools for 3D analysis are split between proprietary paid software and open-source platforms, neither having bespoke microvascular support. The pipeline must therefore integrate into an open-source software for 3D analysis: 3D Slicer.]
 
 
 
@@ -150,9 +148,7 @@ Tumors also present a particularity in that they are frequently partially or ent
   ),
   radius: 4pt,
   width: auto
-)[  
-  Our Micro-CT CECT data presents non-uniform contrast gradients across samples in addition to intra-dataset variability. The pipeline must therefore be robust to varying contrast and work on all dataset samples.
-]
+)[The Micro-CT CECT data in this thesis presents non-uniform contrast gradients across samples in addition to intra-dataset variability. The pipeline must therefore be robust to varying contrast and work on all dataset samples.]
 
 
 
@@ -225,8 +221,18 @@ Deep learning has been applied to vascular segmentation for blood vessel extract
 Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods. This use of classical priors as a feature stage with a form of learning as a correction sets the direction of the present work, with the novel addition of sparse user input as a method for achieving training data acquisition.
 
 #v(0.5cm)
+// Graph describing the different methods on an xy plane of data (x) and topological awareness (y):
+// 0.4, 0.4, "Otsu", 
+// 1.0, 1.5, "Region-growing", 
+// 1.0, 4.95, "Frangi"
+// 1.8, 6.0, "Minimal-path", 
+// 8.0, 2.2, "U-Net / V-Net", 
+// 6.0, 5.15, "Hybrid Frangi + U-Net", 
+// 2.5, 7.8, "This work: Bootstrapped hybrid"
 #include "./appendices/taxonomy_of_methods_graph.typ"
+// TODO: ensure this graph talks about things shown previously or known to the reader
 #v(0.5cm)
+
 
 #v(0.5cm)
 #colorbox(
@@ -238,9 +244,7 @@ Finally, hybrid approaches offer the interesting property of combining classical
   ),
   radius: 4pt,
   width: auto
-)[
-  Segmentation has evolved from classical methods encoding geometric priors toward data-driven methods, requiring annotated training data that is scarce and high variance for CECT micro-CT. Our work should need no training data when used but instead leverage simple user placed points, and automatically adjust the hyperparameters to enable portability across diverse data.
-]
+)[Segmentation has evolved from classical methods encoding geometric priors toward data-driven methods, requiring annotated training data that is scarce and high variance for CECT micro-CT. Our work should need no training data when used but instead leverage simple user placed points, and automatically adjust the hyperparameters to enable portability across diverse data.]
 
 
 === Unreliability of ground truth
@@ -272,9 +276,7 @@ When data is available it may be used directly, although models trained on one i
   ),
   radius: 4pt,
   width: auto
-)[
-  Data from different datasets is not necessarily directly usable as a proxy without careful consideration. In domain data manually annotated for performance measurement, especially by a non domain expert, cannot be considered an absolute ground truth. For the purpose of evaluating this work, data will be annotated in distribution, and errors calculated should take into account the potential variability from annotations.
-]
+)[Data from different datasets is not necessarily directly usable as a proxy without careful consideration. In domain data manually annotated for performance measurement, especially by a non domain expert, cannot be considered an absolute ground truth. For the purpose of evaluating this work, data will be annotated in distribution, and errors calculated should take into account the potential variability from annotations.]
 
 
 
@@ -329,20 +331,20 @@ In @CFLoss_loss_func clinically relevant vascular features are encoded into the 
 
 // Tprec(SP , VL) = |SP ∩ VL| / |SP |
 // Tsens(SL, VP ) = |SL ∩ VP | / |SL|
+#linebreak()
+Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level @VesselGraph. In instance segmentation @panoptic_seg_og, where the goal is to not only segment a structure but also individually identify it, graph inspired methods are used to calculate a score based on the matching between the ground truth and predictions on a per object basis, combatting the issue highlighted in @fig:dice-detection where vessels being missed aren't weighed appropriately, at the cost of needing predictions to be individual objects, a problem for vessels that are _by nature_ continuous.
 
-Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level @VesselGraph. In instance segmentation @panoptic_seg_og, where the goal is to not only segment a structure but also individually identify it, graph inspired methods are used to calculate a score based on the matching between the ground truth and predictions on a per object basis, combatting the issue highlighted in @fig:dice-detection at the cost of needing predictions to be individual objects, a problem for vessels that are _by nature_ continuous.
-
-
-#figure(
-  matching-illustration(),
-  caption: [Vessel matching illustration: *Left* good matching, predictions correspond cleanly to GT vessels (1:1 or 1:few) *Center:* ground truth *Right* poor matching, GT reference vessels are fragmented across multiple small predictions, and several predictions have no GT support (grey, offset).
-  ]
-)<fig:matching_illustration>
+// TODO: revisit if this should be kept or tossed
+// #figure(
+//   matching-illustration(),
+//   caption: [Vessel matching illustration: *Left* good matching, predictions correspond cleanly to GT vessels (1:1 or 1:few) *Center:* ground truth *Right* poor matching, GT reference vessels are fragmented across multiple small predictions, and several predictions have no GT support (grey, offset).
+//   ]
+// )<fig:matching_illustration>
 
 // Segmentation also presents a subtype where predictions are done on a unitary basis, as in _Panoptic Segmentation_ @panoptic_seg_og. This translates to seeing the vessels as individual predictions and allows the use of _panoptic quality_, a measure of error associated with pixel wise predictions on a per vessel level, combatting the bias discussed earlier in @fig:dice-detection.
 
 #linebreak()
-When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features, such as tortuosity and branching ratio, is important to consider. As a result, outputs will be evaluated based on 3 characteristics: *(1)* the user placed points during the _vessel_ and _background_ point placement step, *(2)* on a voxel level connectivity aware loss: clDice, based on annotated binary ground truth and *(3)* on the matching ratio of individual vessels to combat the biases of voxel based methods.
+When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features, such as tortuosity and branching ratio, is important to consider. As a result, outputs will be evaluated based on 3 characteristics: *(1)* the user placed points during the _vessel_ and _background_ point placement step, *(2)* on a voxel level with connectivity aware clDice, measured on a manually annotated binary ground truth and *(3)* on a matching between individual vessels to combat the biases of voxel based methods.
 
 //In light of these considerations, and following the analytical needs of the laboratory researchers
 // Graphs metrics are particularly relevant when the goal is biological interpretation rather than pixel-perfect overlap --> evaluate my method on this if time allows
@@ -389,9 +391,7 @@ The landscape of vascular segmentation tools reflects a tension in bio-informati
   ),
   radius: 4pt,
   width: auto
-)[
-  Existing pipelines focus on large vascularization. This work should fill the niche of small vessel segmentation, where tools are not readily available or tailored to the unique challenges of micro vasculature, and must export in a standard binary segmentation format.
-]
+)[Existing pipelines focus on large vascularization. This work should fill the niche of small vessel segmentation, where tools are not readily available or tailored to the unique challenges of micro vasculature, and must export in a standard binary segmentation format.]
 
 
 

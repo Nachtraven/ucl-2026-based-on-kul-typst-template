@@ -269,7 +269,7 @@
       text(size: 11pt)[Topological awareness],
     )
     content(
-      (-0.5, -0.5+ax-max), anchor: "north-east", angle: 90deg,
+      (-0.5, -1.2+ax-max), anchor: "north-east", angle: 90deg,
       text(size: 9pt, fill: orange.darken(30%))[Vesselness expertise],
     )
     content(
@@ -308,7 +308,7 @@
       (1.0, 4.95, "Frangi",                     "north"),
       (1.8, 6.0, "Minimal-path",                "north"),
       (8.0, 2.2, "U-Net / V-Net",               "north"),
-      (6.0, 5.3, "Hybrid Frangi + U-Net",       "north"),
+      (6.0, 5.15, "Hybrid Frangi + U-Net",       "north"),
       (2.5, 7.8, "This work: Bootstrapped hybrid", "north"),
     )
 

@@ -31,7 +31,7 @@
   col-gt:        rgb("#2a9d8f"),
   col-good:      rgb("#457b9d"),
   col-poor:      rgb("#e63946"),
-  col-unmatched: rgb("#bbb"),
+  col-unmatched: rgb("#656565"),
   col-line-good: rgb("#457b9d"),
   col-line-poor: rgb("#e63946"),
   line-opacity:  0.45,

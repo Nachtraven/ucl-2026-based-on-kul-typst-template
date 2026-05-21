@@ -238,6 +238,22 @@ i7-13700, 32GB, T1000 8GB
 = Extra figures (TODO: revisit)
 
 
+=== Visualizations of results <appendix:results_visuals>
+
+==== here show the 222 example with the fact that we reject the blobs <appendix:detailed_results_visuals>
+
+
+=== Results on large volumes <appendix:results_large>
+
+
+=== Reconnection results: vessel size/length <appendix:results_reconnection>
+
+
+=== Vessel heatmaps <appendix:vessel_heatmaps>
+
+
+
+==== Collated
 
 #v(0.2cm)
 #figure(
@@ -250,13 +266,14 @@ i7-13700, 32GB, T1000 8GB
       csv-paths: (
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
-
       method: "ground_truth", variant: "",
       title: "Ground Truth",
-      x-min: 0.001, x-max: 2.0,
+      x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,           // fix scale so all panels are comparable
       x-log: true, y-log: true,
@@ -266,12 +283,14 @@ i7-13700, 32GB, T1000 8GB
       csv-paths: (
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
       method: "threshold", variant: "best_dice",
       title: "Thresholding",
-      x-min: 0.001, x-max: 2.0,
+      x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,
       x-log: true, y-log: true,
@@ -281,23 +300,96 @@ i7-13700, 32GB, T1000 8GB
       csv-paths: (
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
       method: "pipeline", variant: "default",
       title: "Pipeline",
-      x-min: 0.001, x-max: 2.0,
+      x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,
       x-log: true, y-log: true,
     ),
   ),
   // TODO: add an image here of the overall stats?
-  caption: [Heatmaps of vessel volume/vessel length. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes.]
-)<fig:appendix_individual_heatmaps>
+  caption: [*Heatmaps of vessel volume/vessel length - all predictions*. A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume thin predictions, and a generally smaller distribution of vessel sizes. The pipeline shows a tendency of predicting thinner vessels than the ground truth (a lower volume for a given vessel length)]
+) <fig:collated_heatmaps>
+#v(0.25cm)
 
 
-Individual heatmaps:
+
+
+#v(0.2cm)
+#figure(
+  grid(
+    columns: (auto, auto),
+    rows:(auto, auto),
+    column-gutter: 2.8em,
+
+    vessel-heatmap(
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+
+      method: "ground_truth", variant: "",
+      title: "Ground Truth",
+      x-min: 0.005, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,           // fix scale so all panels are comparable
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+      method: "threshold", variant: "best_dice",
+      title: "Thresholding with\nmatching GT",
+      matched-only: true,
+      x-min: 0.005, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+
+    vessel-heatmap(
+      csv-paths: (
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+      ),
+      method: "pipeline", variant: "default",
+      matched-only: true,
+      title: "Pipeline with\nmatching GT",
+      x-min: 0.005, x-max: 2.0,
+      y-min: 1,     y-max: 5000,
+      colour-max: 30,
+      x-log: true, y-log: true,
+    ),
+  ),
+  // TODO: add an image here of the overall stats?
+  caption: [*Heatmaps of vessel volume/vessel length - only true predictions*: vessels for thresholding and pipeline are only plotted if they correspond to at least one GT vessel, showing that many of the small predictions in thresholding and pipeline are outside of the ground truth.]
+) <fig:collated_heatmaps_only_true>
+#v(0.25cm)
+
+
+
+==== Individual heatmaps:
 
 #figure(
   grid(
@@ -459,6 +551,18 @@ Individual heatmaps:
 ) <fig:heatmap_ca-ru-r-222>
 
 
+
+TODO: add missing per run heatmaps
+
+
+
+
+
+
+
+
+
+==== Other
 
 #figure(
   image("./bipartite/bipartite_ca_ll_l1.svg", width: 90%),

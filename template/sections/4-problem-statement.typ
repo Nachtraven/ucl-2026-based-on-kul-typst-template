@@ -62,7 +62,7 @@ Baseline will be grey value based thresholding, as it constitutes the simplest, 
         pad-left: 12pt,
         pad-bottom: 22pt,
         legend-width: 100pt,
-        show-legend: false
+        // show-legend: false
       )
 
       // Arrow 1 — points up-left

@@ -9,7 +9,10 @@
 
 #import "./appendices/graph_results.typ": results-chart
 #import "appendices/precision_recall.typ" : xy-curve
+#import "appendices/sensitivity_analysis.typ" : sensitivity-xy-curve
 
+// TODO: maybe custom heatmap
+#import "./appendices/heatmaps.typ":vessel-heatmap
 
 // OLD: This chapter documents the development of the 3D Slicer plugin, from the implementation and user interaction, through the method for combining algorithms and the different algorithms explored, and ending in an ablation study to simplify the pipeline and enable usable runtimes and memory use.
 
@@ -345,12 +348,62 @@ Additionally for evaluation purposes there is the possibility of loading a manua
 #pagebreak()
 == Hyperparameter sensitivity analysis
 
-Is this relevant to detail?
+A key disadvantage of thresholding is its sensitivity towards the selection of the exact right threshold: if incorrectly configured, the resulting 3D map is unusable, and optimal thresholds vary by location within a scan as well as between scans. To highlight a key advantage of the pipeline based approach, we analyze the clDice result sensitivity of the three key parameters available to the user against thresholding on two subsamples of a tumor:
 
-== Metrics calculation and extraction //Bipartite matching
+#v(0.25cm)
+#figure(
+    sensitivity-xy-curve(
+    (
+      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "Thresholding - shell subsample",      colour: rgb("#ff3b4b")),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        label: "Thresholding - central subsample",      colour: rgb("#008aac")),
+    ),
+    x-col:     "threshold_value",
+    y-col:     "pred_gt_cldice",
+    x-label:   "Threshold value",
+    y-label:   "clDice",
+    sort-by-x: false,
+    y-min: 0.0, y-max: 1.0,
+  ),
+  // 1: μ_v=163.00+/-30.05 2:μ_v=130.7+/-11.8
+  caption:[Thresholding sensitivity on two CA-RU-R subsamples: a peripheral subsample containing the tumour shell (vessel µ=163, σ=30) and a central subsample (vessel µ=130.7, σ=11). The optimal clDice threshold lies above the mean vessel intensity in both cases, and the high-performance zone is narrow: small deviations cause substantial degradation.]
+)
+#v(0.25cm)
 
-In order to better understand the performance of the system being developped, 
-panoptic quality (PQ) metric? @panoptic_seg_og
+To explore the pipeline sensitivity, vessel size and vessel standard deviation were varied simultaneously. Frangi intensity was evaluated independently across all values.
+
+
+// #v(0.25cm)
+// #figure(
+//   // Frangi can only vary from 0.5 to 5.5 in 0.5 increments
+//   // vessel size and std start at 4/3 and can be 2/1, 3/2, 4/3, 5/4, 6/5, 7/6, 10/8, 14/10, 20/16
+//   // clDice is the intensity
+//   vessel-heatmap(
+//     csv-paths: (
+//       "vesselsize_std_vs_frangi_strengh_gridsearch.csv",
+//     ),
+//     method: "ground_truth", variant: "",
+//     title: "Ground Truth",
+//     x-min: 0.005, x-max: 2.0,
+//     y-min: 1,     y-max: 5000,
+//     colour-max: 30,
+//     x-log: true, y-log: true,
+//   ),
+//   caption:[TODO: CA-RU-R pipeline sensitivity]
+// )
+// #v(0.25cm)
+
+
+
+
+
+
+
+// == Metrics calculation and extraction //Bipartite matching
+
+// In order to better understand the performance of the system being developped, 
+// panoptic quality (PQ) metric? @panoptic_seg_og
 
 
 // // TODO: expand! 

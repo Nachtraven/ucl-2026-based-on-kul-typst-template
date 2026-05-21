@@ -44,8 +44,8 @@
   ))
 
   // Layout ------------------------------------------------------------------
-  let chart-width    = 460pt
-  let chart-height   = 200pt
+  let chart-width    = 400pt
+  let chart-height   = 160pt
   let chart-pad-left = 36pt
   let legend-height  = 22pt
   let group-gap      = 14pt
