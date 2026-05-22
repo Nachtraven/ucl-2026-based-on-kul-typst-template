@@ -58,18 +58,18 @@ python template/sections/appendices/bipartite/bipartite.py \
   
   
   
-  python template/sections/appendices/bipartite/bipartite.py \
-  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv \
-  template/sections/appendices/bipartite/bipartite_ca_ll_l1.svg \
+python template/sections/appendices/bipartite/bipartite.py \
+  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv \
+  template/sections/appendices/bipartite/bipartite_ca_nm_l_1.svg \
   --left-method pipeline --left-variant default --left-label "Pipeline" \
   --right-method threshold --right-variant best_dice --right-label "Threshold" \
   --node-size volume \
   --col-gap 190 \
   --line-opacity 0.35
   
-  python template/sections/appendices/bipartite/bipartite.py \
-  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv \
-  template/sections/appendices/bipartite/bipartite_ca_ll_l1.svg \
+python template/sections/appendices/bipartite/bipartite.py \
+  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv \
+  template/sections/appendices/bipartite/bipartite_ca_nm_l_2.svg \
   --left-method pipeline --left-variant default --left-label "Pipeline" \
   --right-method threshold --right-variant best_dice --right-label "Threshold" \
   --node-size volume \
@@ -186,8 +186,9 @@ def render(
     col_height:     int   = 480,
     col_gap:        int   = 200,
     line_opacity:   float = 0.35,
-    top_margin:     int   = 30,
-    bottom_margin:  int   = 180,
+    top_margin:     int   = 54,
+    bottom_margin:  int   = 440,
+    gt_max_nodes:   int   = 60,
 ):
     df = pd.read_csv(csv_path, dtype={"corresponding_ids": str, "variant": str})
     df["variant"]          = df["variant"].fillna("")
@@ -228,7 +229,52 @@ def render(
 
     # Sort matched: largest at bottom → sort ascending so index 0 = smallest → topmost
     gt_matched["_sz"] = gt_matched.apply(sz, axis=1)
-    gt_matched = gt_matched.sort_values("_sz", ascending=True)   # top=small, bottom=large
+    gt_matched = gt_matched.sort_values("_sz", ascending=False)   # top=small, bottom=large
+
+
+    if gt_max_nodes > 0:
+        # Keep the top-N GT vessels by size.
+        # Matched vessels are prioritised over unmatched so we don't waste
+        # slots on GT vessels that neither method finds anyway.
+        gt_matched["_sz"]   = gt_matched.apply(sz, axis=1)
+        gt_unmatched["_sz"] = gt_unmatched.apply(sz, axis=1)
+
+        n_matched_keep   = min(len(gt_matched),   gt_max_nodes)
+        n_unmatched_keep = min(len(gt_unmatched), gt_max_nodes - n_matched_keep)
+
+        gt_matched   = gt_matched.nlargest(n_matched_keep,   "_sz")
+        gt_unmatched = gt_unmatched.nlargest(n_unmatched_keep, "_sz") \
+                       if n_unmatched_keep > 0 else gt_unmatched.iloc[:0]
+
+        # Restrict the prediction nodes to only those that connect to
+        # a GT vessel we're actually drawing — avoids dangling lines.
+        kept_gt_ids = (
+            set(gt_matched["vessel_id"].astype(int)) |
+            set(gt_unmatched["vessel_id"].astype(int))
+        )
+
+        def drop_out_of_scope(pred_df):
+            """Zero out corresponding_ids that point to dropped GT vessels."""
+            def _filter_ids(s):
+                ids = parse_ids(s)
+                kept = [i for i in ids if i in kept_gt_ids]
+                return ";".join(str(i) for i in kept)
+            pred_df = pred_df.copy()
+            pred_df["corresponding_ids"] = pred_df["corresponding_ids"].apply(_filter_ids)
+            pred_df["n_corresponding"]   = pred_df["corresponding_ids"].apply(
+                lambda s: len(parse_ids(s)))
+            return pred_df
+
+        left  = drop_out_of_scope(left)
+        right = drop_out_of_scope(right)
+
+        # Recompute matched sets after filtering
+        matched_by_left  = set(id for _, r in left.iterrows()
+                               for id in parse_ids(r["corresponding_ids"]))
+        matched_by_right = set(id for _, r in right.iterrows()
+                               for id in parse_ids(r["corresponding_ids"]))
+        any_matched_gt   = matched_by_left | matched_by_right
+
 
     def make_gt_nodes():
         nodes, prev_bottom = [], top_margin
@@ -357,7 +403,7 @@ def render(
             lbl, insert=(cx_, label_y),
             text_anchor="middle", dominant_baseline="hanging",
             font_family="Helvetica Neue, Arial, sans-serif",
-            font_size=12, fill=col, font_weight="bold",
+            font_size=13, fill=col, font_weight="bold",
         ))
         if unmatched is not None:
             dwg.add(dwg.text(
@@ -365,7 +411,7 @@ def render(
                 insert=(cx_, label_y + 16),
                 text_anchor="middle", dominant_baseline="hanging",
                 font_family="Helvetica Neue, Arial, sans-serif",
-                font_size=10, fill=col, font_weight="normal",
+                font_size=11, fill=col, font_weight="normal",
                 font_style="italic",
             ))
 

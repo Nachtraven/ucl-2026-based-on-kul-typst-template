@@ -251,6 +251,70 @@
       dy: pad-top + plot-h / 2,// - 8pt,
       rotate(-90deg, text(size: 8pt, fill: axis-colour)[#y-label])
     )
+
+    // // Colour scale (upper left, inside plot area)
+    // #let scale-steps = 5
+    // #let scale-w     = 10pt
+    // #let scale-h     = plot-h / 5   // total height of the colour bar
+    // #let scale-x     = pad-left + 4pt
+    // #let scale-y     = pad-top + 4pt
+
+    // #for i in range(scale-steps) {
+    //   let t   = i / (scale-steps - 1)
+    //   let col = lerp-colour(colour-low, colour-high, t)
+    //   place(left + top,
+    //     dx: scale-x + (scale-steps - 1 - i) * scale-w,// (scale-w / (scale-steps - 1)),
+    //     dy: scale-y ,
+    //     rect(width: scale-w, height: scale-h / (scale-steps - 1),
+    //         fill: col, stroke: black + 0.2pt)
+    //   )
+    // }
+
+    // // Three labels: 0, mid, max
+    // #for (i, label) in (
+    //   (0,              str(colour-min)),
+    //   (scale-steps / 2, str(int(c-max / 2))),
+    //   (scale-steps - 1, str(c-max)),
+    // ).enumerate() {
+    //   let (step, lbl) = label
+    //   let lx = scale-x + 10pt*step// + (scale-steps - 1 - step) * (scale-h / (scale-steps - 1))
+    //   place(left + top,
+    //     dx: lx + 0pt,
+    //     dy: scale-w + 6pt,
+    //     text(size: 6pt, fill: axis-colour)[#lbl]
+    //   )
+    // }
+
+    #let scale-steps   = 5
+    #let scale-cell-w  = 10pt          // width of each colour cell
+    #let scale-cell-h  = 8pt           // height of the bar
+    #let scale-w-total = scale-cell-w * scale-steps
+    #let scale-x       = pad-left + 4pt
+    #let scale-y       = pad-top + 4pt
+
+    // Colour cells left to right: low → high
+    #for i in range(scale-steps) {
+      let t   = i / (scale-steps - 1)
+      let col = lerp-colour(colour-low, colour-high, t)
+      place(left + top,
+        dx: scale-x + i * scale-cell-w,
+        dy: scale-y,
+        rect(width: scale-cell-w, height: scale-cell-h, fill: col, stroke: black + 0.2pt)
+      )
+    }
+
+    // Three labels below: min, mid, max
+    #for (step, lbl) in (
+      (0,              str(colour-min)),
+      ((scale-steps / 2) - 0.5, str(int(c-max / 2))),
+      (scale-steps - 1, str(c-max)), // Bit hacky - to fix the spacing
+    ) {
+      place(left + top,
+        dx: scale-x + step * scale-cell-w + 4pt,
+        dy: scale-y + scale-cell-h + 2pt,
+        text(size: 6pt, fill: axis-colour)[#lbl]
+      )
+    }
   ]
 }
 

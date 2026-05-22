@@ -14,10 +14,7 @@
 
 = Problem statement
 
-// Microvasculature in CECT Micro-CT data is characterized by small and low contrast vessels with discontinuities and diffusion-induced intensity gradients. Existing extraction methods divide between data-driven approaches that require annotated training data unavailable for this regime, and classical methods that require careful hyperparameter tuning. Existing software pipelines generally target large vasculature or are unintegrated into software tools.
-
-
-// TODO: what I am considering changing here is looking at the data - the SOTA discusses the challenges encountered, but doesn't illustrate them: I think it would be relevant to the reader to see exactly why thresholding alone doesn't work, and why frangi alone doesn't work either. This would mean putting an ROC curve that shows we never reach 100% tp with 0% fp using for example a very high threshold, because the vessel values are intermingled in the grey value histogram. I would also show that frangi alone doesn't work. 
+// Comment: Microvasculature in CECT Micro-CT data is characterized by small and low contrast vessels with discontinuities and diffusion-induced intensity gradients. Existing extraction methods divide between data-driven approaches that require annotated training data unavailable for this regime, and classical methods that require careful hyperparameter tuning. Existing software pipelines generally target large vasculature or are unintegrated into software tools.
 
 In a diverse software landscape for analysis of 3D data, this work aims to answer the question _"How can an open-source microvasculature extraction pipeline be developed, able to be used by non computer scientists, leveraging classical segmentation methods and sparse user-driven input to obtain useful segmentations on CECT data across a diverse dataset?"_ and is defined by three principal constraints:
 
@@ -34,8 +31,7 @@ In a diverse software landscape for analysis of 3D data, this work aims to answe
 #linebreak()
 Baseline will be grey value based thresholding, as it constitutes the simplest, most accessible method that has previously been used to tackle this issue. The shortcomings are expressed in @fig:pr_methodo: a sweep is run across all possible thresholding values, and measure against a manually annotated ground truth on an illustrative subvolume that contains small disconnected vessels, a light gradient, and some noisy elements. The precision-recall curve ignores true negatives and avoids giving them an outsized weight, but still allows us to understand the problem at hand: thresholding, no matter how high, will include false positives (_all high valued voxels are not necessarily vessels, the structural gap (1)_) such as in the shell region in @fig:thresholding_with_shell and at low values needed to capture faint vessels, the false positives are very high (_vessel intensities overlap with background, a challenging extraction situation, making thresholding a compromise (2)_).
 
-// TODO: better explain the trade-off
-
+// TODO: better explain the trade-off. Would an ROC curve be better than precision/recall?
 // PR curve 
 // Precision  = True Positives / (True Positives + False Positives)
 // Recall     = True Positives / (True Positives + False Negatives)
@@ -100,8 +96,6 @@ Baseline will be grey value based thresholding, as it constitutes the simplest, 
 ) <fig:pr_methodo>
 
 
-
-
 == Goal
 
 This thesis aims to develop a 3D Slicer extension that produces connected microvasculature segmentations on CECT through a hybrid pipeline combining classical algorithms with sparse user input, achieving higher vessel retrieval rates than thresholding while  also improving connectivity, measured using a bipartite matching and clDICE, operating across both reliable and unreliable subsets of the dataset.
@@ -109,12 +103,10 @@ This thesis aims to develop a 3D Slicer extension that produces connected microv
 To do so, the following steps will be carried out:
 1. Deliver a user-friendly 3D Slicer extension able to export in formats useful for downstream analysis.
 2. Leverage a user-in-the-loop approach for point placement & basic vessel-size context to drive automated parameter selection, replacing manual error-prone hyperparameter tuning.
-3. Build the segmentation core on multiple algorithms, combined through a framework that enables per component tuning, evaluation and allows for future extension. //an evidence accumulating framework
-// 4. Produce a pipeline focusing on performance and simplicity first. // by running an internal ablation study. -> Evaluate and simplify the pipeline through an ablation study across multiple annotated subvolumes
-
+3. Build the segmentation core on multiple algorithms, combined through a framework that enables per component tuning, evaluation and allows for future extension. 
 
 == Scope
-// and measures results against manually annotated data,
+
 This work delivers the segmentation pipeline in the form of a plugin with downstream quantitative research analysis left to existing tools by exporting binary masks. Deep learning in its most common form is not utilized due to a lack of available reference data, training data and usability concerns. The plugin is intended for use in a research setting and tested on the set of data provided with its known shortcomings.
 
 //Not compared with deep-learning baselines as annotated training data sufficient for fair comparison is not available. 
