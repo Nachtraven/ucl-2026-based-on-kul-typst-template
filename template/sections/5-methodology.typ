@@ -72,7 +72,7 @@ To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs
 
 // The provided data was in JPEG form, an image format that contains no information about pixel spacing between slices, and is lossy. All data was converted to DICOM format with appropriate pixel spacing and formatting: the co-ordinate systems were unified into the standard for 3D Slicer #footnote[https://www.slicer.org/wiki/Coordinate_systems] where voxel indices (IJK) are used in the code. Physical-world coordinates, as commonly used in medical imaging in millimetres (RAS — right/anterior/superior) were used  to offer scale and are saved in the DICOM files. RAS is used by all geometry-aware primitives such as markup points and segmentation transforms. In our usecase, the volumes are isotropic (voxels are squares) meaning that conversion is simple, but care must be taken if the plugin is used for non isotropic data. user points placed by the user are stored in RAS and converted to IJK at the point of pipeline use, ensuring annotations survive resampling or coordinate-space changes
 
-The provided data was stored as JPEG slices, a lossy format that carries no information about physical pixel spacing between slices. All volumes were converted to DICOM with explicit isotropic spacing of 6 µm per voxel, matching the original acquisition.
+The provided data was stored as JPEG slices, a lossy format that carries no information about physical pixel spacing between slices and introduces spatial frequency noise along the axes of compression. All volumes were converted to DICOM with explicit isotropic spacing of 6 µm per voxel, matching the original acquisition.
 
 Co-ordinate systems were also unified: 3D Slicer uses two coexisting coordinate systems #footnote[https://www.slicer.org/wiki/Coordinate_systems], one for code called IJK that corresponds to voxel indices and physical-world coordinates in millimetres (RAS — right, anterior, superior), used by all geometry-aware primitives such as markup points and segmentation transforms. User-placed seeds are stored in RAS and converted to IJK at the point of pipeline use, so annotations survive any intermediate resampling or coordinate-space transform. This also enables subsampling of volumes without loosing volume location in the original sample.
 
@@ -222,7 +222,7 @@ Due to the challenges of the data, no single classical method offered satisfacto
 // The pipeline produces both a final binary mask with associated segmentation in the 3D Slicer viewer and a soft probability map intended for development and post-hoc analysis
 
 #figure(
-  image("../../resources/images/thesis_flow_diagram.svg", width: 68%),
+  image("../../resources/images/thesis_flow_diagram.svg", width: 78%),
   caption: [Pipeline illustrating flow through each stage: (1) user point placement enabling outside masking, (2) configuration of hyperparameters and running of pipeline, triggering (a) Frangi, (b) intensity probability, (c) reconnection and reconstruction, (d) the final segmentation and 3D output], //TODO: revisit
 ) <fig:pipeline_flow>
 
@@ -372,6 +372,38 @@ A key disadvantage of thresholding is its sensitivity towards the selection of t
 #v(0.25cm)
 
 To explore the pipeline sensitivity, vessel size and vessel standard deviation were varied simultaneously. Frangi intensity was evaluated independently across all values.
+
+
+
+
+== Compute characteristics
+
+The pipeline steps each have their own CPU and memory cost. We divide the processing into three main steps:
+
+1. Initial Frangi inference: multicore thanks to TubeTK, and limited memory use thanks to tiling
+2. Local intensity probability: single core CPU and light on memory as it is iterative on a small subarea.
+3. Reconnection process: single core but has the potential for extremtly high memory use as inference size increases due to #footnote[As mentioned in #link("https://scikit-image.org/docs/stable/api/skimage.graph.html")[Scikit docs], route_through_array has the option partition_size that could be relevant]
+
+#let img-path = "../../resources/images/qualitative_evaluation/XL_CA-LU-R_BOT_S_W/"
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    rows: 3,
+    column-gutter: 0.4em,
+    row-gutter: 0.6em,
+
+    image(img-path + "mode_1_perf.png", width: 100%),
+    image(img-path + "mode_1_perf_ram.png", width: 100%),
+  
+    image(img-path + "mode_2_perf.png", width: 100%),
+    image(img-path + "mode_2_perf_ram.png", width: 100%),
+
+    image(img-path + "mode_3_perf_ram.png", width: 100%),
+    image(img-path + "mode_3_perf.png", width: 100%),
+
+  ),
+  caption: [Performance regimes, top to bottom: *(1)* frangi inference, *(2)* single core ops, *(3)* sawtooth RAM use],
+) <fig:performance>
 
 
 // #v(0.25cm)

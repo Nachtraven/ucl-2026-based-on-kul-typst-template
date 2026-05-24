@@ -655,13 +655,10 @@ Beyond vessel size and length, it is interesting to investigate the known issue 
 )<fig:bipartite_balls_lines>
 #v(0.5cm)
 
-#v(0.5cm)
 #figure(
   image("./appendices/bipartite/bipartite_ca-ru-r_222.svg", width: 100%),
   caption: [*CA-RU-R (1)*, Vessel correspondence between pipeline (left), ground truth (center, top 50 by volume), and thresholding (right). Node size encodes vessel volume. Lines show which predicted vessels overlap which GT vessels. The pipeline has better vessel sensitivity, matching more vessels, fragments vessels less as can be seen by the few to n relationships, and has fewer predictions with no support (66 unmatched predictions vs 273). Also visible: the ground truth contains many vessels that are many to one relationships: multiple individual small predictions correspond to one ground truth vessel.]
 )<fig:bipartite_ca-ru-r_222>
-#v(0.5cm)
-
 
 
 
@@ -707,7 +704,13 @@ To condense the connectivity quantification into a figure, we analyze the matchi
 
 // We begin by analyzing the two volumes with large over-segmentation identified previously: CA-RU-R 687/451/666 and CA-LL-R 298/233/427. These show marked over-segmentation ...
 
-
+// Order:
+// CA-RU-R 222
+// CA-RU-R 666
+// CA-LL-R 427
+// CA-NM-L 319
+// CA-NM-L 957
+// CA-LL-L1 498
 
 
 // #let img-path = "../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/"
@@ -806,7 +809,148 @@ To condense the connectivity quantification into a figure, we analyze the matchi
 
 
 
+#let img-path = "../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/"
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    rows: 2,
+    column-gutter: 0.4em,
+    row-gutter: 0.6em,
 
+    figure(
+      // image-with-circles(
+      //   "../" + img-path + "base.png",
+      //   (
+      //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+      //   ),
+      // ),
+      image(img-path + "vessels.png", width: 100%),
+      caption: [Pipeline output, default settings],
+      supplement: none,
+      numbering: none,
+    ),
+  
+    figure(
+      image(img-path + "vessels_thresh.png", width: 100%),
+      caption: [Optimal threshold and Pipeline],
+      supplement: none,
+      numbering: none,
+    ),
+
+    figure(
+      image(img-path + "thresh.png", width: 100%),
+      caption: [Threshold only],
+      supplement: none,
+      numbering: none,
+    ),
+
+    figure(
+      image(img-path + "gt.png", width: 100%),
+      caption: [Ground truth],
+      supplement: none,
+      numbering: none,
+    ),
+
+  ),
+  caption: [*CA-NM-L (2)*: A high contrast scenario with large vessels, the only subsample requiring tailoring the pipeline hyperparameters to an average diameter of 12 vox +/- 6. Pipeline successfully extracts longer vessels and picks up the discontinuous vessels in the right hand side.],
+) <fig:CA-NM-L_957_3d>
+
+
+// Stages:
+// • Frangi (1³=1 tile(s)): σ sum [3.0,18.0] vox
+// • Intensity: μ_v=171.2+/-48.1, 
+// • Tube growth: 163,232 voxels (final)
+// • Thresholded at: 0.12
+
+// Loaded evaluation chunk #1: VSA_Eval_1 from /home/sean/Desktop/Labels/Run 2/SLICES CA-NM-L_x+900_y+900_z+957
+
+// Evaluation against ground-truth chunks
+// (metrics on GT>0 bbox + 5-voxel margin)
+//   • VSA_Eval_1: Dice=0.547, clDice=0.692, IoU=0.377, P=0.459, R=0.677, vol(pred/gt)=1.47
+//      GT=109,713 vox, pred=161,795 vox, shape=(301, 409, 450), src IJK=[0:450, 41:450, 0:301]
+//      Centerlines: pred=10.9mm (6 br, avg 1.8mm), gt=8.1mm (15 br, avg 0.5mm)
+//      Threshold (172) vs GT: Dice=0.832, clDice=0.823, IoU=0.712, P=0.909, R=0.767, vol(thr/gt)=0.84, thr=92,520 vox
+//      Pred vs Threshold: Dice=0.520, clDice=0.607, IoU=0.351, vol(pred/thr)=1.75
+//      Threshold centerline: thr=7.4mm (108 br, avg 0.1mm)
+// Mean — Pred vs GT: Dice=0.547, clDice=0.692, IoU=0.377, P=0.459, R=0.677, vol=1.47
+// Mean centerline length: pred=10.9mm, gt=8.1mm
+// Threshold diag: threshold=172; total thresh voxels in volume: 92,562; source value range: [43.0, 255.0]
+// Mean — Threshold vs GT: Dice=0.832, clDice=0.823, IoU=0.712, P=0.909, R=0.767, v ol=0.84
+// Mean — Pred vs Threshold: Dice=0.520, clDice=0.607, IoU=0.351
+// Mean threshold centerline: thr=7.4mm
+
+
+
+
+
+// TODO: revisit
+// /home/sean/Documents/GitHub/ucl-2026-based-on-kul-typst-template/resources/images/qualitative_evaluation/XL_CA-LU-R_BOT_S_W/CB-LULL-L
+// === Large subsamples
+
+// 433 433 465
+// CB-LULL-L 931
+
+// Previously the 6x6x6 subsampling grid resulted in images approximately 200-300 voxels across. In @fig:CA-LU-R_BOT_S_W CA-RU-R is sampled on a 2x2x1 grid: the bottom right 687x676x1332 chunk is taken. Peak memory use hits 40GB and runtime is approximately 2h. Pipeline parameters are left at default settings, and 41 vessel, background and outside points are placed.
+
+// // CA-LU-R_BOT_S_W
+// #let img-path = "../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/"
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     rows: 3,
+//     column-gutter: 0.2em,
+//     row-gutter: 0.25em,
+
+//     figure(
+//       // image-with-circles(
+//       //   "../" + img-path + "base.png",
+//       //   (
+//       //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+//       //   ),
+//       // ),
+//       image(img-path + "vessels.png", width: 100%),
+//       caption: [2D view],
+//       supplement: none,
+//       numbering: none,
+//     ),
+//     figure(
+//       image(img-path + "vessels_thresh.png", width: 100%),
+//       caption: [2D view],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+
+//     figure(
+//       image(img-path + "thresh.png", width: 100%),
+//       caption: [Thresholding],
+//       supplement: none,
+//       numbering: none,
+//     ),
+//     figure(
+//       image(img-path + "gt.png", width: 100%),
+//       caption: [Pipeline],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+
+//     figure(
+//       image(img-path + "gt.png", width: 100%),
+//       caption: [Zoomed threshold],
+//       supplement: none,
+//       numbering: none,
+//     ),
+//     figure(
+//       image(img-path + "gt.png", width: 100%),
+//       caption: [Zoomed pipeline],
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//   ),
+//   // caption: [*aaa*: ],
+// ) <fig:CA-LU-R_BOT_S_W>
 
 
 // #v(0.5cm)

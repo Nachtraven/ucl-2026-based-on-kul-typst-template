@@ -3,7 +3,7 @@
 // Clinical tooling for vascularization reconstruction on Contrast-Enhanced Micro CT 3D images.
 
 #show: template.with(
-  title: "Title to be revisited",
+  title: "Clinical tooling for vascularization reconstruction on Contrast-Enhanced Micro CT 3D images (?)",
   // subtitle: "With a subtitle",
   academic-year: 2025, // datetime.today().year(),
   authors: ("Nachtrab Sean"),
@@ -34,7 +34,7 @@
   electronic-version: true,
   // Hayagriva bibliography is the default one, if you want to use a
   // BibTeX file, pass a .bib file instead (e.g. "works.bib")
-  bibliography: bibliography("references.bib"),
+  bibliography: bibliography("references.bib", style:"ieee"),
   preface: include "sections/0-preface.typ",
   abstract: include "sections/1-abstract.typ",
   // dutch-summary: include "sections/main-text/dutch-abstract.typ",
@@ -42,7 +42,7 @@
   list-of-listings: false,
   abbreviations: include "sections/appendices/list-of-abbreviations-and-symbols.typ",
   symbols: none,
-  appendices: include "sections/appendices/0-appendix.typ",
+  appendices: include "sections/appendices/0-appendix.typ", 
   // Make sure that this is the correct logo for the correct master (en/nl)!
   logo: [#image("../resources/1024px-UCLouvain_logo.png")],//[#text(size: 3em, fill: gradient.linear(..color.map.turbo))[Fix logo]],
 )

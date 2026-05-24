@@ -187,7 +187,7 @@ def render(
     col_gap:        int   = 200,
     line_opacity:   float = 0.35,
     top_margin:     int   = 54,
-    bottom_margin:  int   = 440,
+    bottom_margin:  int   = 400,
     gt_max_nodes:   int   = 60,
 ):
     df = pd.read_csv(csv_path, dtype={"corresponding_ids": str, "variant": str})

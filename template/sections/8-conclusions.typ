@@ -6,12 +6,8 @@
 
 = Conclusion and future perspectives
 
-
-
-
-
 The work laid out in this thesis set out to answer the question of _How can an open-source microvasculature extraction pipeline be developed, able to be used by non computer scientists, leveraging classical segmentation methods and sparse user-driven input to obtain useful segmentations on CECT data across a diverse dataset?_, which was answered in the form of CollaboratiVessel, the 3D Slicer plugin that combines vesselness and intensity priors with vessel reconstruction steps leveraging user placed points with minimal hyperparameter tuning.  
-
+#linebreak()
 In doing this work, the principal contributions are:
 
 1. *A user friendly 3D Slicer plugin.* CollaboratiVessel is packaged as a plugin for 3D Slicer, requires no coding to operate, and can export binary segmentations compatible with downstream analysis tools. The UI was designed with prospective users in mind, offering only the necessary options, and the code was written in a modular fashion to enable simple changes.
@@ -109,8 +105,12 @@ and the annotations eventually enable the data-driven performance that classical
 
 #linebreak()
 When the first pairs of scissors were developped for mass production, right handed-ness was not just the majority of potential users but the implicit default due to societal and educational factors. As development effort shifted from solving the functional problem to improving the user experience and outcomes, left handed scissors began to appear and they became more widespread with a wider range of skill levels, from children to professional tailors. 
+
 #linebreak()
-In a sense, this thesis is the initial scissors: a solution to a broad problem that does not necessarily satisfy all users, or produce an ideal result, but still functionally brings a solution to the problem of challenging vascular extraction better than the thresholding used before. The door is now open to iterations that can either make the solution higher performance, more fit for a specific purpose or user, or even adapt it to other problem areas.
+In a sense, this thesis is the initial scissors of vasculature, while also being very tailored: in the niche of 3D structure segmentation, a solution to the broad problem of vasculature extraction that does not necessarily satisfy all users, or produce an ideal result, but still functionally brings a solution to the problem of challenging vascular extraction better than the thresholding used before. The door is now open to iterations that can either make the solution higher performance by continuing the bootstrapping towards data intensive methods, more fit for a specific purpose or user by simplifying or automating extraction, or even adapt it to other problem areas that may have noisy data from which tubular structures must be extracted.
+
+
+
 
 //This, coupled with the price pressure of producing a single uniform item and the limitations of the technology resulted in scissors developped with righthandedness built into them. When the social norm relaxed, and as more emphasis was placed not on merely the production of a product to solve a problem but also on the quality of the result _and_ the user experience, scissors developped specifically for righthanded and lefthanded users became common.
 

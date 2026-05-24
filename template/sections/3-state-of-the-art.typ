@@ -29,6 +29,18 @@
 
 // TODO: add Precision-Recall discussion: Precision-Recall is a useful measure of success of prediction when the classes are very imbalanced. Our dataset is imbalanced, and our prediction algorithm is supposed to have a lot of FP because the GT is sparsely annotated. So our recall MUST be high with only "relevant" false positives.
 
+// #linebreak()
+// Open source software matters in scientific research: being free removes a significant barrier to entry, and open-source is by nature extensible: prior work can be built upon by accessing, modifying and learning from its source code and development. Open-source licenses are diverse, from permissive such as MIT or BSD as used by 3D Slicer with modifications to protect from clinical use, and copyleft (GPLv3, used e.g. by Orthanc @orthanc_paper_jodogne), with implications for how downstream work must be redistributed.
+
+//ImageJ/FIJI has a long history in biological image analysis and a rich plugin ecosystem, including use for vessel extraction @imagej_frangi, but native support for vascular network extraction in 3D is limited, and the plugin development model is less suited to the integrated segmentation workflows this thesis requires.
+
+
+
+//TODO:
+// Maybe add: https://pdf.sciencedirectassets.com/273258/1-s2.0-S1742706120X00043/1-s2.0-S1742706120300532/main.pdf
+// Exploring polyoxometalates as non-destructive staining agents for contrast-enhanced microfocus computed tomography of biological tissues
+
+
 #import "@preview/colorful-boxes:1.4.3": *
 #import "appendices/bipartite/illustrate_bipartite.typ" : matching-illustration
 
@@ -36,27 +48,17 @@
 
 == Software and Software licenses in Research
 
-Software licenses are closely linked with the monetary and scientific costs of use: they don't only govern the terms of software use but also of modification, influencing the ability to build upon existing work. They broadly fall into two categories: proprietary (closed source) and open source. Proprietary software restricts access to its source code and is generally distributed under a paid license, with certain exceptions such as with Dragonfly3D's FreED license. Open source software makes its source code publicly available and is as a result free of charge. In a research context, the distinction matters beyond cost: open-source code is by nature extensible, with prior work directly inspectable and modifiable, while proprietary licenses can enable the owner of the original software to control the distribution and use of extensions: Dragonfly3D does not explicitly allow sharing extensions #footnote["\[The user\] shall not distribute or transfer the Software or Improvements \[...\], without prior written permission \[from Dragonfly3D\]" @DragonflyFreeDLicense]. 3D Slicer's license, by contrast, permits modification and redistribution: see #link("https://slicer.readthedocs.io/en/latest/user_guide/about.html#license")[3D Slicer's license page]. Open-source licenses themselves vary in how they govern downstream use, from permissive (MIT, BSD) to copyleft (GPLv3), with implications for how derivative work must be redistributed.
-
-// #linebreak()
-// Open source software matters in scientific research: being free removes a significant barrier to entry, and open-source is by nature extensible: prior work can be built upon by accessing, modifying and learning from its source code and development. Open-source licenses are diverse, from permissive such as MIT or BSD as used by 3D Slicer with modifications to protect from clinical use, and copyleft (GPLv3, used e.g. by Orthanc @orthanc_paper_jodogne), with implications for how downstream work must be redistributed.
-
-
-
+Software licenses are closely linked with the monetary and scientific costs of use: they don't only govern the terms of software use but also of modification, influencing the ability to build upon existing work. They broadly fall into two categories: proprietary (closed source) and open source. Proprietary software restricts access to its source code and is generally distributed under a paid license, with certain exceptions such as with Dragonfly3D's FreED license. Open source software makes its source code publicly available and is as a result free of charge. In a research context, the distinction matters beyond cost: open-source code is by nature extensible, with prior work directly inspectable and modifiable, while proprietary licenses can enable the owner of the original software to control the distribution and use of extensions: Dragonfly3D does not explicitly allow sharing extensions #footnote["\[The user\] shall not distribute or transfer the Software or Improvements \[...\], without prior written permission \[from Dragonfly3D\]" @DragonflyFreeDLicense]. 3D Slicer's license, by contrast, permits modification and redistribution #footnote[#link("https://slicer.readthedocs.io/en/latest/user_guide/about.html#license")[3D Slicer license page]]. Open-source licenses themselves vary in how they govern downstream use, from permissive (MIT, BSD) to copyleft (GPLv3), with implications for how derivative work must be redistributed.
 
 
 === Software for 3D analysis <sota_sw_for_3d>
 
-Researchers at the UCLouvain faculty IMMC (Institute of Mechanics, Materials, and Civil Engineering) use a variety of software to process 3D Micro-CT data: closed source in the form of Avizo and CTan, "free-for-academics" with Dragonfly3D, and previously used open-source in the form of ImageJ/FIJI. A full list of available solutions is visible in @3d_software. Standalone approaches exist, such as DeepVesselNet @tetteh2020deepvesselnet and SPROUT @sprout_segmentation_volumetric but do not come packaged as a software with user interface.
+Researchers at the UCLouvain faculty IMMC (Institute of Mechanics, Materials, and Civil Engineering) use a variety of software to process 3D Micro-CT data: closed source in the form of Avizo and CTan, "free-for-academics" with Dragonfly3D, and previously certain open-source tools (ImageJ/FIJI). A full list of tools for 3D analysis is visible in @3d_software. Standalone approaches for analysis also exist, such as for vessels DeepVesselNet @tetteh2020deepvesselnet and SPROUT @sprout_segmentation_volumetric but are generally more challenging to use and intended for specific use cases.
 
 #linebreak()
-For this thesis, software was required to meet the following three hard requirements: *(1)* Import a 3D scan from individual 2D slices in standard formats, *(2)* Export data to non-proprietary formats, and *(3)* Allow coded plugins/code extensions. Some practical considerations were also taken into account: availability of dedicated support and documentation, active development, prior use within the lab and the broader research community, and ease of installation for non-technical users.
+For this thesis, software was required to meet the following three requirements: *(1)* Import a 3D scan from individual 2D slices in standard formats, *(2)* Export data to non-proprietary formats, and *(3)* Allow coded plugins/code extensions. Some practical considerations were also taken into account: availability of dedicated support and documentation, active development, prior use within the lab and the broader research community, and ease of installation for non-technical users.
 
-Each candidate platform was tested for the practicality of implementing a plugin within its extension framework. Avizo and Dragonfly3D met the hard requirements but limit plugin redistribution as laid out previously. ImageJ/FIJI has a long history in biological image analysis and a rich plugin ecosystem, including use for vessel extraction @imagej_frangi, but native support for vascular network extraction in 3D is limited, and the plugin development model is less suited to the integrated segmentation workflows this thesis requires.
-
-#linebreak()
-3D Slicer @3Dslicer_paper emerged as the most suitable platform. It is open-source under a permissive BSD-style license, widely adopted in the medical imaging field, and supports 3D segmentation workflows with established plugins relevant to vascular analysis such as the Vascular Modeling Toolkit (VMTK) @vmtk and R-Vessel-X @affane2025rvesselx. Its Extension Manager allows non-technical users to install plugins through a one-click interface without compiling code or managing dependencies, and standard import/export formats including DICOM and NIfTI ensure interoperability with downstream analysis tools.
-
+Tools were compared for the practicality of implementing a plugin within its extension framework: Avizo and Dragonfly3D met the hard requirements but limit plugin redistribution as laid out previously. 3D Slicer @3Dslicer_paper emerged as the most suitable platform. It is open-source under a permissive BSD-style license, widely adopted in the medical imaging field, and supports 3D segmentation workflows with established plugins relevant to vascular analysis such as the Vascular Modeling Toolkit (VMTK) @vmtk and R-Vessel-X @affane2025rvesselx. Its Extension Manager allows non-technical users to install plugins through a one-click interface without compiling code or managing dependencies, and standard import/export formats including DICOM and NIfTI ensure interoperability with downstream analysis tools.
 
 #v(0.5cm)
 #colorbox(
@@ -68,20 +70,15 @@ Each candidate platform was tested for the practicality of implementing a plugin
   ),
   radius: 4pt,
   width: auto
-)[Existing tools for 3D analysis are split between proprietary paid software and open-source platforms, neither having bespoke microvascular support. The pipeline must therefore integrate into an open-source software for 3D analysis: 3D Slicer.]
+)[Existing tools for 3D analysis are split between proprietary paid software and open-source platforms, neither having bespoke microvascular support. The vasculature extraction pipeline must therefore be built as a redistributable plugin integrated into an open-source host software for 3D analysis: 3D Slicer.]
 
 
 
-
-
-
-// Maybe add: https://pdf.sciencedirectassets.com/273258/1-s2.0-S1742706120X00043/1-s2.0-S1742706120300532/main.pdf
-// Exploring polyoxometalates as non-destructive staining agents for contrast-enhanced microfocus computed tomography of biological tissues
 
 #pagebreak()
 == Tissue imaging
 
-The process of imaging is a critical step in obtaining an understanding of a tissue in both clinical and research contexts. 2D histology is considered the gold standard having a long history @2d_histo_sota_balcaen2023revealing and producing high resolution images down to 5 μm for light based methods. The diversity in imaging techniques for 2D histology has rapidly increased the resolution, with electron microscopy able to reach in the order of sub nanometer scale @histology_used_for_cancers_he2012histology. Progress has also increased the dimensionality of imaging, with computation enabling rapid progress in 3D methods using techniques like tomography, where multiple images are taken non-destructively of a target from different angles and assembled, used in-vivo and ex-vivo methods such as computed tomography (CT) and magnetic resonance (MRI).
+The process of imaging is a critical step in obtaining an understanding of a tissue in both clinical and research contexts. 2D histology is considered the gold standard having a long history @2d_histo_sota_balcaen2023revealing and producing high resolution images down to 5 μm for light based methods. The diversity in imaging techniques for 2D histology has rapidly increased in resolution, with electron microscopy able to reach in the order of sub nanometer scale @histology_used_for_cancers_he2012histology. The dimensionality of imaging has also evolved with computation enabling rapid progress in 3D methods using techniques like tomography, where multiple images are taken non-destructively of a target from different angles and assembled, being used in-vivo and ex-vivo with methods such as computed tomography (CT) and magnetic resonance (MRI).
 
 #linebreak()
 For tasks such as measuring the impact of a drug on vascularization, quantification is particularly relevant: Understanding the three-dimensional structure of biological tissue is a prerequisite for the analysis of structure-altering drugs such as Pazopanib, where changes in tumor vascularization are inherently spatial and quantifiable across multiple parameters. For such tasks, 2D histology is insufficient: Physical sectioning of the sample is destructive, is not orientation-agnostic, and introduces deformation artifacts that are difficult to compensate for even with embedding techniques @3dnondestructive_softtissue_µtomo, additionally samples may undergo structural changes over time during preparation: they dry out, and certain elements oxidize, although techniques exist to mitigate this @litt_review_greet_debournonville2019contrast.
@@ -315,7 +312,6 @@ Loss functions such as cross-entropy used for binary classification calculate th
 )
 #v(0.25cm)
 
-DICE has some specific known downsides for 3D medical image segmentation @Taha2015 relevant here are the equal treatment of FP and FN, and unawareness of spatial differences, and the detection gap, where small totally undetected areas are treated the same as small mismatches in large coverage areas.
 
 #import "appendices/DICE_overlap.typ": dice_diagram
 
@@ -326,6 +322,7 @@ DICE has some specific known downsides for 3D medical image segmentation @Taha20
 ) <fig:dice-detection>
 #v(0.35cm)
 
+DICE has some specific known downsides for 3D medical image segmentation @Taha2015 relevant here are the equal treatment of FP and FN, and unawareness of spatial differences, and the detection gap, where small totally undetected areas are treated the same as small mismatches in large coverage areas.
 
 In @CFLoss_loss_func clinically relevant vascular features are encoded into the loss function. A collection of topology-aware loss functions is available in @topolosses, able to place emphasis on different topological features. For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream, motivating the creation of a purpose built loss function in @clDice_loss_func called _centerlineDice_ (clDice), that emphasizes and integrates the prior of connectedness by first skeletonizing, then calculating a score based on these skeletons.
 

@@ -235,8 +235,7 @@ i7-13700, 32GB, T1000 8GB
 // In the age of AI, when we only provide lower order, the student falls back to AI to provide these higher order structures, which suffer from bias or priors that don't align with the proprities of the 
 
 
-= Extra figures (TODO: revisit)
-
+= Extra figure
 
 == Visualizations of results <appendix:results_visuals>
 
