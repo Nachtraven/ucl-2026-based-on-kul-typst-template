@@ -5,55 +5,83 @@
 
 //  across different wavelenghts, ranging from sound and infrared to magnetic resonance and x-ray imaging.
 
-// The test I'd apply to any sentence in the intro: is this introducing the reader to the problem, or is it surveying prior work? If the latter, it belongs in the SOTA. The test for the SOTA: am I telling the reader something they need in order to evaluate the gap, or am I re-motivating the thesis? If the latter, it belongs in the intro (or nowhere).
+
+
+// is this introducing the reader to the problem, or is it surveying prior work?
+// Am I telling the reader something they need in order to evaluate the gap, or am I re-motivating the thesis? If the latter, it belongs in the intro (or nowhere).
 
 // Introduction = why this work exists. It motivates the problem in the reader's terms (biology, drug evaluation, dataset specificity), names the gap, and announces the contribution. Claims here are allowed to be uncited or lightly cited because they're framing, not survey.
 // State of the art = what has been tried and why it's insufficient. It surveys the landscape with citations, compares options, and ends each subsection with a "Problem N" box (which you're already doing — good pattern). Claims here must be defended.
 
+//To obtain an understanding of such tissues 2D histology stands as the gold standard, but the limitations it presents in capturing three dimensional structures like those of vasculature have driven the adoption of high resolution 3D imaging techniques. Micro-computed tomography (Micro-CT) stands as a method able to achieve resolutions enabling the extraction of vessels ranging down into the micrometer range, and has multiple contrast-enhanced variants aiming to improve tissue separation. These methods generate orders of magnitude more data than traditional microscopy and pose new challenges in information extraction and processing.
+
+// == Biological motivation
+
+// Tissue samples are collected and imaged in order to gain an understanding of their structure and composition, called histology or histopathology in the case of diseased tissue. Classically this is done ex-vivo in 2D, with sections analyzed manually under a microscope by a human, the gold standard for tissue analysis @2d_histo_sota_balcaen2023revealing. However the technique has a fundamental limitation: information is not captured at the same granularity along all three axes. Methods exist to stack slices and reconstruct a 3D volume @methods_for_3d_histo_pichat2018survey, but axial resolution is limited by section thickness, and dead space between slices leaves regions where no information is acquired @litt_review_greet_debournonville2019contrast and the cutting process itself induces changes in tissue structure @extending2d_histo_to_3d.
+
+// For tasks such as measuring the impact of a drug on vascularization, quantification is particularly relevant: Understanding the three-dimensional structure of biological tissue is a prerequisite for the analysis of structure-altering drugs such as Pazopanib. For such tasks,
+
+
+// #linebreak() Old "Obtaining information from imaging":
+// When faced with complex data the paths for researchers are twofold: either _manual analysis_ of the data, or _utilization of algorithms_ to aid in the separation of their structures of interest. Manual annotation suffers from high subjectivity, strong variance between annotators @variability_in_annotations_xray_lin2023pluribus and requires time and expert annotators, meaning both direct use and use in machine learning present challenges. Additionally, annotation natively in 3D is challenging: it is difficult to properly consider all three axes simultaneously, hindering work on small 3D structures like vasculature. 
+
+// When using algorithms for extraction, users are pulled towards user friendly and simple methods: (1) generalist methods such as thresholding, easily understandable and widely available, but performing poorly on data that cannot be separated by intensity alone, and (2) a wide spectrum of techniques that carry a richer prior or set of priors about the target structure, ranging from purpose developed algorithms to data driven ones as in deep learning. For vessel analysis, simple methods are easy to apply but result in discontinuities in blood vessels, artefacts, and don't generalize across samples, as well as require the selection of a fixed threshold per sample, a step not performed in a repeatable principled fashion, as learned from user interviews. 
+
+// Angiogenesis is the process of vascular growth exploited by tumors that antiangiogenic drugs aim to disrupt , an 
+// angiogenesis  the process of vascular growth exploited by tumors that antiangiogenic drugs aim to disrupt - quantifying changes in vascular structure is essential to evaluating treatment efficacy. The dataset motivating this work consists of contrast-enhanced Micro-CT scans of murine tumors collected to assess the antiangiogenic drug Pazopanib, a tyrosine kinase inhibitor influencing the formation of new blood vessels whose mechanism of action is expected to manifest as measurable changes in vasculature. 
+
+
+// Biological tissue function depends strongly on spatial organization and composition. This is particularly true for evaluating vascular networks, where branching geometry, vessel diameters, and connectivity define how functional the vascularization is. In order to evaluate Pazopanib, a tyrosine kinase inhibitor influencing the formation of new blood vessels whose mechanism of action is expected to manifest as measurable changes in vasculature, accurate 3D segmentation of these structures is required.
+
+// Vasculature is inherently 3D and spans entire tissues, having parameters based on high order abstractions such as shape and relative changes over a path. This 3D nature, combined with the limitations of slice-based methods, motivates high-resolution 3D imaging: for the dataset used in this work, contrast-enhanced Micro-CT scans were acquired using an agent that increases the attenuation of the small blood vessels. 
+
+
+// #linebreak()
+// Existing tools for analyzing Micro-CT data are dominated by proprietary paid software and the available open-source alternatives lack robust solutions to extract small-scale vasculature with its challenging specificities: low contrast, non vessel-like structures, diffusion gradients, and vessels only a few voxels across. As a result, the vasculature in the provided dataset has resisted prior analysis attempts.
+
+
 = Introduction
 
-Biological tissue function depends strongly on spatial organization and composition. This is especially true for vascular networks, spread inside all other tissues for which the geometry of branching, vessel diameters and connectivity define functionality. To obtain an understanding of such tissues 2D histology stands as the gold standard, but the limitations it presents in capturing three dimensional structures like those of vasculature have driven the adoption of high resolution 3D imaging techniques. Micro-computed tomography (Micro-CT) stands as a method able to achieve resolutions enabling the extraction of vessels ranging down into the micrometer range, and has multiple contrast-enhanced variants aiming to improve tissue separation. These methods generate orders of magnitude more data than traditional microscopy and pose new challenges in information extraction and processing.
-
-In the context of research on angiogenesis - the process of vascular growth exploited by tumors that antiangiogenic drugs aim to disrupt - quantifying changes in vascular structure is essential to evaluating treatment efficacy. The dataset motivating this work consists of contrast-enhanced Micro-CT scans of murine tumors collected to assess the antiangiogenic drug Pazopanib, whose mechanism of action is expected to manifest as measurable changes in vasculature. 
+Biological tissue function depends strongly on spatial organization and composition. This is particularly true for vascular networks, whose branching geometry, vessel diameters, and connectivity together determine how functional the vascularization is. Evaluating Pazopanib, a tyrosine kinase inhibitor whose antiangiogenic mechanism is expected to manifest as measurable changes in vascular structure, therefore depends on accurate extraction and subsequent quantification. These structures have higher-order structural properties: vessel density, diameter distributions, branching frequency and changes in tortuosity which cannot be reliably recovered from 2D sections, nor from voxel-level metrics that ignore network topology. This 3D nature, combined with the limitations of slice-based methods, motivates the use of high-resolution 3D imaging able to discern small vessels inside of the tumors. For the dataset used in this work, contrast-enhanced Micro-CT scans were acquired using an agent that increases the attenuation of small blood vessels, with specific properties laid out in @fig:cect-data-examples.
 
 #linebreak()
-However, existing tools tools for analyzing Micro-CT data are dominated by proprietary paid software and the available open-source alternatives lack robust solutions to extract small-scale vasculature with its challenging specificities: low contrast, non vessel-like structures, diffusion gradients, and vessels only a few voxels across. As a result, the vasculature in the provided datasets has resisted prior analysis attempts.
-
-To address this, a pipeline called CollaboratiVessel for microvasculature extraction from Micro-CT data is developed in the form of a 3D Slicer plugin, an open-source tool widely used in medical imaging. Hyperparameter tuning is minimized by leveraging user input and tuning to fit the domain while keeping parameters exposed, making the pipeline adaptable to new datasets with the end user in the loop. Usability is prioritized to bridge the divide between computer vision research and biological use.
-
-
-== Biological motivation
-
-Tissue samples are collected and imaged in order to gain an understanding of their structure and composition, called histology or histopathology in the case of diseased tissue. Classically this is done ex-vivo in 2D, with sections analyzed manually under a microscope by a human, the gold standard for tissue analysis @2d_histo_sota_balcaen2023revealing. However the technique has a fundamental limitation: information is not captured at the same granularity along all three axes. Methods exist to stack slices and reconstruct a 3D volume @methods_for_3d_histo_pichat2018survey, but axial resolution is limited by section thickness, and dead space between slices leaves regions where no information is acquired @litt_review_greet_debournonville2019contrast and the cutting process itself induces changes in tissue structure @extending2d_histo_to_3d.
-
-
-Evaluating Pazopanib, a tyrosine kinase inhibitor influencing the formation of new blood vessels, requires extraction and quantification of the tumor vasculature. Vascular networks are inherently 3D and span entire tissues, having abstract parameters relevant to understanding drug administration response. This 3D nature, combined with the limitations of slice-based methods, motivates high-resolution 3D imaging: for the dataset used in this work, contrast-enhanced Micro-CT scans were acquired using an agent that increases the attenuation of the small blood vessels.
+Existing tools for analyzing Micro-CT data are dominated by proprietary paid software, and the available open-source alternatives lack robust solutions for extracting small-scale vasculature with its challenging specificities: vessels only few voxels across, with low contrast and disconnectoions, background tissue with high signal non-vessel-like structures and sample diffusion gradients. As a result, the vasculature in the provided dataset has resisted prior analysis attempts.
 
 #v(0.25cm)
-#include("./appendices/intro_cect_image_annotations.typ") // Some example images of the data
+#include("./appendices/intro_cect_image_annotations.typ") // Some example images of the data:
+// Description: Slices illustrating the principal challenges: *(a)* A large high contrast vessel of approximately 14 voxels. *(b)* A large high-intensity non vessel-like structure resulting from hemorrhage. *(c)* Upper, left: many small vessels in cross-section, ranging from 2 to 8 voxels in diameter, where the partial-volume effect is present, as well as compression artifacts. *(d)* Outer surface: the "shell effect", a high-intensity boundary surrounding the tumor caused by the diffusion of the contrast agent - also visible: a strong gradient between outside and center *(e, f)* Two slices from the same volume, separated by 5 voxels along the z-axis. The vessel indicated appears discontinuous in (e) but continuous in (f), highlighting the relevance of 3D methods.
 #v(0.1cm) 
-
 
 == Obtaining information from imaging
 
-Analyzing tissue requires imaging it at a sufficient resolution to extract the structure of interest, and 3D imaging modalities leveraging tomography such as Micro-CT and Micro-MRI now make this possible at micrometer resolution. However moving from 2D to 3D imaging carries with it challenges: a single high-resolution Micro-CT scan produces thousands of slices and orders of magnitude more data than a comparable 2D acquisition, meaning that manual analysis as with 2D microscopy at this scale is impractical. Micro-CT data itself is also highly variable: scans differ on the same machine due changes in imaged tissue, contrast agents and protocols used to make structures of interest visible, and further variation arises across machines and due to researchers' choices of acquisition parameters. 
+Analyzing tissue requires imaging it at a sufficient resolution to extract the structure of interest, and 3D imaging modalities leveraging tomography such as Micro-CT now make this possible at micrometer resolution. However 3D imaging carries with it challenges: a single high-resolution Micro-CT scan can reach into the thousands of slices, with large scans on the order of 3000³ at 16 bits per pixel. This results in orders of magnitude more data than a comparable 2D acquisition, meaning that manual analysis as with 2D microscopy is impractical. Micro-CT data itself is also highly variable: scans differ on the same machine due to changes in imaged tissue, contrast agents and protocols used to make structures of interest visible, and further variation arises across machines and due to researchers' choices of acquisition parameters. 
 
 #linebreak()
-When faced with complex data the paths for researchers are twofold: either _manual analysis_ of the data, or _utilization of algorithms_ to aid in the separation of their structures of interest. Manual annotation suffers from high subjectivity, strong variance between annotators @variability_in_annotations_xray_lin2023pluribus and requires time and expert annotators, meaning both direct use and use in machine learning present challenges. Additionally, annotation natively in 3D is challenging: it is difficult to properly consider all three axes simultaneously, hindering work on small 3D structures like vasculature. 
+Analysis of this data is done using a fragmented landscape of closed source, paid proprietary commercial software, or open source software with variable quality, neither having robust solutions for microvasculature extraction. Modern deep-learning methods bring extra challenges: they require significant technical expertise, large quantities of annotated training data that is challenging to produce, and frequently exhibit poor out-of-distribution performance, requiring researchers to retrain models in order to achieve relevant performance. //they may not have the data or compute to support
 
-When using algorithms for extraction, users are pulled towards user friendly and simple methods: (1) generalist methods such as thresholding, easily understandable and widely available, but performing poorly on data that cannot be separated by intensity alone, and (2) a wide spectrum of techniques that carry a richer prior or set of priors about the target structure, ranging from purpose developed algorithms to data driven ones as in deep learning. For vessel analysis, simple methods are easy to apply but result in discontinuities in blood vessels, artefacts, and don't generalize across samples, as well as require the selection of a fixed threshold per sample, a step not performed in a repeatable principled fashion, as learned from user interviews. 
+//Modern deep learning data driven techniques require technical expertise and rely on large amounts of expensive, slow and often high variance annotated data, with pretrained models often showing poor out-of-distribution performance, demanding retraining.
 
-#linebreak()
-The uptake and adoption of advanced techniques like deep learning remains limited outside of the walls of computer science labs due to the barrier to entry associated with using a new tool or method being too high: proprietary paid tools are used, research software is often unmaintained or poorly documented and algorithms are challenging to run on different machines. Modern deep learning based algorithms add even more barriers: dedicated GPUs are typically required @unet_og_paper, input data must be converted to specific formats, and out-of-distribution data often demands retraining, requiring data and computer science knowledge. 
-
-#v(0.2cm)
 
 ==== Contribution and scope
 
-Work will be carried out to create an open-source and data driven small blood vessel extraction method for obtaining segmented blood vessels, with the goal of enabling downstream extraction of clinically relevant vasculature characteristics. This goal is defined by the use case of a dataset of Contrast-Enhanced Micro-CT data acquired to examine the use of Pazopanib. The pipeline is created as an easily installable plugin for 3D Slicer, an open-source and free base software, that ingests and outputs data in portable data formats familiar to researchers, to ensure re-usability and compatibility with existing downstream software. The plugin implements proven algorithms with sparse user input leveraged to set principled hyperparameters enabling easy re-use without requiring expertise in computer science. Implemented methods are tested for robustness by examining performance on data previously considered non segmentable due to non uniform contrast agent staining.
+To address the challenges of microvasculature extraction, an open-source pipeline called CollaboratiVessel is created to obtain segmented blood vessels, with the goal of enabling downstream extraction of clinically relevant vasculature characteristics. This goal is defined by the use case of a dataset of Contrast-Enhanced Micro-CT data acquired to examine the use of Pazopanib. The pipeline is created as an easily installable plugin for 3D Slicer, an open-source and free base software, that ingests and outputs data in DICOM and binary masks, portable data formats familiar to researchers, to ensure re-usability and compatibility with existing downstream software. The plugin implements multi-scale vesselness filtering, seed-guided region growing, ridge following and endpoint reconnection. Hyperparameter tuning is handled by providing robust and tested standard parameters while keeping those relevant for common domain shifts in resolution and vessel size exposed, making the pipeline adaptable to new datasets. User feedback is leveraged in the loop by utilizing manually placed points and ease of use is prioritized to bridge the divide between computer science and researchers. Final performance is measured against a manually annotated baseline and intensity thresholding, the previously used technique that did not succeed in segmenting with sufficient consistency for analysis. The pipeline outperforms thresholding on vessel consistency and continuity, extracting vessels more relevant for downstream analysis, and exceeds manual annotation in extrapolation capabilities.
 
 #linebreak()
-All code written in the implementation of this thesis, the source code of this document, and the user feedback, are made open-source under the MIT license (for code) and labeled under the creative commons as CC0 - No Rights Reserved (for creative works - the writing).
+All code written in the implementation of this thesis is made open-source under the MIT license, and the source of this document is labeled under the creative commons as CC0 - No Rights Reserved.
+
+
+
+
+// Old Obtaining information from imaging
+// Quantifying tumour micro vasculature and its changes in response to antiangiogenic drugs requires extracting 3D vessel networks from imaging data, a challenging task that current open-source tools fail to do reliably .
+
+// The uptake and adoption of techniques beyond single step analysis remains limited outside of the walls of computer science labs due to the barrier to entry associated with using a new tool or method being too high: proprietary paid tools are used, research software is often unmaintained or poorly documented and algorithms are challenging to run on different machines. Modern deep learning based algorithms add even more barriers: dedicated GPUs are typically required @unet_og_paper, input data must be converted to specific formats, and out-of-distribution data often demands retraining, requiring data and computer science knowledge. 
+
+
+
+// Implemented methods are tested for robustness by examining performance on data previously considered non segmentable due to non uniform contrast agent staining.
+
+
 
 
 
