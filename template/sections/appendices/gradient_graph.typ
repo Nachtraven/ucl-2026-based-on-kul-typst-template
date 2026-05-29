@@ -107,7 +107,7 @@
     x-grid: true, y-grid: true,
     y-tick-step: 64,
     legend: "inner-north-east",
-    legend-style: (stroke: 0.5pt + gray, padding: 0.4em),
+    legend-style: (stroke: 0.5pt + gray, padding: 0.4em, offset: (-10pt, -34pt)),
     {
 
       // // Run 1 band + mean
@@ -138,7 +138,7 @@
       plot.add(
         line-blue,
         style: (stroke: (paint: rgb(0, 80, 220), thickness: 1.2pt)),
-        mark: none, label: "CA-RL-L - Unreliable",// [#highlight-blue],
+        mark: none, label: "2. CA-RL-L - Unreliable",// [#highlight-blue],
       )
 
       // Highlighted dataset 2: dashed red
@@ -149,7 +149,7 @@
           thickness: 1.2pt,
           dash: "dashed",
         )),
-        mark: none, label: "CA-RU-R - Reliable",//[#highlight-red],
+        mark: none, label: "1. CA-RU-R - Reliable",//[#highlight-red],
       )
     },
   )

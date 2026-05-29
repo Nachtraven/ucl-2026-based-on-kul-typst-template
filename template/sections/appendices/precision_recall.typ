@@ -111,7 +111,7 @@
     // Axis labels
     #place(left + top,
       dx: pad-left + chart-width / 2 - 15pt,
-      dy: chart-height + pad-bottom - 8pt,
+      dy: chart-height + pad-bottom + 15pt,
       text(size: 8pt, fill: axis-colour)[#x-label]
     )
     #place(left + top,

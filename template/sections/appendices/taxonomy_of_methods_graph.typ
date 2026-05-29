@@ -309,7 +309,7 @@
       (1.8, 6.0, "Minimal-path",                "north"),
       (8.0, 2.2, "U-Net / V-Net",               "north"),
       (6.0, 5.15, "Hybrid Frangi + U-Net",       "north"),
-      (2.5, 7.8, "This work: Bootstrapped hybrid", "north"),
+      // (2.5, 7.8, "This work: Bootstrapped hybrid", "north"),
     )
 
     for m in methods {
@@ -324,6 +324,15 @@
       content((x + dx, y + dy), anchor: anc,
         text(size: 8.5pt)[#label])
     }
+
+    // This work:
+    
+    circle((2.5, 7.8), radius: 0.28, fill: black, stroke: none)
+    circle((2.5, 7.8), radius: 0.14, fill: white, stroke: none)
+    let dx = 1.25
+    let dy = 0.75
+    content((2.5 + dx, 7.8 + dy), anchor: "north",
+      text(size: 10.5pt)[This work: Bootstrapped hybrid])
   }),
   caption: [*Vascular segmentation methods positioned by data need (x) and topological awareness (y)*. Orange arcs indicate the required level of user expertise: methods within the innermost arc require minimal expertise in either discipline (simple threshold selection), those within the middle arc require moderate familiarity (vessel specific parameter tuning), and those in the outer arc require significant expertise (combined vessel and annotation knowledge, and model training for the deep learning approaches). Classical methods cluster on the left with low data needs; data-driven methods cluster on the right. Our hybrid approach combines vesselness-based    topological awareness with limited user input while still requiring the ability to identify vessels, sitting in the low-data, high-topology quadrant, and with a reliatively higher vesselness expertise needed than classical techniques alone. 
   ],

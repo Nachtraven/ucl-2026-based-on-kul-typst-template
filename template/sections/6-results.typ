@@ -154,7 +154,7 @@
 // CA-NM-L 957
 // CA-LL-L1 498
 
-= Results
+= Results and discussion
 
 Performance is evaluated both _quantitatively_ and _qualitatively_ on six manually annotated subvolumes, comparing intensity thresholding against the pipeline. Despite their limited size, the subvolumes capture the key challenges of the dataset: shell effects, intensity gradients, vessel discontinuities and non vascular high valued areas, and enable controlled evaluation of both methods under identical conditions.
 
@@ -173,6 +173,73 @@ The pipeline is evaluated as it would be used in practice: default parameters ar
 //quantative numbers as they are evaluated here can fail to properly weigh the negative impact of vessels with variable sizes, or disconnections, and the ground truths as mentioned above are imperfect and conservative which impacts the performance of an algorithm designed to extrapolate. 
 
 
+
+
+== Hyperparameter sensitivity analysis
+
+This highlights pipeline stability
+
+A key disadvantage of thresholding is its sensitivity towards the selection of the exact right threshold: if incorrectly configured, the resulting 3D map is unusable, and optimal thresholds vary by location within a scan as well as between scans. To highlight a key advantage of the pipeline based approach, we analyze the clDice result sensitivity of the key parameter of vessel size available to the user against thresholding on two subsamples of a tumor. Frangi intensity, the third relevant parameter controlling the intensity required to qualify as a vessel was evaluated separately due to its narrow relevancy range of 2-6, with a default of 3: values were evaluated at 2, 3, 4, 5 and 6 with clDice performance of .3081, .3086, .2984, .3085, .2984.
+
+
+#v(0.25cm)
+#figure(
+  sensitivity-xy-curve(
+    (
+      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "Thresholding - shell subsample",
+        colour: rgb("#ff3b4b"),
+        style: "solid"),
+      (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        label: "Thresholding - central subsample",
+        colour: rgb("#008aac"),
+        style: "dashed"),
+    ),
+    x-col: "threshold_value",
+    y-col: "pred_gt_cldice",
+    x-label: "Threshold value",
+    y-label: "clDice",
+    sort-by-x: false,
+    y-min: 0.0, y-max: 1.0,
+    points: (
+          (name: "",    x: 120.0, y: 0.4315, group: "Pipeline - shell subsample"), //vsize 4, std 3
+          (name: "",    x: 080.0, y: 0.4198, group: "Pipeline - shell subsample"), //vsize 3, std 3
+          (name: "",    x: 040.0, y: 0.4355, group: "Pipeline - shell subsample"), //vsize 2, std 2
+          (name: "",    x: 160.0, y: 0.4209, group: "Pipeline - shell subsample"), //vsize 5, std 3
+          (name: "",    x: 180.0, y: 0.4385, group: "Pipeline - shell subsample"), //vsize 6, std 4
+          (name: "",    x: 220.0, y: 0.3675, group: "Pipeline - shell subsample"), //vsize 8, std 6
+          (name: "",   x: 250.0, y: 0.3538, group: "Pipeline - shell subsample"), //vsize 10, std 7
+
+          (name: "",    x: 120.0, y: 0.3086, group: "Pipeline - central subsample"),
+          (name: "",    x: 080.0, y: 0.3795, group: "Pipeline - central subsample"),
+          (name: "",    x: 040.0, y: 0.2491, group: "Pipeline - central subsample"),
+          (name: "",    x: 160.0, y: 0.2633, group: "Pipeline - central subsample"),
+          (name: "",    x: 180.0, y: 0.2152, group: "Pipeline - central subsample"),
+          (name: "",    x: 220.0, y: 0.2383, group: "Pipeline - central subsample"),
+          (name: "",   x: 250.0, y: 0.2234, group: "Pipeline - central subsample"),
+        ),
+        
+      groups: (
+      "Pipeline - shell subsample":   (colour: rgb("#ff3b4b"), shape: "dot"),
+      "Pipeline - central subsample": (colour: rgb("#008aac"), shape: "cross"),
+    ),
+    
+    top-axis-ticks: (
+      (40.0, "vsize 2\n+/-2"),
+      (80.0, "vsize 3\n+/-3"),
+      (120.0, "vsize 4\n+/-3"),
+      (160.0, "vsize 5\n+/-3"),
+      (180.0, "vsize 6\n+/-4"),
+      (220.0, "vsize 8\n+/-6"),
+      (250.0, "vsize 10\n+/-7"),
+    ),    
+    top-axis-label: "Pipeline annotations",
+  )
+)
+
+
+
+
 == Qualitative observations
 
 #figure(
@@ -184,7 +251,7 @@ The pipeline is evaluated as it would be used in practice: default parameters ar
 
     // Intensity: μ_v=163.00+/-30.05:
     figure(
-      // image-with-circles(
+    // image-with-circles(
       //   "../" + img-path + "base.png",
       //   (
       //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),

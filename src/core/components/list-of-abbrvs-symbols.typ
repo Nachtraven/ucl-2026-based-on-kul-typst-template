@@ -5,7 +5,7 @@
   symbols: none,
 ) = {
   let title = if lang == "en" {
-    "List of Abbreviations and Symbols"
+    "List of abbreviations and symbols"
   } else {
     "Lijst van Afkortingen en Symbolen"
   }

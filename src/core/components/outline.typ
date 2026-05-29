@@ -38,7 +38,7 @@
   let title = if lang == "nl" {
     "Inhoudsopgave"
   } else {
-    "Contents"
+    "Table of Contents"
   }
   outline(title: title, depth: 2)
 }
