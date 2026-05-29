@@ -28,36 +28,43 @@
 // This is the standard CS paper structure: present the system, then justify its design through empirical evidence. The reader understands what you built before learning why you built it that way. Currently the order is reversed — you describe things that aren't in the final system before describing what is, which is confusing
 
 
+// Python 3D Slicer plugins are restricted to the main thread which also handles loading, saving, and UI operations. This results in all 3D Slicer functions being blocked while an algorithm is running, a known issue. Finally, if memory resources are limited or when running on a large scan, memory usage can exceed RAM, reach and fill swap, and crash the host machine. This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on the forums]].
+
 
 = Methodology
 
-== CECT datasets
+== CECT datasets <performance_and_memory>
 
-Voxel size of 6µm, with uniform spacing, with the size description and certain weights, with certain greyscale distributions, how were they generated
+The CECT datasets in this work are all _ex vivo_ murine tumours, imaged using a Phoenix Nanotom with isotropic 6 µm voxels. Further acquisition parameters are summarized in @tab:acquisition. CECT data management is challenging: data is received from the machine as 16-bit TIFF files, with a 2000x2300 slice weighing 9.2MB and a whole dataset with 2400 slices at 22.1GB. The delivered scans were windowed to 8-bit and already compressed to JPEG: this windowing process was unprincipled, with the window chosen based on the researcher's best judgment, and the original uncompressed data discarded. Windowing and compression were both motivated by data storage and cost concerns, with the compressed datasets of this work ranging from 0.103 to 13.2GB (597x698x854 to 3000x3000x2653). Additionally, metadata was limited with datasets stored as folders of slices with no associated acquisition metadata.
+
+#linebreak()
+Dataset size shaped the development process: to run algorithms on a volume, 3D Slicer uncompresses the entire volume into working RAM. The largest datasets would fill the development machine memory and leave no space for algorithms. As a result, datasets were subsampled to sizes large enough to contain representative vascular structure but small enough to fit in RAM alongside intermediate results.
 
 
+=== Subsampling
 
-== Annotation methodology and limitations
+In order to enable development and inference on smaller regions that fit into memory, as well as enable voxel level annotations to evaluate CollaboratiVessel performance, four datasets were selected and subdivided into a 6x6x6 grid. For each dataset, three subregions were selected: one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision method was chosen as it guarantees a sample at each distance band, while also enabling annotation in a reasonable amount of time with enough context for evaluating vessels. Both small and large vessels land in these areas, gradients are captured and samples present a diversity of noise and edges of volumes.
 
-Obtaining a ground truth is key for evaluating algorithmic performance and guiding optimisation. Two complementary forms of ground truth are used by the plugin and are relevant for different stages of the work: user placed annotation points in two or three classes, as is done in regular plugin use, and pixel wise binary annotated ground truth.
 
-The vessel, background, and optional outside-of-volume points guide hyperparameter selection (vessel size and standard deviation) and provide direct in-the-loop feedback by reporting how many vessel points are correctly classified after the pipeline runs. This method is fast and accessible but is limited when used in the development process: evaluation is pointwise rather than spatial, connectivity is ignored entirely, vessel size is not captured, and the inherent 2D nature of point placement makes coverage of small vessels uneven.
+=== Ground truths
 
-=== Voxel ground truth
+Two complementary forms of ground truth are used in this work: user placed vessel points, and a binary voxel level annotation. 
 
-In order to obtain a second more granular ground truth four datasets were selected and subdivided into a 6x6x6 grid of regions from which, for each scan, three were selected: one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision method was chosen as guarantees a sample from the center, one from the edge our outer center and one from the extremity of the volume, while also enabling annotation in a reasonable amount of time with enough context for evaluating vessels. Both small and large vessels land in these areas, gradients are captured and samples present a diversity of noise.
-
+The user placed annotation points are those that guide the algorithm hyperparameters, and performance on these is also shown to the end user during use to provide direct in-the-loop feedback by reporting how many vessel points are correctly classified after the pipeline runs. This method is fast and accessible but is limited when used for development: evaluation is sparse and pointwise, connectivity is ignored entirely, vessel size is not captured, and the inherent 2D nature of point placement makes coverage of small vessels uneven. As a result, binary voxel level annotations were created to enable more granual evaluation of the performance of CollaboratiVessel, and give a common reference to compare against thresholding. 
 
 === Limitations of ground truth
-// The annotations were created by the author, a non domain expert using the built in 3D Slicer tools in 2D and 3D. As a result they are biased towards what is visible in the image (i.e. context is not always able to be fully taken into account), the painting tool (vessel annotation does not always stop at the same gradient value) and disconnections when not visible were not guessed. This means that any algorithm carrying out extrapolation will automatically receive a certain negative performance hit. The total annotation time was approximately 60 hours including two rounds of annotation: a blind annotation and a re-annotation after looking at the results from a round of thresholding and the application of a gaussian blur to smooth out the image.
 
 Annotations were produced by a non-domain expert using 3D Slicer's built-in 2D brush tool, with two known sources of bias:
 
-- *Visibility*: Vessels that are not clearly visible in a slice or by moving between slices are not annotated, meaning that gaps are not filled. This results in a performance hit for algorithms performing principled extrapolation across gaps.
+- *Visibility*: Vessels that are not clearly visible in a slice or by moving between slices are not annotated, meaning that gaps are not filled. This results in a performance hit for algorithms that extrapolate across low signal gaps.
 - *Boundary uncertainty*: The brush has a fixed size and is moved by the user, meaning vessels do not necessarily always stop at the same intensity gradient. Vessel edges in the annotation therefore have some noise, which affects Dice-based metrics.
 
 #linebreak()
-Annotation took approximately 60 hours across two rounds, a first blind annotation round and a second after reviewing the outputs of thresholding and the application of a Gaussian smoothing kernel to reduce visual noise.
+Annotation took approximately 60 hours across two rounds, a first blind annotation round done before development and a second after reviewing the outputs of thresholding, the application of a Gaussian smoothing kernel to reduce visual noise and the reviewing of litterature. The second round helped vessels that were missed due to noise, a lack of context during the first round, and the small sizes and low contrast of vessels.
+
+// Figure:( here is the figure
+// caption: [6x6x6 Grid subsample of tumors used for annotation and performance evaluation, showing the locations of the three subregions selected for annotation at three distances from the center. Full greyscale range visualized.],
+// ) <fig:annotation_grid>
 
 
 #let image-with-grid(path, colour, label, gridsize, annotations: ()) = block(width: auto, height: auto)[
@@ -123,7 +130,7 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 #figure(
   grid(
     columns: 2,
-    // column-gutter: 0.6em,
+    // column-gutter: 0.6em, 
     image-with-grid("../../resources/images/vessels_results/w_bar/Run 2 ca-ru-r_0779.jpg", red, "CA-RU-R", 6,
       annotations: ((4.8, -0.2, "1"),(3.8, 3.8, "2"),(2.8, 1.8, "3"))),
     // image-with-grid("../../resources/images/vessels_results/run 1 415 424 1938 ca-ll-r_2558.jpg", red, "CA-LL-R", 6,
@@ -139,6 +146,7 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 ) <fig:annotation_grid>
 #v(0.1cm)
 
+// The annotations were created by the author, a non domain expert using the built in 3D Slicer tools in 2D and 3D. As a result they are biased towards what is visible in the image (i.e. context is not always able to be fully taken into account), the painting tool (vessel annotation does not always stop at the same gradient value) and disconnections when not visible were not guessed. This means that any algorithm carrying out extrapolation will automatically receive a certain negative performance hit. The total annotation time was approximately 60 hours including two rounds of annotation: a blind annotation and a re-annotation after looking at the results from a round of thresholding and the application of a gaussian blur to smooth out the image.
 
 
 

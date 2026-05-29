@@ -59,6 +59,24 @@
 ) <3d_software_oss>
 
 
+== Nanotom scan parameters
+#figure(
+  table(
+    columns: 2,
+    align: (left, left),
+    [*Parameter*], [*Value*],
+    [Voxel size], [6 µm (isotropic)],
+    [Number of images], [2400],
+    [Exposure time], [500 ms],
+    [Total scan time], [20 minutes],
+    [Voltage / current], [60 kV / 420 µA],
+    [Source-detector distance], [224.999 mm],
+    [Source-sample distance], [3.499 mm],
+  ),
+  caption: [Acquisition parameters as detailed by Wlodarsk in @wlodarski],
+) <tab:acquisition>
+
+
 // == CECT dataset performance challenges (TODO: revisit, this was excised from the main text) <performance_and_memory>
 
 // // TODO: Compress/review this
@@ -161,25 +179,6 @@ The pipeline steps each have their own CPU and memory cost. We divide the proces
 ) <fig:performance>
 
 In order to combat memory overflows, SWAP size was increased.
-
-=== CECT dataset handling //(TODO: revisit, this was excised from the main text) <performance_and_memory>
-
-// TODO: Compress/review this
-Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
-
-#linebreak()
-Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
-
-Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
-
-// TODO: this is moved from elsewhere, to be reviewed
-#linebreak()
-During the initial software evaluation, 3D Slicer was successful in loading all datasets on the development machine - however it was not verified at the time how much memory was being used. The testing of the pipeline on other datasets revealed the performance limitations of the implemented approach: with initial end to end runtime being about an hour and requiring over 40GB of system memory, larger datasets saw an increase in inference time to un-manageable levels, as well as limitations of system memory. 
-
-These performance issues have multiple sources: when implementing a 3D Slicer plugin in python, a single thread is available, and this thread locks all other 3D Slicer activity (this fact extends to other 3D Slicer functions such as loading and saving). When running on a large scan, combined with the generation of multiple maps and the sequential algorithms, memory usage exceeded ram, reached into swap, and could run seemingly indefinitely (success was only observed on smaller scans). This is a known issue with 3D Slicer #footnote[Performance limitations as #link("https://discourse.slicer.org/t/title-slow-and-unstable-performance/4988")[discussed on at this link on the forums]].
-
-
-
 
 
 
@@ -285,7 +284,7 @@ i7-13700, 32GB, T1000 8GB
 // In the age of AI, when we only provide lower order, the student falls back to AI to provide these higher order structures, which suffer from bias or priors that don't align with the proprities of the 
 
 
-= Extra figure
+= Supplemental figures
 
 == Visualizations of results <appendix:results_visuals>
 

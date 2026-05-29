@@ -129,6 +129,53 @@
 
 
 
+#let image-with-circles(path, circles, label: none, label-colour: red) = block(
+  width: 100%,
+  breakable: false,
+)[
+  #set align(center + horizon)
+  #image(path, width: 100%)
+  #for c in circles {
+    let cx = c.at("x")
+    let cy = c.at("y")
+    let cr = c.at("r")
+    let col = c.at("colour", default: red)
+    let th = c.at("thickness", default: 1.5pt)
+    place(
+      top + left,
+      dx: cx,
+      dy: cy,
+      // The circle is drawn centred on (cx, cy), so we offset
+      // by -r in both directions to centre it on the anchor.
+      box(
+        width: 0pt,
+        height: 0pt,
+        place(
+          center + horizon,
+          circle(
+            radius: cr,
+            stroke: col + th,
+            fill: none,
+          ),
+        ),
+      ),
+    )
+  }
+  #if label != none {
+    place(
+      bottom + right,
+      dx: -0.4em, dy: -0.4em,
+      box(
+        fill: rgb(0, 0, 0, 160),
+        inset: (x: 0.4em, y: 0.2em),
+        radius: 2pt,
+        text(fill: white, size: 9pt, weight: "bold")[#label],
+      ),
+    )
+  }
+]
+
+
 #import "./appendices/graph_results.typ": results-chart
 #import "./appendices/DICE_results_graph.typ": draw-dice
 #import "./appendices/precision_recall.typ" : xy-curve
@@ -137,12 +184,13 @@
 #import "./appendices/precision-recall_results_graph.typ":draw-pr-or-recall
 #import "./appendices/vessel_stats.typ": vessel-length-distribution
 
-#import "./appendices/intro_cect_image_annotations.typ": image-with-circles
+// #import "./appendices/intro_cect_image_annotations.typ": image-with-circles
 #import "./appendices/stacked_bar.typ": vessel-match-bars
 
 #import "./appendices/vessel_seed_chart.typ": vessel-seed-chart
 
 #import "./appendices/bipartite/gt_coverage.typ": gt-coverage-strip
+#import "appendices/sensitivity_analysis.typ" : sensitivity-xy-curve
 
 // #import "./appendices/bipartite.typ": vessel-bipartite // Non working atm
 
@@ -398,7 +446,7 @@ Supplemental visualizations of the other tumors, and full comparisons with groun
 
 // From initial observation, we can see what appears to be longer vessels being predicted than the ground truth, with more extensive vessel networks. This is corroborated by our clDice score analysis 
 
-To analyze perfromance quantitatively, we begin by observing clDice, a voxel level metric chosen for its better representation of connectivity and the ratio of correctly classified vessel points (annotation points placed by the user).
+To analyze performance quantitatively, we begin by observing clDice, a voxel level metric chosen for its better representation of connectivity and the ratio of correctly classified vessel points (annotation points placed by the user).
 
 #v(0.25cm)
 #let RES = "../../../resources/images/results/new_pipeline_may_15"
@@ -498,7 +546,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
     pad(top:18pt,
     box[
       #image-with-circles(
-        "../../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_only.png",
+        "../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_only.png",
         (
           (x: 32%, y: 50%, r: 12mm, colour: red, thickness: 0.8pt),
         ),
@@ -630,7 +678,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
     pad(top:18pt,
     box[
       #image-with-circles(
-        "../../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_vessel.png",
+        "../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_vessel.png",
         (
           (x: 32%, y: 50%, r: 12mm, colour: red, thickness: 0.8pt),
         ),

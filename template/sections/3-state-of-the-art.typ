@@ -64,7 +64,6 @@
 
 // 3D Slicer was selected. It is open-source under a permissive BSD-style license, widely adopted in medical imaging, and offers an Extension Manager that lets non-technical users install plugins in one click without managing dependencies. Existing vascular analysis plugins (VMTK, R-Vessel-X) and standard format support (DICOM, NIfTI) ensure interoperability with downstream analysis tools.
 
-= State of the art
 
 
 
@@ -83,16 +82,17 @@
 
 // When using algorithms for extraction, users are pulled towards user friendly and simple methods: (1) generalist methods such as thresholding, easily understandable and widely available, but performing poorly on data that cannot be separated by intensity alone, and (2) a wide spectrum of techniques that carry a richer prior or set of priors about the target structure, ranging from purpose developed algorithms to data driven ones as in deep learning. For vessel analysis, simple methods are easy to apply but result in discontinuities in blood vessels, artefacts, and don't generalize across samples, as well as require the selection of a fixed threshold per sample, a step not performed in a repeatable principled fashion, as learned from user interviews. 
 
+= State of the art
 
-#pagebreak()
+// #pagebreak()
 == Tissue imaging
 
 === Classical 2D histology 
 
-The process of imaging is a critical step in obtaining an understanding of a tissue biopsy in both clinical and research contexts. Classical 2D histology is considered the gold standard having a long history @2d_histo_sota_balcaen2023revealing and producing high resolution 2D images down to 5 μm for light based methods. The diversity in imaging techniques for classical 2D histology has rapidly increased in resolution, with electron microscopy able to reach in the order of sub nanometer scale @histology_used_for_cancers_he2012histology. The dimensionality of imaging has also evolved with computation enabling rapid progress in 3D methods using techniques like tomography, where multiple images are taken non-destructively of a target from different angles and assembled, being used in-vivo and ex-vivo with methods such as computed tomography (CT) and magnetic resonance (MRI).
+The process of imaging is a critical step in obtaining an understanding of a tissue biopsy in both clinical and research contexts. Classical 2D histology is considered the gold standard having a long history and producing high resolution 2D images down to 5 μm for light based methods @2d_histo_sota_balcaen2023revealing. The diversity in imaging techniques for classical 2D histology has rapidly increased in resolution, with electron microscopy able to reach in the order of sub nanometer scale @histology_used_for_cancers_he2012histology. The dimensionality of imaging has also evolved with computation enabling rapid progress in 3D methods using techniques like tomography, where multiple images are taken non-destructively of a target from different angles and assembled, being used in-vivo and ex-vivo with methods such as computed tomography (CT) and magnetic resonance (MRI).
 
 #linebreak()
-For the analysis of inherently 3D structures such as vascular networks in tissues, classical 2D histology is insufficient: physical sectioning of the sample is destructive, is not orientation-agnostic, and introduces deformation artifacts that are difficult to compensate for even with embedding techniques @3dnondestructive_softtissue_µtomo. Additionally, samples may undergo structural changes over time during preparation: they dry out, and certain elements oxidize, although techniques exist to mitigate these disadvantages as explored in @litt_review_greet_debournonville2019contrast.
+For the analysis of inherently 3D structures such as vascular networks in tissues, classical 2D histology is insufficient: physical sectioning of the sample is destructive, is not orientation-agnostic, and introduces deformation artifacts that are difficult to compensate for even with embedding techniques a problem described in Silva _et al_ @3dnondestructive_softtissue_µtomo. Additionally, samples may undergo structural changes over time during preparation: they dry out, and certain elements oxidize, although techniques exist to mitigate these disadvantages as explored in de Bournonville _et al_ @litt_review_greet_debournonville2019contrast.
 
 #linebreak()
 To achieve 3D reconstruction/visualization from 2D histology, 2D slices are stacked across a virtual axis @extending2d_histo_to_3d. The resolution achievable when stacking 2D slices to reconstruct a virtual third dimension is limited by slice thickness and inter-slice registration errors. Certain optical techniques making use of slices allow partial recovery of 3D information from 2D acquisitions, such as confocal microscopy, light sheet microscopy, and optical coherence tomography @cryoct_maes2022cryogenic. However they are limited in sample penetration depth and volume. When the target structure to be imaged and understood does not follow a single preferred axis, as is fundamentally the case for vascular networks, the limitations of slice-based histology make proper reliable quantification of blood vessel parameters impossible, and the relevance of 3D methods like MRI and CT clear. 
@@ -100,12 +100,12 @@ To achieve 3D reconstruction/visualization from 2D histology, 2D slices are stac
 
 === 3D histology
 
-Non-destructive 3D volumetric imaging methods overcome many of the limitations of 2D slice based histology by collecting data uniformly across dimensions, enabling virtual slicing across any plane without requiring physically sectioning the sample. Methods for 3D imaging range from the aforementioned microscopy using visible or near infrared light, to those like MRI that utilize magnetic fields or X-ray imaging in the form of X-ray computed tomography (CT). These techniques allow the collection of qualitative and quantitative 3D microstructural data of tissues and their constituents: analysis is not restricted to a single orientation and does not require sample destruction. They also have associated high resolution variants allowing micrometer level imaging: MicroMRI has an inherently high-contrast for soft-tissue and is able to reach 20 μm resolution @Chen2018; Microfocus CT is commonly used at micron-scale, and resolutions down to 1µm are possible as seen in @2d_histo_sota_balcaen2023revealing. Although microCT suffers from low soft tissue contrast, it still stands out as most relevant for ex-vivo tissue histology due to the high resolutions achievable, relevant at the scale of tissue biopsies, and relatively short capture times when compared to microMRI.
+Non-destructive 3D volumetric imaging methods overcome many of the limitations of 2D slice based histology by collecting data across dimensions, enabling virtual slicing across any plane without requiring physically sectioning the sample. Methods for 3D imaging range from the aforementioned microscopy using visible or near infrared light, to those like MRI that utilize magnetic fields or X-ray imaging in the form of X-ray computed tomography (CT). These techniques allow the collection of qualitative and quantitative 3D microstructural data of tissues and their constituents: analysis is not restricted to a single orientation and does not require sample destruction. They also have associated high resolution variants allowing micrometer level imaging: MicroMRI has an inherently high-contrast for soft-tissue and is able to reach 20 μm resolution as used in Chen _et al_ @Chen2018; Microfocus CT is commonly used at micron-scale, and resolutions down to 1µm are possible, leveraged in Balcaen _et al_ @2d_histo_sota_balcaen2023revealing. Although microCT suffers from low soft tissue contrast, it still stands out as most relevant for ex-vivo tissue histology due to the high resolutions achievable, relevant at the scale of tissue biopsies, and relatively short capture times when compared to microMRI.
 
 
 === Contrast-enhanced microCT (CECT) <CECT_technique>
 
-To improve the contrast between soft-tissue in microCT, two common approaches exist: changes to imaging methodology, and modifications to the sample. Imaging techniques such as phase-contrast microCT (PC-CT) utilize the refractive properties of the X-rays rather than its attenuation alone, enhancing soft tissue edge detection at the cost of higher complexity and long acquisition times. Tissue modifying techniques that aim to increase contrast include the use of various Contrast Agents referred to as contrast-enhanced microCT (CECT): Casting contrast agents (CCA) are perfused into vasculature but pressure must be controlled carefully @exvivo_cardioct, not applicable to microvasculature due to the size of vessels to be observed. Contrast-enhancing staining agents (CESAs) diffuse through the tissue to reach the structures of interest, and bind to it. For the tissue vascularization studied in this thesis, ex-vivo tissue binding CESAs are used, namely Hafnium Wells-Dawson Polyoxometalates (Hf-WD POM) which bind to the red blood cells in the vessels, thereby identifying the vessel lumen or interior. These are selected due to their nondestructive nature and low tissue shrinkage during incubation after excision. Techniques exist that can be used in combination with CESAs: contrast can be increased using freezing in Cryogenic CECT (cryo-CECT) which preserves tissue microstructure with reduced deformation @cryoct_maes2022cryogenic.  
+To improve the contrast between soft-tissue in microCT, two common approaches exist: changes to imaging methodology, and modifications to the sample. Imaging techniques such as phase-contrast microCT (PC-CT) utilize the refractive properties of the X-rays rather than its attenuation alone, enhancing soft tissue edge detection at the cost of higher complexity and long acquisition times @balcaenContrastEnhancingStainingAgents2025. Tissue modifying techniques that aim to increase contrast include the use of various Contrast Agents referred to as contrast-enhanced microCT (CECT): Casting contrast agents (CCA) are perfused into vasculature but pressure must be controlled carefully as used in Leyssens _et al_ @exvivo_cardioct, this is not applicable to microvasculature due to the size of vessels to be observed. Contrast-enhancing staining agents (CESAs) diffuse through the tissue to reach the structures of interest, and bind to it. For the tissue vascularization studied in this thesis, ex-vivo tissue binding CESAs are used, namely Hafnium Wells-Dawson Polyoxometalates (Hf-WD POM) which bind to the red blood cells in the vessels, thereby identifying the vessel lumen or interior. These are selected due to their nondestructive nature and low tissue shrinkage during incubation after excision. Techniques exist that can be used in combination with CESAs: contrast can be increased using freezing in Cryogenic CECT (cryo-CECT) which preserves tissue microstructure with reduced deformation, proposed in Maes _et al_ @cryoct_maes2022cryogenic.  
 
 However, in case the vessels are partially or entirely devoid of residual red blood cells, it prevents or reduces the action of CESAs and thereby reduces contrast and introduces discontinuities. CESAs can potentially bring additional disadvantages as seen in the data provided for this thesis, visible in @fig:reliability_of_scans: the diffusion of CESAs throughout the tissue happens from the outside in, resulting here in a gradient of the amount of CESA and consequently a gradient in contrast, as opposed to CCAs that perfuse the blood vessels. Additionally, non-vessel-like structures such as hemorrhage or handling artifacts also generate high signal areas outside of vessels.
 
@@ -157,7 +157,7 @@ However, in case the vessels are partially or entirely devoid of residual red bl
 #v(0.2cm)
 
 #colorbox(
-  title: "Problem 2.",
+  title: "Problem 1.",
   color: (
     fill: rgb("#f0f8ff"),
     stroke: rgb("#00bfff"),
@@ -175,12 +175,12 @@ However, in case the vessels are partially or entirely devoid of residual red bl
 // OLD: the purpose of imaging a tissue is to generate an image containing sufficient data to enable useful information to be extracted. This goal can be seen in the progress of imaging techniques: the improvements in the _acquisition process_ laid out in the previous section, to make the data of interest more salient (using agents to enhance the contrast) or to make the data more granular (increasing resolution). The _information extraction_ process has also seen improvements over time, with analysis evolving from human to computerized through different paradigms: classical thresholding and region growing; geometrically motivated filters and path-based methods; and data-driven learning approaches.
 
 #pagebreak()
-== Image processing vessel segmentation <imaging_and_seg>
+== Image processing for vessel segmentation <imaging_and_seg>
 
 The challenges introduced by CECT shape what each paradigm of segmentation method can achieve. _Image acquisition_ and _information extraction_ have evolved together: contrast agents make structures more salient and increased resolution makes them more granular. Inforation extraction methods have progressed from manual inspection through the three paradigms of classical methods: thresholding and other histogram based methods, to hand crafted geometrically motivated filters and path-based methods, and finally data-driven learning approaches.
 
 #linebreak()
-Vasculature extraction from 3D tomographic data is a longstanding challenge in computer science, predating deep learning as reviewed in @LESAGE2009819. The 3D CECT data of this thesis carries a unique set of challenges specific to modern high resolution microCT: the vessel diversity ranges in the supplied data from singular voxels (~6µm) to tens of voxels (100+µm) across, corroborated in @microct_tumor_angio. The vasculature is diverse in shape and branching structure, with variable grey levels and most critically disconnections of variable size. Despite this, vessels share a distinctive and consistent set of geometric priors: they are tubular, connected, branching structures and contain blood, providing a distinct imaging profile against surrounding tissue when combined with a CESA. This geometry is what subsequent segmentation methods either _exploit explicitly_ through hand crafted classical filters or _learn implicitly_ in data-driven methods @fig:segmentation-taxonomy.
+Vasculature extraction from 3D tomographic data is a longstanding challenge in computer science, predating deep learning as reviewed in Lesage _et al _@LESAGE2009819. The 3D CECT data of this thesis carries a unique set of challenges specific to modern high resolution microCT: the vessel diversity ranges in the supplied data from singular voxels (~6µm) to tens of voxels (100+µm) across, corroborated by Ehling _et al_ @microct_tumor_angio. The vasculature is diverse in shape and branching structure, with variable grey levels and most critically disconnections of variable size. Despite this, vessels share a distinctive and consistent set of geometric priors: they are tubular, connected, branching structures and contain blood, providing a distinct imaging profile against surrounding tissue when combined with a CESA. This geometry is what subsequent segmentation methods either _exploit explicitly_ through hand crafted classical filters or _learn implicitly_ in data-driven methods, illustrated in @fig:segmentation-taxonomy.
 
 
 #v(0.5cm)
@@ -219,16 +219,16 @@ Region-growing methods @region_growing extend thresholding by incorporating spat
 // Problem: hyperparameter-heavy, degrade at junctions, scale poorly to dense vasculature.
 // Frangi detects ridges (peaks of curvature), not edges (peaks of gradient)!
 
-Beyond intensity-based methods, algorithms integrating local geometric priors exist such as Gabor filters or Hessian-based filters @SATO1998143 where the local second-order structure is analyzed to detect tubular shapes, characterized for vessel detection by Frangi's multiscale vessel enhancement filter @frangi_og_paper, with extensions such as in @beyond_frangi and many other methods being created since. Despite attempts to improve Frangi, the reference implementation remains highly competitive, being shown to consistently offer the highest true positive to false positive rates as shown in @9833530 when compared to 6 methods claiming improvements. 
+Beyond intensity-based methods, algorithms integrating local geometric priors exist such as Gabor filters or Hessian-based filters, established by Sato _et al _ @SATO1998143, where the local second-order structure is analyzed to detect tubular shapes, characterized for vessel detection by Frangi's multiscale vessel enhancement filter proposed in Frangi _et al_ @frangi_og_paper, with extensions such as the Jerman filter by Jerman _et al_ @beyond_frangi and many other methods being created since. Despite attempts to improve Frangi, the reference implementation remains highly competitive, being shown to consistently offer the highest true positive to false positive rates when compared to 6 methods as shown by Lamy _et al_ @9833530. 
 
 #linebreak()
-These second-order methods utilize the eigenvalues of the Hessian matrix of local image intensities (capturing how rapidly intensity changes are themselves changing - the local curvature of the intensity surface) at multiple Gaussian scales (corresponding to multiple candidate "tube" sizes) to produce a vesselness score for each voxel, modeling the prior of blood vessels by responding to tubular structures while suppressing blob- and plate-like ones. Frangi and related methods offer greater robustness than simple thresholding but depend on the user fine tuning algorithm hyperparameters to optimize performance for a given domain or usecase when working with a tool as in @imagej_frangi. Additionally the filter's response degrades at vessel bifurcations, at the endpoints of vessels, and in regions of low contrast. In @beyond_frangi extensions to the vesselness formulation are proposed that improve responses at junctions and at low-contrast boundaries to increase robustness of the filter.
+These second-order methods utilize the eigenvalues of the Hessian matrix of local image intensities (capturing how rapidly intensity changes are themselves changing - the local curvature of the intensity surface) at multiple Gaussian scales (corresponding to multiple candidate "tube" sizes) to produce a vesselness score for each voxel, modeling the prior of blood vessels by responding to tubular structures while suppressing blob- and plate-like ones. Frangi and related methods offer greater robustness than simple thresholding but depend on the user fine tuning algorithm hyperparameters to optimize performance for a given domain or usecase when working with a tool sich as for imageJ @imagej_frangi. Additionally the filter's response degrades at vessel bifurcations, at the endpoints of vessels, and in regions of low contrast. Jerman _et al_ @beyond_frangi proposes extensions to the vesselness formulation that improve responses at junctions and at low-contrast boundaries to increase robustness of the filter.
 
 #v(0.5cm)
 #include "./appendices/frangi_graph.typ"
 #v(0.5cm)
 
-Although offering high performance, second-order methods are limited to working on local image structure at multiple scales without accountig for global vessel topology, failing to incorporate the overarching goal of vasculature extraction: in @fig:segmentation-taxonomy they fall in the center left. A different class of methods reformulate extraction as a global optimization rather than a local filter response, such as minimal path methods which formulate vessel centerline extraction as an optimization problem. The path of least cost is taken between user-defined endpoints, with cost derived from vesselness or image intensity. In @minimal_path_tubular the geometry of vessels is incorporated, adding radius as an additional dimension of the path space. This class of methods is particularly well-suited to expert-in-the-loop approaches where small amounts of data need to be annotated: a user can place seed points that guide the extraction of a complete vascular tree, requiring no training data, and enabling iterative improvement. These methods improve on the topological awareness in @fig:segmentation-taxonomy while also increasing data requirements. This method can be seen used for large arteries and airways available in tools such as the Vascular Modeling Toolkit (VMTK) @vmtk. This strength is also a weakness: the low scalability means that for a densely vascularized tissue, or a tissue with non-uniform characteristics, many seed points can be required which is impractical. Automatic seed point placement is a potential solution although introducing its own tradeoff, moving the optimization and work into the point placement. 
+Although offering high performance, second-order methods are limited to working on local image structure at multiple scales without accountig for global vessel topology, failing to incorporate the overarching goal of vasculature extraction: in @fig:segmentation-taxonomy they fall in the center left. A different class of methods reformulate extraction as a global optimization rather than a local filter response, such as minimal path methods which formulate vessel centerline extraction as an optimization problem. The path of least cost is taken between user-defined endpoints, with cost derived from vesselness or image intensity. Benmansour _et al_ @minimal_path_tubular integrate the geometry of vessels, adding radius as an additional dimension of the path space. This class of methods is particularly well-suited to expert-in-the-loop approaches where small amounts of data need to be annotated: a user can place seed points that guide the extraction of a complete vascular tree, requiring no training data, and enabling iterative improvement. These methods increase the topological awareness while also marginally increasing data requirements, illustrated by a move up and to the right @fig:segmentation-taxonomy. This method can be seen used for large arteries and airways available in tools such as the Vascular Modeling Toolkit (VMTK) @vmtk. This strength is also a weakness: the low scalability means that for a densely vascularized tissue, or a tissue with non-uniform characteristics, many seed points can be required which is impractical. Automatic seed point placement is a potential solution although introducing its own tradeoff, moving the optimization and work into the point placement. 
 
 
 
@@ -245,15 +245,15 @@ Although offering high performance, second-order methods are limited to working 
 // Heller et al. 2021 on the KiTS19 challenge — discusses annotation disagreement explicitly.
 // Vincent et al. 2021 or similar work on noisy-label learning in medical segmentation — provides a methodological framing.
 
-Manual annotation of vascular networks in CECT images is time intensive and requires expert knowledge. When annotation is carried out, the resulting annotations are known to exhibit significant inter-annotator variability @variability_in_annotations_xray_lin2023pluribus. This variability represents an irreducible uncertainty in the ground truth that places an upper bound on the performance achievable by any supervised method, especially those training on voxel-level data. Work-arounds exist: structural extraction (e.g., skeletonization) may be used on the data first, with the resulting structures used to guide subsequent voxel-level re-annotation, reducing inter-annotator noise. However this means the biases of the skeletonization algorithm are now inherited by the annotations and introduced into models trained on them. 
+Manual annotation of vascular networks in CECT images is time intensive and requires expert knowledge. When annotation is carried out, the resulting annotations exhibit significant inter-annotator variability, shown by Lin _et al_ @variability_in_annotations_xray_lin2023pluribus. This variability represents an irreducible uncertainty in the ground truth that places an upper bound on the performance achievable by any supervised method, especially those training on voxel-level data. Work-arounds exist: structural extraction (e.g., skeletonization) may be used on the data first, with the resulting structures used to guide subsequent voxel-level re-annotation, reducing inter-annotator noise. However this means the biases of the skeletonization algorithm are now inherited by the annotations and introduced into models trained on them. 
 
-An alternative to real annotated data is the use of simulated and automatically annotated data, using either geometrically driven techniques such as L-Systems, to generate branching tree structures grounded in the physiological laws of arterial branching, reviewed in @l-systems-review, or neural-network driven systems such as generative adversarial networks (GANs) as reviewed for medical applications in @GANs_medical. 
+An alternative to real annotated data is the use of simulated and automatically annotated data, using either geometrically driven techniques such as L-Systems, to generate branching tree structures grounded in the physiological laws of arterial branching, as reviewed by Zamir _et al_ @l-systems-review, or neural-network driven systems such as generative adversarial networks (GANs), reviewed for medical applications by Yi _et al_ @GANs_medical. 
 
 #linebreak()
-When data is available it may be used directly, although models trained on one imaging protocol, contrast agent, sample batch, or tissue type exhibit degraded performance when applied to data from a different distribution: this is termed domain shift, and is particularly acute in imaging methods containing many adjustable parameters and machine hardware specificities as in CECT imaging. This can require the use of techniques like transfer learning, where a model is first trained on a similar task with large data availability then fine-tuned on a small amount of in-domain data as detailed being used for vessels in @tetteh2020deepvesselnet. Annotated data can also be _augmented_ to artifically increase the available amount and diversity by applying random degradations, elastic deformations and intensity perturbation while preserving the original annotations. 
+When data is available it may be used directly, although models trained on one imaging protocol, contrast agent, sample batch, or tissue type exhibit degraded performance when applied to data from a different distribution: this is termed domain shift, and is particularly acute in imaging methods containing many adjustable parameters and machine hardware specificities as in CECT imaging. This can require the use of techniques like transfer learning, where a model is first trained on a similar task with large data availability then fine-tuned on a small amount of in-domain data as used for vessels by Tetteh _et al_ @tetteh2020deepvesselnet. Annotated data can also be _augmented_ to artifically increase the available amount and diversity by applying random degradations, elastic deformations and intensity perturbation while preserving the original annotations. 
 
 #colorbox(
-  title: "Problem 3.",
+  title: "Problem 2.",
   color: (
     fill: rgb("#f0f8ff"),
     stroke: rgb("#53d1fb"),
@@ -274,21 +274,21 @@ When data is available it may be used directly, although models trained on one i
 // Problem: annotation cost; domain shift; architecture choice secondary to data availability.
 
 //  @xgboost used to be cited for gradient-boosted trees
-Data-driven methods approach extraction from a different direction: rather than hand-engineering features and priors, parameters are learned from labeled examples. Supervised learning algorithms map labeled inputs to outputs with classical machine-learning approaches such as kNN and gradient-boosted trees @xgboost being used for classification, but these do not scale to our data. With the paradigm deep learning exploding in popularity since being introduced in @alexnet_og_deeplearning, higher dimensionality inputs became analyzable without hand crafted features, and led to fully convolutional encoder-decoder architectures being used in the medical domain such as with U-Net @unet_og_paper, a leap in performance for image segmentation. 
+Data-driven methods approach extraction from a different direction: rather than hand-engineering features and priors, parameters are learned from labeled examples. Supervised learning algorithms map labeled inputs to outputs with classical machine-learning approaches such as kNN and gradient-boosted trees by Chen _et al_ @xgboost being used for classification, but these do not scale to our data. With the deep learning paradigm exploding in popularity since being introduced by Krizhevsky _et al_ @alexnet_og_deeplearning, higher dimensionality inputs became analyzable without hand crafted features, and led to fully convolutional encoder-decoder architectures being used in the medical domain such as with U-Net proposed by Ronneberger _et al_ @unet_og_paper, a leap in performance for image segmentation. 
 
-U-Net specifically constituted a breakthrough in medical imaging due to its ability to segment large images with high compute and data efficiency, and across multiple scales by introducing skip connections between encoder and decoder pathways. These allow the network to combine low-level spatial detail with high-level semantic context, enabling the segmentation of thin structures that require context such as cells and vasculature. The structure of U-Net can be extended into 3D with different approaches such as in @3d_unet. Recently, transformer-based architectures have superseded convolutional networks as a more generalist approach to machine learning, being applied to object detection in @detr_paper, and being extended to segmentation with paradigms such as Segment Anything @kirillov2023segment_SAM, offering higher performance thanks to a more general computation model. Expert crafted feature extraction is removed, such as in the locality prior of convolutions, enabling the capture of more diverse features and long-range spatial dependencies, at the cost of an increase in required training data, an issue for CECT.
-
-#linebreak()
-As algorithm complexity and data dimensionality increase, so must the amount of training or example data increase, an issue for convolutional networks and even more so for transformers. This limits the application of deep learning to CECT data, where annotated data is expensive and where inter dataset variance is large, even though attempts exist to palliate the high data requirements by offering self-configuring training frameworks with model weights as explored in nnUnet @nnunet_paper or by crafting more data-efficient models. Examples also exist of trying to make use of so called foundation models, based on a large transformer and able to be "prompted" to customize the segmentation to the usecase at hand @SEMERARO2025102218. 
-
-Deep learning has been applied to vascular segmentation for blood vessel extraction in low noise environments directly with notable success: DeepVesselNet @tetteh2020deepvesselnet introduced a family of architectures designed for vessel segmentation, centerline prediction, and bifurcation detection in 3D angiographic data by integrating the structural priors inherent to blood vessels as secondary learning targets. The model was trained on murine brain data, presenting different vessel structures, sizes and greyscale values to our tissues, with vessels tens to hundreds of voxels across, few discontinuities, and vessel intensities with markedly low or non existent overlap with the background. Re-use of such a model would require at a minimum a fine-tuning step, needing annotated data, a re-training step and potentially limited performance, with the authors admitting that vessel sizes outside of their training distribution suffer from reduced performance.
+U-Net specifically constituted a breakthrough in medical imaging due to its ability to segment large images with high compute and data efficiency, and across multiple scales by introducing skip connections between encoder and decoder pathways. These allow the network to combine low-level spatial detail with high-level semantic context, enabling the segmentation of thin structures that require context such as cells and vasculature. The structure of U-Net can be extended into 3D with different approaches such as 3D U-Net proposed by Çiçek _et al_ @3d_unet. Recently, transformer-based architectures have superseded convolutional networks as a more generalist approach to machine learning, used for object detection in DETR by Carion _et al_ @detr_paper, and being extended to segmentation with paradigms such as Segment Anything by Kirillov _et al_ @kirillov2023segment_SAM, offering higher performance thanks to a more general computation model. Expert crafted feature extraction is removed, such as in the locality prior of convolutions, enabling the capture of more diverse features and long-range spatial dependencies, at the cost of an increase in required training data, an issue for CECT.
 
 #linebreak()
-Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods. This use of classical priors as a feature stage with a form of learning as a correction sets the direction of the present work, with the novel addition of sparse user input as a method for achieving training data acquisition.
+As algorithm complexity and data dimensionality increase, so must the amount of training or example data increase, an issue for convolutional networks and even more so for transformers. This limits the application of deep learning to CECT data, where annotated data is expensive and where inter dataset variance is large, even though attempts exist to palliate the high data requirements by offering self-configuring training frameworks with model weights as explored in nnUnet by Isensee _et al_ @nnunet_paper or by crafting more data-efficient models. Examples also exist of trying to make use of so called foundation models, based on a large transformer and able to be "prompted" to customize the segmentation to the usecase at hand, such as TomoSAM for 3D Slicer by Semeraro _et al_ @SEMERARO2025102218. 
+
+Deep learning has been applied to vascular segmentation for blood vessel extraction in low noise environments directly with notable success: DeepVesselNet by Tetteh _et al_ @tetteh2020deepvesselnet introduced a family of architectures designed for vessel segmentation, centerline prediction, and bifurcation detection in 3D angiographic data by integrating the structural priors inherent to blood vessels as secondary learning targets. The model was trained on murine brain data, presenting different vessel structures, sizes and greyscale values to our tissues, with vessels tens to hundreds of voxels across, few discontinuities, and vessel intensities with markedly low or non existent overlap with the background. Re-use of such a model would require at a minimum a fine-tuning step, needing an undefined amount of annotated data, with the authors admitting that vessel sizes outside of their training distribution suffer from reduced performance.
+
+#linebreak()
+Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features for learning, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs explored for u-Net by Chen _et al_  @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods. This use of classical priors as a feature stage with a form of learning as a correction sets the direction of the present work, with the novel addition of sparse user input as a method for achieving training data acquisition.
 
 #v(0.5cm)
 #colorbox(
-  title: "Problem 4.",
+  title: "Problem 3.",
   color: (
     fill: rgb("#f0f8ff"),
     stroke: rgb("#00bfff"),
@@ -317,19 +317,19 @@ Finally, hybrid approaches offer the interesting property of combining classical
 
 Evaluating vascular segmentation is challenging because the metrics that are easy to compute and commonly used for segmentation do not reflect the failures that matter for downstream analysis. Three families of metrics are surveyed: voxel-level losses, topology-aware losses, and object-level matching, with each addressing a limitation of the previous.
 
-Voxel-level metrics are commonly used for segmentation as in UNet @unet_og_paper. Vessel segmentation has a severe class-imbalance with vessels being a small minority of voxels, and as a result the choice of loss function matters: voxel-level losses like cross-entropy treat each prediction as independent, meaning there is a bias toward predicting background and producing fragmented or incomplete vessel predictions. V-Net @vnet_paper extended U-Net into 3D and improved performance by using DICE, a method better suited for class-imbalanced settings.
+Voxel-level metrics are commonly used for segmentation as in UNet @unet_og_paper. Vessel segmentation has a severe class-imbalance with vessels being a small minority of voxels, and as a result the choice of loss function matters: voxel-level losses like cross-entropy treat each prediction as independent, meaning there is a bias toward predicting background and producing fragmented or incomplete vessel predictions. Milletari _et al_ extended U-Net into 3D with V-Net @vnet_paper and improved performance by using DICE, a method better suited for class-imbalanced settings.
 
 #v(0.25cm)
 #figure(
   dice_diagram(),
-  caption: [A major DICE challenge in the context of vessel segmentation, where many small vessels (orange) are present but detections (green) in one case totally fail to pick up on certain vessels. These situations would have a similar DICE score, showing the bias towards large overlapping regions, as discussed in @Taha2015.]
+  caption: [A major DICE challenge in the context of vessel segmentation, where many small vessels (orange) are present but detections (green) in one case totally fail to pick up on certain vessels. These situations would have a similar DICE score, showing the bias towards large overlapping regions, as discussed by Taha _et al_ @Taha2015.]
 ) <fig:dice-detection>
 #v(0.35cm)
 
-DICE has some specific known downsides for 3D medical image segmentation explored in @Taha2015, and relevant here: the equal treatment of false positives and false negatives, the unawareness of spatial differences with voxel differences being treated as equal between large an small vessels, and the detection gap where small completely undetected areas are treated the same as small mismatches in large coverage areas.
+DICE has some specific known downsides for 3D medical image segmentation discussed by Taha _et al_ @Taha2015, and relevant here: the equal treatment of false positives and false negatives, the unawareness of spatial differences with voxel differences being treated as equal between large an small vessels, and the detection gap where small completely undetected areas are treated the same as small mismatches in large coverage areas.
 
 #linebreak()
-To integrate some of these issues into the loss, in Yukun Zhou _et al._ @CFLoss_loss_func clinically relevant vascular features are encoded into the loss function. A collection of topology-aware loss functions is available in @topolosses, able to place emphasis on different topological features. For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream and differences in size less important than the matching of the vessel itself. This motivated the creation of a purpose-built loss function in @clDice_loss_func called _centerlineDice_ (clDice) which evaluates segmentations on their skeletons rather than their masks, moving emphasis to shape and connectivity.
+To integrate some of these issues into the loss, Yukun Zhou _et al._ @CFLoss_loss_func propose  CFLoss to encode clinically relevant vascular features into the loss function. A collection of simpler topology-aware loss functions is available as a python package @topolosses, able to place emphasis on different topological features. For vasculature specifically, breaks in segmentation can be difficult to reconnect downstream and differences in size less important than the matching of the vessel itself. This motivated the creation of a purpose-built loss function called _centerlineDice_ (clDice) by Shit _et al_ @clDice_loss_func which evaluates segmentations on their skeletons rather than their masks, moving emphasis to shape and connectivity.
 
 
 // Tprec(SP , VL) = |SP ∩ VL| / |SP |
@@ -362,7 +362,7 @@ To integrate some of these issues into the loss, in Yukun Zhou _et al._ @CFLoss_
 
 
 #linebreak()
-Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level as explored for vessel level predictions in @VesselGraph. In panoptic segmentation @panoptic_seg_og, where the goal is to not only segment a structure but also individually identify it, graph inspired methods are used to calculate a score based on the matching between the ground truth and predictions on a per object basis, combatting the issue highlighted in @fig:dice-detection where missed vessels are not weighed appropriately. This comes at the cost of needing predictions to be individual objects, a problem for vessels that are _by nature_ continuous. To combat this, when comparing matching, our metrics will also account for size and allow one to many or many to one matches. Finally, on top of comparing predicted segmentations to a reference, the user placed seed points are also considered informative: if marked a voxel as vessel, the final segmentation should preserve that classification and provide feedback on these points.
+Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level as explored for vessel level predictions by Suprosanna _et al_ @VesselGraph. In panoptic segmentation proposed by Kirillov _et al_ @panoptic_seg_og, the goal is to not only segment a structure but also individually identify it. Graph inspired methods are used to calculate a score based on the matching between the ground truth and predictions on a per object basis, combatting the issue highlighted by @fig:dice-detection where missed vessels are not weighed appropriately. This comes at the cost of needing predictions to be individual objects, a problem for vessels that are _by nature_ continuous. To combat this, when comparing matching, our metrics will also account for size and allow one to many or many to one matches. Finally, on top of comparing predicted segmentations to a reference, the user placed seed points are also considered informative: if marked a voxel as vessel, the final segmentation should preserve that classification and provide feedback on these points.
 
 ==== Evaluation criteria
 // OLD: When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features such as tortuosity and branching ratio, is important to consider. As a result, 
@@ -372,7 +372,7 @@ Following the analysis above, outputs will be evaluated based on three complemen
 
 #v(0.5cm)
 #colorbox(
-  title: "Problem 5.",
+  title: "Problem 4.",
   color: (
     fill: rgb("#f0f8ff"),
     stroke: rgb("#00bfff"),
@@ -398,13 +398,13 @@ The choice of host platform shapes the extraction pipeline and who can use it. A
 
 Candidate platforms used in the CECT community are summarized in @3d_software, with UCLouvain's IMMC specifically using closed-source commercial tools: Avizo, Dragonfly3D and CTan. These offer limited extension development and redistribution, as well as requiring commercial paid licenses in the case of Avizo and CTan. Dragonfly3D presents the distinct advantage of currently having a "free-for-academics" _FreED_ license enabling widespread use in research, but brings with it a licensing challenge: despite being free to use, _FreED_ restricts the redistribution of extensions, preventing the open-source release of derivative work. #footnote["\[The user\] shall not distribute or transfer the Software or Improvements \[...\], without prior written permission \[from Dragonfly3D\]" @DragonflyFreeDLicense].
 
-The lab has prior experience with the extensible and open-source ImageJ/FIJI, but it lacks the established 3D segmentation infrastructure for medical imaging. Standalone vessel-specific tools DeepVesselNet @tetteh2020deepvesselnet and SPROUT @sprout_segmentation_volumetric are not host platforms intended for extension but instead use case specific implementations. 3D Slicer @3Dslicer_paper emerged as the most suitable platform, meeting all three requirements: It can import and export a variety of formats, is open-source under a permissive BSD-style license, widely adopted in the medical imaging field, and supports 3D segmentation workflows with established plugins relevant to vascular analysis such as the Vascular Modeling Toolkit (VMTK) @vmtk and R-Vessel-X @affane2025rvesselx. Its Extension Manager allows non-technical users to install plugins through a one-click interface without compiling code or managing dependencies, and standard import/export formats including DICOM and binary segmentation ensure interoperability with downstream analysis tools.
+The lab has prior experience with the extensible and open-source ImageJ/FIJI, but it lacks the established 3D segmentation infrastructure for medical imaging. Standalone vessel-specific tools DeepVesselNet by Tetteh _et al_ @tetteh2020deepvesselnet and SPROUT by He _et al_ @sprout_segmentation_volumetric are not host platforms intended for extension but instead use case specific implementations. 3D Slicer developed from work by Fedorov _et al_ @3Dslicer_paper emerged as the most suitable platform, meeting all three requirements: It can import and export a variety of formats, is open-source under a permissive BSD-style license, widely adopted in the medical imaging field, and supports 3D segmentation workflows with established plugins relevant to vascular analysis such as the Vascular Modeling Toolkit (VMTK) by Izzo _et al_ @vmtk and R-Vessel-X by Affane _et al_ @affane2025rvesselx. Its Extension Manager allows non-technical users to install plugins through a one-click interface without compiling code or managing dependencies, and standard import/export formats including DICOM and binary segmentation ensure interoperability with downstream analysis tools.
 
 
 #pagebreak()
 #v(0.5cm)
 #colorbox(
-  title: "Problem 1.",
+  title: "Problem 5.",
   color: (
     fill: rgb("#f0f8ff"),
     stroke: rgb("#00bfff"),
@@ -423,7 +423,7 @@ The lab has prior experience with the extensible and open-source ImageJ/FIJI, bu
 
 Several existing tools target vascular segmentation, but few focus on microvasculature at high resolution within an integrated environment. Segmentation-focused tools operate on the image itself: the Vascular Modeling Toolkit (VMTK) @vmtk integrates in 3D Slicer and provides a comprehensive suite for vascular segmentation, centerline extraction, and surface reconstruction, but its methods are oriented toward low resolution, large vessels: arteries, aortas, and major branches. It also relies on seed-based interaction that does not scale to the dense, branching geometry of microvasculature. 
 
-ITKTubeTK @ITKTubeTK_paper_github offers a library of algorithms for tubular-structure segmentation and graph extraction built on the ITK framework, but is packaged as a programming library meaning it requires implementation into a tool or use in code, challenging for non-technical researchers. VesselKnife @vesselknife provides an integrated pipeline specifically targeting vessel segmentation, skeletonization, and graph extraction from CECT data but is a standalone application, requiring researchers to leave their existing analysis environment, and is not intended for small vasculature. SimVascular @simvascular operates on the outputs of segmentation and extends vascular extraction into simulation, supporting downstream modeling of blood flow, a step laying downstream of this work.
+ITKTubeTK developed by Aylward _et al_ @ITKTubeTK_paper_github offers a library of algorithms for tubular-structure segmentation and graph extraction built on the ITK framework, but is packaged as a programming library meaning it requires implementation into a tool or use in code, challenging for non-technical researchers. VesselKnife by Szczypi _et al_ @vesselknife provides an integrated pipeline specifically targeting vessel segmentation, skeletonization, and graph extraction from CECT data but is a standalone application, requiring researchers to leave their existing analysis environment, and is not intended for small vasculature. SimVascular proposed by Updegrove _et al_ @simvascular operates on the outputs of segmentation and extends vascular extraction into simulation, supporting downstream modeling of blood flow, a step laying downstream of this work.
 
 #linebreak()
 The landscape of vascular segmentation tools reflects a tension in biomedical imaging: general-purpose deep learning segmentation frameworks offer good performance on the datasets they are trained on, but require large annotated datasets, offer limited interpretability and controllability, and are typically not integrated into the tools researchers commonly use. Classical model-based methods such as Frangi filtering are more transparent and adjustable, built into existing tools and easy to use, but require manual parameter tuning and struggle with complex vascular geometries. Neither pole serves the specific need addressed by this thesis: microvasculature-scale extraction, integrated into a widely-used segmentation environment, with parameters set by principled means rather than expert tuning. This combination is the niche the present work occupies.
@@ -448,92 +448,3 @@ The landscape of vascular segmentation tools reflects a tension in biomedical im
 
 
 
-
-
-
-
-
-
-
-
-
-
-// Analysis-focused tools operate on segmentations as produced by  rather than images and are complementary to segmentation pipelines rather than competing with them. SKAN @skan provides a documented Python library for the quantitative analysis of skeleton graphs extracted from binary segmentation masks, enabling computation of branch-length distributions, tortuosity, and network connectivity. SimVascular @simvascular extends vascular extraction into simulation, supporting downstream modeling of blood flow within reconstructed geometries.
-
-
-
-
-// #pagebreak()
-// === Segmenting large datasets (removable)
-
-// I had previously here a SOTA on managing large datasets, as this was a challenge that turned up later and blocked me for a while. Would it be interesting to add?
-
-// #v(0.4cm)
-
-// #linebreak()
-// Data management for Micro-CT scans is a challenge for users: after a scan is completed, they receive data from the CT machine in the form of a collection of 16 bit TIFF files: heavy, with a single 2000x2300 slice at 16bits per pixel weighing *9.2MB*, or as is often the case the data is saved as 3 channels, resulting in 27.6MB, and a whole 2400 slice scan weighing at least *22.1GB*. Scans are then windowed to 8 bit, occasionally with some form of compression, and the empty slices are removed: this generally halves or more the total data amount. This windowing process was documented as being unprincipled: the window was chosen based on the researchers best judgment, and the original uncompressed data discarded.
-
-
-// Furthermore, certain researchers would then carry out a lossy compression of the data in the form of JPEG image slices, as was the case with the data used in this thesis: the total scan weights provided ranged from *0.103* to *13.2GB* (597x698x854 to 3000x3000x2653) and the original lossless data was not preserved, in both cases the windowing and the compression were motivated by data storage cost concerns.
-
-
-// Finally, the provided data was generally given with little or no context: the data was provided in the form of a folder containing images as well as experiments that were run, with no associated dates and without grounding context such as the scan voxel size or parameters of the scanning machine. These issues of dataset size and compression resulted in challenges unforseen during the literature review which required particular attention.
-
-
-// #linebreak()
-// Methods exist to handle large datasets: the most basic approach is cutting down of full scans into smaller chunks, or subsampling the scans with some form of interpolation. Cutting scans down has the disadvantage of requiring stitching after running algorithms, and if done using 3D slicers' built in slicing, requires the ability to load the full dataset. Subsampling requires the the target structures to be large enough to allow it: subsampling to 1/4 resolution means that any vessel 4 voxels across would be reduced to approximately a single voxel.
-
-// //An experiment was run, where a target scan was cut into 4 smaller sections using Python; this proved to be unwieldy for annotation and running the pipeline. 
-
-// Handling large datasets can also be done at the format and loading level: HDF5 is intended to _store_ such large multidimensional arrays and efficiently enable loading subsections, however this data storage format is totally incompatible with most medical imaging software, and is not the standard used by CT machines. Standards such as DICOM did not provision for the possibility that data such as those generated by micro-CT may exist in the future in the medical domain, and do not deal well with dynamically loading large datasets from memory. To _operate on_ large multidimensional arrays in Python, there exist libraries such as #link("https://www.dask.org/")[Dask] that enable "chunking" of the data to process smaller areas: this could enable improved scaling to larger scans.
-
-// #linebreak()
-// These performance concerns highlight a continuous issue encountered during the writing of this thesis: the complexity of methods able to be tested was limited by the choice of software, volume of data and the hardware available. Lab computers available to students have 32GB of ram, less than the computer used for the testing and writing of code, and it was noted by previous students working on MicroCT imaging that they had struggled to run algorithms across the whole image. In the end, much effort was invested in the research, testing and optimization of the algorithms, and runtime concerns pushed development towards the use of methods implemented in C++ available with Python bindings, such as the SimpleITK Frangi filter used. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// #v(0.5cm)
-// #figure(
-//   image("../../resources/misc/uncompressed_image_folder_sizes.png", width:90%),
-//   caption: [TODO: This is a placeholder. TODO: Add horizontal lines for the RAM of computers. 
-  
-//   Visualization of the raw dataset sizes, obtained by multiplying width, height and depth by 8 bits per pixel],
-// ) <uncompressed_dataset_size>
-// #v(0.5cm)
-
-// #v(0.5cm)
-// #colorbox(
-//   title: "Problem 6.",
-//   color: (
-//     fill: rgb("#f0f8ff"),
-//     stroke: rgb("#00bfff"),
-//     title: rgb("#002366")
-//   ),
-//   radius: 4pt,
-//   width: auto
-// )[
-//   todo.
-// ]
-
-
-
-
-
-
-// Other suggested sources by Claude 28-04-2026
-// Domain shift in medical imaging: Guan & Liu 2021 (IEEE TMI, "Domain adaptation for medical image analysis: A survey"), or Glocker et al. 2019 on cross-scanner / cross-protocol shift.
-// Transfer learning in medical imaging: Raghu et al. 2019 (NeurIPS, "Transfusion: Understanding transfer learning for medical imaging") is the canonical critical reference; ImageNet pretraining for medical tasks is more nuanced than commonly assumed.
-// Data augmentation: Shorten & Khoshgoftaar 2019 (Journal of Big Data, survey of image data augmentation) for the general framing; Isensee et al. (the nnU-Net paper, already cited) for the specific augmentations used in 3D medical segmentation.
-// Synthetic vasculature beyond GANs: Schneider et al. 2012 (Medical Image Analysis, "Tissue metabolism driven arterial tree generation") and the VascuSynth tool (Hamarneh & Jassi 2010) are vascular-specific synthetic data references that would strengthen the L-systems sentence.

@@ -1,4 +1,3 @@
-TODO: extending this
 
 #table(
   columns: 2,
@@ -13,9 +12,9 @@ TODO: extending this
   [MRML], [Medical Reality Markup Language],
   [CLI], [Command Line Interface],
   [RAS], [Right, Anterior, Superior - a co-ordinate frame],
-  [xxx], [xxx],
-  [xxx], [xxx],
-  [xxx], [xxx],
-  [xxx], [xxx],
-  [xxx], [xxx],
+  // [xxx], [xxx],
+  // [xxx], [xxx],
+  // [xxx], [xxx],
+  // [xxx], [xxx],
+  // [xxx], [xxx],
 )
