@@ -91,7 +91,7 @@
   chart-height: 180pt,
   pad-left:     36pt,
   pad-bottom:   30pt,
-  legend-width: 140pt,
+  legend-width: 152pt,
   axis-colour:  rgb("#353535"),
   tick-size:    7pt,
   n-ticks:      10,

@@ -288,6 +288,151 @@ i7-13700, 32GB, T1000 8GB
 
 == Visualizations of results <appendix:results_visuals>
 
+
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    rows: 2,
+    column-gutter: 0.4em,
+    row-gutter: 0.6em,
+
+    // Intensity: μ_v=163.00+/-30.05:
+    figure(
+    // image-with-circles(
+      //   "../" + img-path + "base.png",
+      //   (
+      //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+      //   ),
+      // ),
+      image("../../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/vessels.png", width: 100%),
+      // caption: [CA-RU-R 2D Slice - outer section],
+      supplement: none,
+      numbering: none,
+    ),
+  
+    figure( 
+      image("../../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p1/3d_vessels_thresh.png", width: 100%), //3d_vessels_only.png
+      // caption: [CA-RU-R - outer section 3D View],
+      supplement: none,
+      numbering: none,
+    ),
+  ),
+  caption: [CA-RU-R (1) Outer section: *Yellow*: thresholding, *Red*: vessels. Good contrast, more continuous and better defined vessels with some large areas of non vessel-like high valued points that are successfully rejected by the pipeline, detail in @appendix:detailed_results_visuals.],
+) <fig:CA-RU-R_222_2d>
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    rows: 2,
+    column-gutter: 0.4em,
+    row-gutter: 0.6em,
+    //Intensity: μ_v=130.7+/-11.8:
+    figure(
+      image("../../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/slice_vessels.png", width: 97%),
+      // caption: [CA-RU-R 2D Slice - central section],
+      supplement: none,
+      numbering: none,
+    ),
+
+    figure(
+      image("../../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/optimal_thresh_vessel.png", width: 101%),  // p1/3d_vessels.png
+      // caption: [CA-RU-R - central section 3D View],
+      supplement: none,
+      numbering: none,
+    ),
+
+  ),
+  caption: [CA-RU-R (2) inner *Yellow*: thresholding, *Red*: vessels. Central section: challenging, with low contrast, highly disconnected vessels.],
+) <fig:CA-RU-R_666_2d>
+#v(0.5cm)
+
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    rows: 2,
+    column-gutter: 0.4em,
+    row-gutter: 0.6em,
+    //Intensity: μ_v=130.7+/-11.8:
+    figure(
+      image("../../../resources/images/qualitative_evaluation/SLICES CA-LL-R_x_298_y_233_z_427/slice_vessel.png", width: 100%),
+      // caption: [CA-LL-R 2D Slice - central section],
+      supplement: none,
+      numbering: none,
+    ),
+    // figure(
+    //   image("../../resources/images/qualitative_evaluation//SLICES CA-LL-R_x_298_y_233_z_427/p1/slice_bottom.png", width: 100%),
+    //   caption: [CA-LL-R 2D Slice - central section],
+    //   supplement: none,
+    //   numbering: none,
+    // ),
+
+    figure(
+      image("../../../resources/images/qualitative_evaluation/SLICES CA-LL-R_x_298_y_233_z_427/thresh_vessel.png", width: 100%),  //3d_vessel.png
+      // caption: [CA-LL-R - central section 3D View],
+      supplement: none,
+      numbering: none,
+    ),
+  ),
+  caption: [CA-LL-R *Yellow*: thresholding, *Red*: vessels. Central section with low contrast, highly disconnected vessels. Vessel prediction shows extensive extrapolation towards bottom slices, wich have a gradient and are more noisy, resisting thresholding.],
+) <fig:CA-LL-R_2d>
+#v(0.5cm)
+
+
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    rows: 2,
+    column-gutter: 0.4em,
+    row-gutter: 0.6em,
+
+    figure(
+      image("../../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_1800_y_1800_z_319/base_vessel.png", width: 100%),
+      supplement: none,
+      numbering: none,
+    ),
+    figure(
+      image("../../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_1800_y_1800_z_319/vessel_thresh.png", width: 100%),
+      supplement: none,
+      numbering: none,
+    ),
+  ),
+  caption: [CA-NM-L (1) *Yellow*: thresholding, *Red*: vessels. Thresholding fails to reject noisy out of volume elements. Pipeline incorrectly picks up on some vessel-like structures outside of volume.],
+) <fig:CA-NM-L_1_res>
+#v(0.5cm)
+
+
+
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     rows: 2,
+//     column-gutter: 0.4em,
+//     row-gutter: 0.6em,
+    
+//     figure(
+//       image("../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/", width: 100%),
+
+//       supplement: none,
+//       numbering: none,
+//     ),
+//     figure(
+//       image("../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/", width: 100%),  
+      
+//       supplement: none,
+//       numbering: none,
+//     ),
+
+//   ),
+//   caption: [CA-NM-L (2) *Yellow*: thresholding, *Red*: vessels. ],
+// ) <fig:CA-NM-L_2_res>
+// #v(0.5cm)
+
+
+
+
 ==== here show the 222 example with the fact that we reject the blobs <appendix:detailed_results_visuals>
 
 ==== here show ca-ll-l1 <appendix:ca-ll-l1_visualizations>

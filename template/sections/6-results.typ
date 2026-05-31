@@ -129,51 +129,51 @@
 
 
 
-#let image-with-circles(path, circles, label: none, label-colour: red) = block(
-  width: 100%,
-  breakable: false,
-)[
-  #set align(center + horizon)
-  #image(path, width: 100%)
-  #for c in circles {
-    let cx = c.at("x")
-    let cy = c.at("y")
-    let cr = c.at("r")
-    let col = c.at("colour", default: red)
-    let th = c.at("thickness", default: 1.5pt)
-    place(
-      top + left,
-      dx: cx,
-      dy: cy,
-      // The circle is drawn centred on (cx, cy), so we offset
-      // by -r in both directions to centre it on the anchor.
-      box(
-        width: 0pt,
-        height: 0pt,
-        place(
-          center + horizon,
-          circle(
-            radius: cr,
-            stroke: col + th,
-            fill: none,
-          ),
-        ),
-      ),
-    )
-  }
-  #if label != none {
-    place(
-      bottom + right,
-      dx: -0.4em, dy: -0.4em,
-      box(
-        fill: rgb(0, 0, 0, 160),
-        inset: (x: 0.4em, y: 0.2em),
-        radius: 2pt,
-        text(fill: white, size: 9pt, weight: "bold")[#label],
-      ),
-    )
-  }
-]
+// #let image-with-circles(path, circles, label: none, label-colour: red) = block(
+//   width: 100%,
+//   breakable: false,
+// )[
+//   #set align(center + horizon)
+//   #image(path, width: 100%)
+//   #for c in circles {
+//     let cx = c.at("x")
+//     let cy = c.at("y")
+//     let cr = c.at("r")
+//     let col = c.at("colour", default: red)
+//     let th = c.at("thickness", default: 1.5pt)
+//     place(
+//       top + left,
+//       dx: cx,
+//       dy: cy,
+//       // The circle is drawn centred on (cx, cy), so we offset
+//       // by -r in both directions to centre it on the anchor.
+//       box(
+//         width: 0pt,
+//         height: 0pt,
+//         place(
+//           center + horizon,
+//           circle(
+//             radius: cr,
+//             stroke: col + th,
+//             fill: none,
+//           ),
+//         ),
+//       ),
+//     )
+//   }
+//   #if label != none {
+//     place(
+//       bottom + right,
+//       dx: -0.4em, dy: -0.4em,
+//       box(
+//         fill: rgb(0, 0, 0, 160),
+//         inset: (x: 0.4em, y: 0.2em),
+//         radius: 2pt,
+//         text(fill: white, size: 9pt, weight: "bold")[#label],
+//       ),
+//     )
+//   }
+// ]
 
 
 #import "./appendices/graph_results.typ": results-chart
@@ -184,7 +184,7 @@
 #import "./appendices/precision-recall_results_graph.typ":draw-pr-or-recall
 #import "./appendices/vessel_stats.typ": vessel-length-distribution
 
-// #import "./appendices/intro_cect_image_annotations.typ": image-with-circles
+#import "./appendices/intro_cect_image_annotations.typ": image-with-circles
 #import "./appendices/stacked_bar.typ": vessel-match-bars
 
 #import "./appendices/vessel_seed_chart.typ": vessel-seed-chart
@@ -204,11 +204,9 @@
 
 = Results and discussion
 
-Performance is evaluated both _quantitatively_ and _qualitatively_ on six manually annotated subvolumes, comparing intensity thresholding against the pipeline. Despite their limited size, the subvolumes capture the key challenges of the dataset: shell effects, intensity gradients, vessel discontinuities and non vascular high valued areas, and enable controlled evaluation of both methods under identical conditions.
+Vessel extraction performance of CollaboratiVessel is evaluated both _quantitatively_ and _qualitatively_ against intensity thresholding on the subvolumes previously laid out in @fig:annotation_grid and their ground truths. //Despite their limited size, the subvolumes capture the key challenges of the dataset: shell effects, intensity gradients, vessel discontinuities and non vascular high valued areas, and enable controlled evaluation of both methods under identical conditions.
 
-The pipeline is evaluated as it would be used in practice: default parameters are applied and only adjusted when qualitative inspection reveals a clear failure. Thresholding is evaluated at the threshold yielding peak clDice obtained from a full sweep across all possible values, representing the best achievable performance. 
-
-//This operating point is chosen over peak Dice because it minimises false positives, reducing the noise burden on downstream analysis.
+CollaboratiVessel is evaluated as it would be used in practice: the default parameters are used, which were obtained following hyperparameter sweep on the training data. These hyperparameters are only adjusted when qualitative inspection, done before collecting the quantitative results, reveals a clear failure in the form of a segmentation failing to identify more than half the user annotated vessel points. In order to evaluate thresholding, the value yielding the peak clDice was selected after running a sweep across all possible intensity values. This value is used as it represents the best achievable performance on a key evaluation metric relevant to users, holding CollaboratiVessel to a high bar: other values such as the mean value of the user placed vessel points introduced a bias towards the placement of points.  
 
 // Qualitative results allow highlighting the structural improvements of the pipeline to vessel shape and connectivity and are visually compared to the ground truth on small samples and thresholding on larger ones. 
 
@@ -225,9 +223,9 @@ The pipeline is evaluated as it would be used in practice: default parameters ar
 
 == Hyperparameter sensitivity analysis
 
-This highlights pipeline stability
+// This highlights pipeline stability
 
-A key disadvantage of thresholding is its sensitivity towards the selection of the exact right threshold: if incorrectly configured, the resulting 3D map is unusable, and optimal thresholds vary by location within a scan as well as between scans. To highlight a key advantage of the pipeline based approach, we analyze the clDice result sensitivity of the key parameter of vessel size available to the user against thresholding on two subsamples of a tumor. Frangi intensity, the third relevant parameter controlling the intensity required to qualify as a vessel was evaluated separately due to its narrow relevancy range of 2-6, with a default of 3: values were evaluated at 2, 3, 4, 5 and 6 with clDice performance of .3081, .3086, .2984, .3085, .2984.
+A key disadvantage of thresholding is its sensitivity towards the selection of the exact right threshold: if incorrectly configured, the resulting 3D map is unusable, and optimal thresholds vary by location within a scan as well as between scans. To highlight a key advantage of the pipeline based approach, we analyze the clDice result sensitivity of the parameter of vessel size and deviation against thresholding on subsamples 1 and 2, representing a sample from the edge and one from the center of a volume. Frangi intensity, the third relevant parameter set by reference implementations to 5 and controlling the intensity difference used to identify tubular shapes was evaluated separately due to its narrow useful range of 2-6: values were evaluated at 2, 3, 4, 5 and 6 with clDice performance of .3081, .3086, .2984, .3085, .2984, resulting in our default of 3.
 
 
 #v(0.25cm)
@@ -235,11 +233,11 @@ A key disadvantage of thresholding is its sensitivity towards the selection of t
   sensitivity-xy-curve(
     (
       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
-        label: "Thresholding - shell subsample",
+        label: "Thresholding - subsample 1: shell",
         colour: rgb("#ff3b4b"),
         style: "solid"),
       (csv: "../../../resources/images/results/new_pipeline_may_15/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
-        label: "Thresholding - central subsample",
+        label: "Thresholding - subsample 2: central",
         colour: rgb("#008aac"),
         style: "dashed"),
     ),
@@ -250,26 +248,26 @@ A key disadvantage of thresholding is its sensitivity towards the selection of t
     sort-by-x: false,
     y-min: 0.0, y-max: 1.0,
     points: (
-          (name: "",    x: 120.0, y: 0.4315, group: "Pipeline - shell subsample"), //vsize 4, std 3
-          (name: "",    x: 080.0, y: 0.4198, group: "Pipeline - shell subsample"), //vsize 3, std 3
-          (name: "",    x: 040.0, y: 0.4355, group: "Pipeline - shell subsample"), //vsize 2, std 2
-          (name: "",    x: 160.0, y: 0.4209, group: "Pipeline - shell subsample"), //vsize 5, std 3
-          (name: "",    x: 180.0, y: 0.4385, group: "Pipeline - shell subsample"), //vsize 6, std 4
-          (name: "",    x: 220.0, y: 0.3675, group: "Pipeline - shell subsample"), //vsize 8, std 6
-          (name: "",   x: 250.0, y: 0.3538, group: "Pipeline - shell subsample"), //vsize 10, std 7
+          (name: "",    x: 120.0, y: 0.4315, group: "Pipeline - subsample 1: shell"), //vsize 4, std 3
+          (name: "",    x: 080.0, y: 0.4198, group: "Pipeline - subsample 1: shell"), //vsize 3, std 3
+          (name: "",    x: 040.0, y: 0.4355, group: "Pipeline - subsample 1: shell"), //vsize 2, std 2
+          (name: "",    x: 160.0, y: 0.4209, group: "Pipeline - subsample 1: shell"), //vsize 5, std 3
+          (name: "",    x: 180.0, y: 0.4385, group: "Pipeline - subsample 1: shell"), //vsize 6, std 4
+          (name: "",    x: 220.0, y: 0.3675, group: "Pipeline - subsample 1: shell"), //vsize 8, std 6
+          (name: "",   x: 250.0, y: 0.3538, group: "Pipeline - subsample 1: shell"), //vsize 10, std 7
 
-          (name: "",    x: 120.0, y: 0.3086, group: "Pipeline - central subsample"),
-          (name: "",    x: 080.0, y: 0.3795, group: "Pipeline - central subsample"),
-          (name: "",    x: 040.0, y: 0.2491, group: "Pipeline - central subsample"),
-          (name: "",    x: 160.0, y: 0.2633, group: "Pipeline - central subsample"),
-          (name: "",    x: 180.0, y: 0.2152, group: "Pipeline - central subsample"),
-          (name: "",    x: 220.0, y: 0.2383, group: "Pipeline - central subsample"),
-          (name: "",   x: 250.0, y: 0.2234, group: "Pipeline - central subsample"),
+          (name: "",    x: 120.0, y: 0.3086, group: "Pipeline - subsample 2: central"),
+          (name: "",    x: 080.0, y: 0.3795, group: "Pipeline - subsample 2: central"),
+          (name: "",    x: 040.0, y: 0.2491, group: "Pipeline - subsample 2: central"),
+          (name: "",    x: 160.0, y: 0.2633, group: "Pipeline - subsample 2: central"),
+          (name: "",    x: 180.0, y: 0.2152, group: "Pipeline - subsample 2: central"),
+          (name: "",    x: 220.0, y: 0.2383, group: "Pipeline - subsample 2: central"),
+          (name: "",   x: 250.0, y: 0.2234, group: "Pipeline - subsample 2: central"),
         ),
         
       groups: (
-      "Pipeline - shell subsample":   (colour: rgb("#ff3b4b"), shape: "dot"),
-      "Pipeline - central subsample": (colour: rgb("#008aac"), shape: "cross"),
+      "Pipeline - subsample 1: shell":   (colour: rgb("#ff3b4b"), shape: "dot"),
+      "Pipeline - subsample 2: central": (colour: rgb("#008aac"), shape: "cross"),
     ),
     
     top-axis-ticks: (
@@ -282,153 +280,152 @@ A key disadvantage of thresholding is its sensitivity towards the selection of t
       (250.0, "vsize 10\n+/-7"),
     ),    
     top-axis-label: "Pipeline annotations",
-  )
-)
-
-
-
-
-== Qualitative observations
-
-#figure(
-  grid(
-    columns: (1fr, 1fr),
-    rows: 2,
-    column-gutter: 0.4em,
-    row-gutter: 0.6em,
-
-    // Intensity: μ_v=163.00+/-30.05:
-    figure(
-    // image-with-circles(
-      //   "../" + img-path + "base.png",
-      //   (
-      //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
-      //   ),
-      // ),
-      image("../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/vessels.png", width: 100%),
-      // caption: [CA-RU-R 2D Slice - outer section],
-      supplement: none,
-      numbering: none,
-    ),
-  
-    figure( 
-      image("../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p1/3d_vessels_thresh.png", width: 100%), //3d_vessels_only.png
-      // caption: [CA-RU-R - outer section 3D View],
-      supplement: none,
-      numbering: none,
-    ),
   ),
-  caption: [CA-RU-R (1) Outer section: *Yellow*: thresholding, *Red*: vessels. Good contrast, more continuous and better defined vessels with some large areas of non vessel-like high valued points that are successfully rejected by the pipeline, detail in @appendix:detailed_results_visuals.],
-) <fig:CA-RU-R_222_2d>
+  caption:[Sensitivity analysis of CollaboratiVessel vessel size and standard deviation when compared to thresholding values, showing: (1) dashed blue, thresholding on a central subsample, with a narrow peak indicative of a narrow distribution of vessel intensities, (2) continuous red, performance on a subsample that contains the outer edge of a dataset, with a much wider spread of vessel intensities, and (3) the stability of CollaboratiVessel when adjusting the vessel size and standard deviation.]
+)<fig:sensitivity_anal>
+#v(0.25cm)
 
+From our sensitivity analysis, we can observe that there may potentially exist parameters that further optimize the performance of the pipline for these two samples, but also that pipeline performance is relatively flat: the quantitative metrics extracted next, done using default parameters, are thus likely close to the local optima for each run.
+
+
+== Qualitative comparisons
+
+To obtain an understanding of the outputs of CollaboratiVessel when compared to thresholding, we can observe the segmentation output from the 2D and 3D perspectives: 2D enables the visualization of the slice and its intensities, with the segmentation method overlaid. 3D provides an understanding of the structure of the ouputs and how they relate to eachother, without giving a good sense of scale due to depth reprojection. Sample 1 @fig:CA-RU-R_222_3d is a challenging outer boundary example, and 5 @fig:CA-NM-L_957_3d a cleaner central sample with large, high contrast vessels, the only example that required vessel size adjustment to 12 vox +/- 6.
+
+// TODO: 3D analysis
+#let img-path = "../../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p1/"
 #figure(
   grid(
-    columns: (1fr, 1fr),
+    columns: (1fr, 1fr, 1fr),
     rows: 2,
-    column-gutter: 0.4em,
-    row-gutter: 0.6em,
-    //Intensity: μ_v=130.7+/-11.8:
-    figure(
-      image("../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/slice_vessels.png", width: 97%),
-      // caption: [CA-RU-R 2D Slice - central section],
-      supplement: none,
-      numbering: none,
-    ),
+    column-gutter: 0.1em,
+    row-gutter: 0.1em,
 
-    figure(
-      image("../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/optimal_thresh_vessel.png", width: 101%),  // p1/3d_vessels.png
-      // caption: [CA-RU-R - central section 3D View],
-      supplement: none,
-      numbering: none,
-    ),
-
-  ),
-  caption: [CA-RU-R (2) inner *Yellow*: thresholding, *Red*: vessels. Central section: challenging, with low contrast, highly disconnected vessels.],
-) <fig:CA-RU-R_666_2d>
-#v(0.5cm)
-
-
-#figure(
-  grid(
-    columns: (1fr, 1fr),
-    rows: 2,
-    column-gutter: 0.4em,
-    row-gutter: 0.6em,
-    //Intensity: μ_v=130.7+/-11.8:
-    figure(
-      image("../../resources/images/qualitative_evaluation/SLICES CA-LL-R_x_298_y_233_z_427/slice_vessel.png", width: 100%),
-      // caption: [CA-LL-R 2D Slice - central section],
-      supplement: none,
-      numbering: none,
-    ),
-    // figure(
-    //   image("../../resources/images/qualitative_evaluation//SLICES CA-LL-R_x_298_y_233_z_427/p1/slice_bottom.png", width: 100%),
-    //   caption: [CA-LL-R 2D Slice - central section],
-    //   supplement: none,
-    //   numbering: none,
+    // grid.cell(
+    //     rowspan: 2,
+      image-with-circles(
+        "../../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/vessels_w_bar2.png",
+        // circles: (
+        //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "1",
+        ), 
     // ),
 
-    figure(
-      image("../../resources/images/qualitative_evaluation/SLICES CA-LL-R_x_298_y_233_z_427/thresh_vessel.png", width: 100%),  //3d_vessel.png
-      // caption: [CA-LL-R - central section 3D View],
-      supplement: none,
-      numbering: none,
-    ),
-  ),
-  caption: [CA-LL-R *Yellow*: thresholding, *Red*: vessels. Central section with low contrast, highly disconnected vessels. Vessel prediction shows extensive extrapolation towards bottom slices, wich have a gradient and are more noisy, resisting thresholding.],
-) <fig:CA-LL-R_2d>
+    image-with-circles(
+      img-path + "3d_vessels_only.png",
+      // circles: (
+      //   (x: 59%, y: 62%, r: 2.5mm, colour: black, thickness: 1.0pt),
+      // ),
+      corner-label: "a",
+      ),
+      
+    image-with-circles(
+      img-path + "3d_vessels_thresh.png",
+      // circles: (
+      //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+      // ),
+      corner-label: "b",
+      ), 
+
+    image-with-circles(
+      img-path + "thr_only.png",
+      // circles: (
+      //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+      // ),
+      corner-label: "2",
+      ),
+
+    image-with-circles(
+      img-path + "3d_thresh_only.png",
+      circles: (
+        (x: 35%, y: 50%, r: 8.5mm, colour: black, thickness: 1.0pt),
+      ),
+      corner-label: "c",
+      ),
+
+    image-with-circles(
+      img-path + "3d_gt.png",
+      // circles: (
+      //   (x: 59%, y: 62%, r: 2.5mm, colour: black, thickness: 1.0pt),
+      // ),
+      corner-label: "d",
+      ),
+
+  ), //CA-RU-R (1)
+  caption: [*Sample 1*, (1) (2) slice views: in red CollaboratiVessel, in yellow: thresholding, highlighting a large false positive. (a-d) Comparison of 3D Views: (a) pipeline output, (b) pipeline overlaid with thresholding, (c) thresholding alone, with black circle highlighting a large area of false negatives, (d) ground truth.], //Circled in black in figures b, d, e: a gap not identified by any method
+) <fig:CA-RU-R_222_3d>
 #v(0.5cm)
 
+In @fig:CA-RU-R_222_3d, thresholding captures large false positive plates, has gaps and holes, and entirely misses the vessels towards the central region (black circle). Pipeline output is more continuous, although conservative on vessel size as can be seen in the overlapped visualization. Ground truth shows the variance introduced by non expert manual annotations using the 3D Slicer tools, highlighting its limitations as a comparison point: vessels are larger, size is somewhat inconsistent and some blob-like shapes are captured. //, and some small thin _smears_ are visible: areas during annotation that may have appeared on one slice to be a vessel, but weren't vessel like in subsequent slices and were not removed.
 
 
+
+#let img-path = "../../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/"
 #figure(
   grid(
-    columns: (1fr, 1fr),
+    columns: (1fr, 1fr, 1fr),
     rows: 2,
-    column-gutter: 0.4em,
-    row-gutter: 0.6em,
+    column-gutter: 0.1em,
+    row-gutter: 0.1em,
 
-    figure(
-      image("../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_1800_y_1800_z_319/base_vessel.png", width: 100%),
-      supplement: none,
-      numbering: none,
-    ),
-    figure(
-      image("../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_1800_y_1800_z_319/vessel_thresh.png", width: 100%),
-      supplement: none,
-      numbering: none,
-    ),
-  ),
-  caption: [CA-NM-L (1) *Yellow*: thresholding, *Red*: vessels. Thresholding fails to reject noisy out of volume elements. Pipeline incorrectly picks up on some vessel-like structures outside of volume.],
-) <fig:CA-NM-L_1_res>
+    // grid.cell(
+    //     rowspan: 2,
+      image-with-circles(
+        img-path + "p1/slice_vessel.png",
+        // circles: (
+        //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "1",
+        ), 
+    // ),
+
+    image-with-circles(
+      img-path + "vessels.png",
+      // circles: (
+      //   (x: 59%, y: 62%, r: 2.5mm, colour: black, thickness: 1.0pt),
+      // ),
+      corner-label: "a",
+      ),
+      
+    image-with-circles(
+      img-path + "vessels_thresh.png",
+      circles: (
+        (x: 88%, y: 40%, r: 6.5mm, colour: black, thickness: 1.0pt),
+      ),
+      corner-label: "b",
+      ), 
+
+    image-with-circles(
+      img-path + "p1/slice_thresh.png",
+      // circles: (
+      //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+      // ),
+      corner-label: "2",
+      ),
+
+    image-with-circles(
+      img-path + "thresh.png",
+      circles: (
+        (x: 68%, y: 50%, r: 8.5mm, colour: black, thickness: 1.0pt),
+      ),
+      corner-label: "c",
+      ),
+
+    image-with-circles(
+      img-path + "gt.png",
+      // circles: (
+      //   (x: 59%, y: 62%, r: 2.5mm, colour: black, thickness: 1.0pt),
+      // ),
+      corner-label: "d",
+      ),
+
+  ), //CA-RU-R (1)
+  caption: [*Sample 5*: (1) (2) Slice views, in red CollaboratiVessel, in yellow thresholding, showing the under segmentation of CollaboratiVessel (a-d) Comparison of 3D Views: (a) pipeline output, (b) pipeline overlaid with thresholding, black circle highlighting a region with a successful reconnection (c) thresholding alone, black circle highlighting a missed vessel (d) ground truth.],
+) <fig:CA-NM-L_957_3d>
 #v(0.5cm)
 
-
-
-// #figure(
-//   grid(
-//     columns: (1fr, 1fr),
-//     rows: 2,
-//     column-gutter: 0.4em,
-//     row-gutter: 0.6em,
-    
-//     figure(
-//       image("../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/", width: 100%),
-
-//       supplement: none,
-//       numbering: none,
-//     ),
-//     figure(
-//       image("../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/", width: 100%),  
-      
-//       supplement: none,
-//       numbering: none,
-//     ),
-
-//   ),
-//   caption: [CA-NM-L (2) *Yellow*: thresholding, *Red*: vessels. ],
-// ) <fig:CA-NM-L_2_res>
-// #v(0.5cm)
+In @fig:CA-NM-L_957_3d, a high contrast scenario with large vessels, thresholding misses vessels and fails to fully connect the large main vessel. The ground truth also shows that the pipeline is extending vessels beyond where they stop being annotated.
 
 
 
@@ -442,10 +439,13 @@ A key disadvantage of thresholding is its sensitivity towards the selection of t
 Supplemental visualizations of the other tumors, and full comparisons with ground truth may be found in @appendix:results_visuals. // TODO: Visualizations on larger volumes can be found in @appendix:results_large
 
 #pagebreak()
-== Quantitative results
+== Quantitative comparison
 
 // From initial observation, we can see what appears to be longer vessels being predicted than the ground truth, with more extensive vessel networks. This is corroborated by our clDice score analysis 
 
+The three qunantitative metrics laid out in @sec:evaluation_criteria evaluation criteria are evaluated bellow on the 6 subvolumes:   
+
+=== clDice
 To analyze performance quantitatively, we begin by observing clDice, a voxel level metric chosen for its better representation of connectivity and the ratio of correctly classified vessel points (annotation points placed by the user).
 
 #v(0.25cm)
@@ -546,8 +546,8 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
     pad(top:18pt,
     box[
       #image-with-circles(
-        "../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_only.png",
-        (
+        "../../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_only.png",
+        circles: (
           (x: 32%, y: 50%, r: 12mm, colour: red, thickness: 0.8pt),
         ),
       ),
@@ -678,8 +678,8 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
     pad(top:18pt,
     box[
       #image-with-circles(
-        "../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_vessel.png",
-        (
+        "../../../resources/images/qualitative_evaluation/SLICES CA-RU-R_x_687_y_451_z_666/p2/zoom/optimal_thresh_vessel.png",
+        circles: (
           (x: 32%, y: 50%, r: 12mm, colour: red, thickness: 0.8pt),
         ),
       ),
@@ -875,100 +875,100 @@ To condense the connectivity quantification into a figure, we analyze the matchi
 // ) <fig:CA-RU-R_222_2d>
 
 
-// TODO: 3D analysis
-#let img-path = "../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p1/"
-#figure(
-  grid(
-    columns: (1fr, 1fr),
-    rows: 2,
-    column-gutter: 0.4em,
-    row-gutter: 0.6em,
+// // TODO: 3D analysis
+// #let img-path = "../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p1/"
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     rows: 2,
+//     column-gutter: 0.4em,
+//     row-gutter: 0.6em,
 
-    figure(
-      // image-with-circles(
-      //   "../" + img-path + "base.png",
-      //   (
-      //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
-      //   ),
-      // ),
-      image(img-path + "3d_vessels_only.png", width: 100%),
-      caption: [Pipeline output, default settings],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       // image-with-circles(
+//       //   "../" + img-path + "base.png",
+//       //   (
+//       //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+//       //   ),
+//       // ),
+//       image(img-path + "3d_vessels_only.png", width: 100%),
+//       caption: [Pipeline output, default settings],
+//       supplement: none,
+//       numbering: none,
+//     ),
   
-    figure(
-      image(img-path + "3d_vessels_thresh.png", width: 100%),
-      caption: [Optimal threshold and Pipeline],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       image(img-path + "3d_vessels_thresh.png", width: 100%),
+//       caption: [Optimal threshold and Pipeline],
+//       supplement: none,
+//       numbering: none,
+//     ),
 
-    figure(
-      image(img-path + "3d_thresh_only.png", width: 100%),
-      caption: [Threshold only],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       image(img-path + "3d_thresh_only.png", width: 100%),
+//       caption: [Threshold only],
+//       supplement: none,
+//       numbering: none,
+//     ),
 
-    figure(
-      image(img-path + "3d_gt.png", width: 100%),
-      caption: [Ground truth],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       image(img-path + "3d_gt.png", width: 100%),
+//       caption: [Ground truth],
+//       supplement: none,
+//       numbering: none,
+//     ),
 
-  ),
-  caption: [*CA-RU-R (1)*: Comparison of 3D Views: thresholding captures large plates, has gaps and holes. Pipeline output is more continuous, although conservative on vessel size. Ground truth shows the variance introduced by non expert manual annotation highlighting its limitations as a comparison point: vessels are larger, size is less consistent, and some small thin _smears_ are visible: areas during annotation that may have appeared on one slice to be a vessel, but weren't vessel like in subsequent slices and were not removed.],
-) <fig:CA-RU-R_222_3d>
+//   ),
+//   caption: [*CA-RU-R (1)*: Comparison of 3D Views: thresholding captures large plates, has gaps and holes. Pipeline output is more continuous, although conservative on vessel size. Ground truth shows the variance introduced by non expert manual annotation highlighting its limitations as a comparison point: vessels are larger, size is less consistent, and some small thin _smears_ are visible: areas during annotation that may have appeared on one slice to be a vessel, but weren't vessel like in subsequent slices and were not removed.],
+// ) <fig:CA-RU-R_222_3d>
 
 
 
-#let img-path = "../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/"
-#figure(
-  grid(
-    columns: (1fr, 1fr),
-    rows: 2,
-    column-gutter: 0.4em,
-    row-gutter: 0.6em,
+// #let img-path = "../../resources/images/qualitative_evaluation/SLICES CA-NM-L_x_900_y_900_z_957/"
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     rows: 2,
+//     column-gutter: 0.4em,
+//     row-gutter: 0.6em,
 
-    figure(
-      // image-with-circles(
-      //   "../" + img-path + "base.png",
-      //   (
-      //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
-      //   ),
-      // ),
-      image(img-path + "vessels.png", width: 100%),
-      caption: [Pipeline output, default settings],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       // image-with-circles(
+//       //   "../" + img-path + "base.png",
+//       //   (
+//       //     (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+//       //   ),
+//       // ),
+//       image(img-path + "vessels.png", width: 100%),
+//       caption: [Pipeline output, default settings],
+//       supplement: none,
+//       numbering: none,
+//     ),
   
-    figure(
-      image(img-path + "vessels_thresh.png", width: 100%),
-      caption: [Optimal threshold and Pipeline],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       image(img-path + "vessels_thresh.png", width: 100%),
+//       caption: [Optimal threshold and Pipeline],
+//       supplement: none,
+//       numbering: none,
+//     ),
 
-    figure(
-      image(img-path + "thresh.png", width: 100%),
-      caption: [Threshold only],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       image(img-path + "thresh.png", width: 100%),
+//       caption: [Threshold only],
+//       supplement: none,
+//       numbering: none,
+//     ),
 
-    figure(
-      image(img-path + "gt.png", width: 100%),
-      caption: [Ground truth],
-      supplement: none,
-      numbering: none,
-    ),
+//     figure(
+//       image(img-path + "gt.png", width: 100%),
+//       caption: [Ground truth],
+//       supplement: none,
+//       numbering: none,
+//     ),
 
-  ),
-  caption: [*CA-NM-L (2)*: A high contrast scenario with large vessels, the only subsample requiring tailoring the pipeline hyperparameters to an average diameter of 12 vox +/- 6. Pipeline successfully extracts longer vessels and picks up the discontinuous vessels in the right hand side.],
-) <fig:CA-NM-L_957_3d>
+//   ),
+//   caption: [*CA-NM-L (2)*: A high contrast scenario with large vessels, the only subsample requiring tailoring the pipeline hyperparameters to an average diameter of 12 vox +/- 6. Pipeline successfully extracts longer vessels and picks up the discontinuous vessels in the right hand side.],
+// ) <fig:CA-NM-L_957_3d>
 
 
 // Stages:

@@ -34,7 +34,7 @@
 
 = Methodology
 
-== CECT datasets <performance_and_memory>
+== CECT datasets <sec:data>
 
 The CECT datasets in this work are all _ex vivo_ murine tumours, imaged using a Phoenix Nanotom with isotropic 6 µm voxels. Further acquisition parameters are summarized in @tab:acquisition. CECT data management is challenging: data is received from the machine as 16-bit TIFF files, with a 2000x2300 slice weighing 9.2MB and a whole dataset with 2400 slices at 22.1GB. The delivered scans were windowed to 8-bit and already compressed to JPEG: this windowing process was unprincipled, with the window chosen based on the researcher's best judgment, and the original uncompressed data discarded. Windowing and compression were both motivated by data storage and cost concerns, with the compressed datasets of this work ranging from 0.103 to 13.2GB (597x698x854 to 3000x3000x2653). Additionally, metadata was limited with datasets stored as folders of slices with no associated acquisition metadata.
 
@@ -44,7 +44,7 @@ Dataset size shaped the development process: to run algorithms on a volume, 3D S
 
 === Subsampling
 
-To enable development and inference on regions that fit into memory, as well as allow the creation of voxel level annotations to evaluate CollaboratiVessel performance, training and validation sets were created: a validation set was made of four datasets subdivided into a 6x6x6 grid for subsampling. For each, three subregions were selected: one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision method was chosen as it guarantees a sample at each distance band, while also enabling annotation in a reasonable amount of time with enough context for evaluating vessels: samples are obtained from the center of datasets as well as edges, both small and large vessels are represented, gradients are captured and samples present a diversity of noise. The training set was generated in a similar fashion, and discarded once development complete.
+To enable development and inference on regions that fit into memory, as well as allow the creation of voxel level annotations to evaluate CollaboratiVessel performance, training and validation sets were created: a validation set was made of four datasets subdivided into a 6x6x6 grid for subsampling. For each, three subregions were selected: one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision method was chosen as it guarantees a sample at each distance band, while also enabling annotation in a reasonable amount of time with enough context for evaluating vessels: samples are obtained from the center of datasets as well as edges, both small and large vessels are represented, gradients are captured and samples present a diversity of noise. The training set was generated in a similar fashion, and discarded once development complete. 
 
 
 === Ground truths
@@ -67,6 +67,26 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 // caption: [6x6x6 Grid subsample of tumors used for annotation and performance evaluation, showing the locations of the three subregions selected for annotation at three distances from the center. Full greyscale range visualized.],
 // ) <fig:annotation_grid>
 
+// (
+//       (name: "CA-RU-R (1)", //\n916/901/222
+//        tool_csv: "./results.csv", tool_row: 0,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", thr_row: 89),
+//       (name: "CA-RU-R (2)",
+//        tool_csv: "./results.csv", tool_row: 1,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", thr_row: 73),
+//       (name: "CA-LL-R", //\n298/233/427
+//        tool_csv: "./results.csv", tool_row: 2,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
+//       (name: "CA-NM-L (1)", //\n1800/1800/319
+//        tool_csv: "./results.csv", tool_row: 3,
+//        thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 103),
+//       (name: "CA-NM-L (2)", //\n900/900/957
+//        tool_csv: "./results.csv", tool_row: 4,
+//        thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 90),
+//       (name: "CA-LL-L1", //\n559/604/498
+//        tool_csv: "./results.csv", tool_row: 5,
+//        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
+//     ),
 
 #let image-with-grid(path, colour, label, gridsize, annotations: ()) = block(width: auto, height: auto)[
 #set align(center)
@@ -143,9 +163,18 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
     image-with-grid("../../resources/images/vessels_results/w_bar/Run 1 ca-ll-l1_0888.jpg", red, "CA-LL-L1", 6,
       annotations: ((-0.2, -0.2, "1"),(0.8, 0.8, "2"),(2.8, 2.8, "3"))),
   ),
-  caption: [6x6x6 Grid subsample of tumors annotated for performance evaluation, showing the locations of the three subregions selected for annotation at three distances from the center, illustrating the diversity in tumor staining and vessel contrast as well as coverage of central and edge regions.],
+  caption: [6x6x6 Grid subsample overlaid on the central 2d slice, showing the locations of the three subregions randomly selected for annotation at three distances from the center. The diversity in tumor staining and vessel contrast can be seen, as well as coverage of central and edge regions and size diversity.],
 ) <fig:annotation_grid>
-#v(0.1cm)
+#v(0.25cm)
+
+Of the 4 datasets, 6 of the 9 subvolumes were retained for annotation and will henceforth be called:
+- CA-RU-R volumes 2 and 3, referred to as samples 1 and 2
+- CA-LL-R volume 3, referred to as sample 3
+- CA-NM-L volumes 2 and 3, referred to as samples 4 and 5
+- CA-LL-L1 volume 3, referred to as sample 6
+
+#linebreak()
+Discarded volumes correspond to the three volumes that fell entirely outside of the target tumor. 
 
 // The annotations were created by the author, a non domain expert using the built in 3D Slicer tools in 2D and 3D. As a result they are biased towards what is visible in the image (i.e. context is not always able to be fully taken into account), the painting tool (vessel annotation does not always stop at the same gradient value) and disconnections when not visible were not guessed. This means that any algorithm carrying out extrapolation will automatically receive a certain negative performance hit. The total annotation time was approximately 60 hours including two rounds of annotation: a blind annotation and a re-annotation after looking at the results from a round of thresholding and the application of a gaussian blur to smooth out the image.
 
@@ -155,7 +184,7 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 // TODO: Add mention of DICOM data conversion?
 // https://www.slicer.org/wiki/Coordinate_systems
 #pagebreak()
-== Software: 3D Slicer plugin
+== Building a 3D Slicer plugin
 //in @sota_sw_for_3d,
 CollaboratiVessel development effort can be split into two main sections: the 3D Slicer plugin, and data processing logic. With 3D Slicer as the host, the development is explored first. To guide plugin development, plugins with similar stated goals were explored, and their shortcomings analyzed:
 
@@ -170,7 +199,7 @@ CollaboratiVessel development effort can be split into two main sections: the 3D
 
 //; this is despite 3D Slicer having "official" extensions @SlicerDocsExtensions and "non official". 
 
-=== Development
+=== Development process
 
 With these issues in mind, the publicly available 3D Slicer programming guide by Perkins @SlicerTutorialPerkins was consulted. Plugins can be implemented in one of three forms: as command line interface (CLI) tools where they may be called as an encapsulated piece of code, the most abstracted way of working with external code or a C++/Scripted (Python) loadable module. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, ability to use the UI features of 3D Slicer, and having access to the full slicer application interface. To enable inter plugin compatibility and fit the 3D Slicer structure, communication uses the Medical Reality Markup Language (MRML) @MRML_diagram, where modules read and write to MRML nodes. //Work was carried out in Visual Studio Code under Ubuntu 24.04.
 
@@ -255,7 +284,54 @@ To preserve this user-provided information across sessions, the structured point
 //                               [final mask] ← [reconnect] ← [reconstruct]
 // Mention that rvesselx is a reference for a tool that does stepwise extraction?
 
-No single classical method offers sufficient performance to extract challenging vasculature, as other vessel extraction tools such as vesselknife @vesselknife have shown. As a result, to process data, CollaboratiVessel leverages a combination of different algorithms to extract and combine vessel signal across steps, relying on the underlying assumptions that vessels have a particular shape and have a higher grey value intensity than surrounding tissue. The user first places points using the CollaboratiVessel user interface as seen in @fig:seed_placement, adjusts hyperparameters and then launches the extraction logic, with steps described bellow and visualizations of outputs in Figure 4.4.
+==== Using CollaboratiVessel
+
+To use CollaboratiVessel, points for the three categories are placed as detailed previously in the user interaction model. Once points are placed, hyperparameters must be adjusted: the base parameters are relevant for use by most users are vessel average diameter and standard deviation. Additionally, the user may adjust the Frangi strength, which defines the required intensity for a tube to be detected, as well as the Frangi tiling: implemented to reduce peak memory use, it cuts Frangi inference into substeps across the volume. Finally, the user can open and adjust the advanced parameters, such as ridge following strength, seeding passes, seed rounds and seeds per round. Advanced parameters do not need to be adjusted for the data in this thesis, but are exposed as they can be relevant to better fit different domains.
+
+//The user first places points using the CollaboratiVessel user interface as seen in @fig:seed_placement, adjusts hyperparameters and then launches the extraction logic, with steps described bellow, after which an output is received.
+#v(0.2cm)
+#figure(
+    grid(
+      columns: (1fr, 0.8fr),
+      rows: 2,
+      column-gutter: 0.5em,
+      row-gutter: 1.0em,
+      grid.cell(
+        colspan: 2,
+        image-with-circles(
+        "../../../resources/software/overview_seed_placement.png",
+        // circles: (
+        //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "a",
+        ),
+      ),
+
+      image-with-circles(
+        "../../../resources/software/importing_seeds_cropped.png",
+        // circles: (
+        //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "b",
+      ),
+
+      image-with-circles(
+        "../../../resources/software/param_and_advanced.png",
+        corner-label: "c",
+      ),
+      
+      // image-with-circles(
+      //   "../../../resources/images/pipeline/attempt3/probmap.png",
+      //   // circles: (
+      //   //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+      //   // ),
+      //   corner-label: "d",
+      // ),
+
+    ),
+    caption: [CollaboratiVessel use: (a) point placement, (b) loading of previously annotated points (c) parameter adjustment with defaults, and advanced parameter pane contents.],
+) <fig:main_steps>
+#v(0.2cm)
 
 //with the principle steps visualized in @fig:CollaboratiVessel_pipeline and @fig:CollaboratiVessel_pipeline2. //To obtain vesselness evidence based on the prior of shape, tubularity is estimated based on intensity through Frangi. For intensity probability, vessel probability is based on the distribution of intensities within a window. These two sources are then extended by rebuilding connectivity through attempting to connect the ends of skeletonized vessels through a minimal cost path. 
 
@@ -270,8 +346,15 @@ No single classical method offers sufficient performance to extract challenging 
 // ) <fig:pipeline_flow>
 
 
-#v(0.4cm)
+=== The CollaboratiVessel logic
 
+No single classical method offers sufficient performance to extract challenging vasculature, as other vessel extraction tools such as vesselknife @vesselknife have shown. As a result, to process data, CollaboratiVessel leverages a combination of algorithms to extract and combine vessel signal across steps, relying on the underlying assumptions that vessels have a particular shape and have a higher grey value intensity than surrounding tissue. 
+
+#linebreak()
+These steps are presented bellow, with the predicted probability that each voxel is a vessel visualized as a greyscale value. 
+//CollaboratiVessel utilization can be broken down into user point placement, hyperparameter adjustment, running the pipeline and result extraction, wich are presented bellow.
+
+#v(0.4cm)
 #{
   show figure: set block(breakable: true)
   
@@ -329,7 +412,7 @@ No single classical method offers sufficient performance to extract challenging 
       ),
 
     ),
-    caption: [CollaboratiVessel vessel probability shown as greyscale at each step of the pipeline, illustrating the iterative refinement leading to the final segmentation. (a) slice after user point placement (b) Frangi, (c) Intensity probability, (d) reconnection and reconstruction, (e and f) segmentation, overlaid on step d and on step a.],
+    caption: [CollaboratiVessel vessel probability at each step of the pipeline, illustrating the iterative refinement leading to the final segmentation. (a) slice after user point placement (b) Frangi, (c) Intensity probability, (d) reconnection and reconstruction, (e and f) segmentation, overlaid on step d and on step a.],
   )
 } 
 #v(0.25cm)
@@ -363,57 +446,57 @@ No single classical method offers sufficient performance to extract challenging 
 
 
 
-=== Step 1: Background removal and ROI extraction
+==== Step 1: Background removal and ROI extraction
 
 When looking at a full volume, the sampled tumor is generally surrounded by air or empty space. To prevent the surrounding region from interfering and to reduce computation, if outside points are provided by the user, an initial background filter is applied and the midpoint between the highest outside intensity and the lowest background-seed intensity is used as an intensity cutoff. The voxels below the cutoff are zeroed providing a mask of the data aligned to the sample rather than the bounding box of the scan. 
 
 This removal introduces a high-gradient artificial boundary between zeroed and preserved voxels, which is suppressed using region growing and a mask to avoid Frangi, the gradient sensitive method, from detecting the edge as a tube.  
 
 
-#v(0.25cm)
-#figure(
-  image("../../resources/images/pipeline/attempt3/base_barred.png", width: 80%),
-  caption: [Base image, with area removed during outside masking in yellow.],
-) <fig:base_map>
+// #v(0.25cm)
+// #figure(
+//   image("../../resources/images/pipeline/attempt3/base_barred.png", width: 80%),
+//   caption: [Base image, with area removed during outside masking in yellow.],
+// ) <fig:base_map>
 
 
-=== Step 2: Frangi vesselness
+==== Step 2: Frangi vesselness
 // in obtaining the eigenvalues of the local Hessian matrix. A tube manifests as one small and two large negative eigenvalues (curvature is small along the vessel axis and large perpendicular to it).
 
 The Frangi vesselness filter @frangi_og_paper identifies tubular structures on a local scale using the intensity and its change. The implementation of SimpleITK written in C++ is used for efficiency. Frangi is memory hungry due to its multiscale nature, with each scale requiring a full-volume Hessian, resulting in the need for multiples of the original volume to be kept in memory. To address this, the volume is optionally cut into subregions and processed in halo-padded tiles whose halo equals four times the largest vessel standard deviation, ensuring no information is lost at tile edges. The tile outputs are reassembled into a single volume before normalizing and scaling the response into [0, 1] to make thresholds comparable across scans. 
 
-#v(0.25cm)
-#figure(
-  image("../../resources/images/pipeline/attempt3/frangi.png", width: 80%),
-  caption: [Frangi vesselness map: Intenstity corresponds to vesselness probability.],
-) <fig:frangi_map>
+// #v(0.25cm)
+// #figure(
+//   image("../../resources/images/pipeline/attempt3/frangi.png", width: 80%),
+//   caption: [Frangi vesselness map: Intenstity corresponds to vesselness probability.],
+// ) <fig:frangi_map>
 
 
-=== Step 3: Localised intensity probability
+==== Step 3: Localised intensity probability
 
 Frangi captures shapes but abstracts away the intensity signal and is sensitive to noise. To re-introduce intensity evidence, a local z-score is computed: for each voxel, the value is compared to the local mean and standard deviation over a window ten times the vessel diameter. Voxels with a value above their local neighbourhood are flagged as vessel candidates. The score is calibrated against vessel-seed intensities so that the user's annotations score approximately 0.8 in the local-probability map. This makes the output directly comparable to Frangi: both maps are normalised to [0, 1] and represent independent evidence that a voxel is part of a vessel.
 
 A known limitation of this localized signal approach is that window regions with high signal vessels can hide legitimate signal from smaller nearby vessels or weaker branches due to the mean being raised. This is one of the reasons the later reconstruction stage needs to be robust to broken or fragmented input, and for the use of both frangi and vesselness combined.
 
-#v(0.25cm)
-#figure(
-  image("../../resources/images/pipeline/attempt3/intensity.png", width: 80%),
-  caption: [Intensity vesselness map.],
-) <fig:intensity_map>
+// #v(0.25cm)
+// #figure(
+//   image("../../resources/images/pipeline/attempt3/intensity.png", width: 80%),
+//   caption: [Intensity vesselness map.],
+// ) <fig:intensity_map>
 
-=== Step 4: Combined evidence map
+==== Step 4: Combined evidence map
 
 The Frangi map and the local intensity probability are multiplied elementwise to produce the combined evidence map: ``` probMap = frangi x P_intensity```
 
 The product is high where both signals agree, providing evidence for tubularity *and* a local intensity difference. It suppresses voxels supported by only one signal. This filters out two common false-positive sources: (i) noise that happens to look tubular to Frangi but has no intensity support, and (ii) bright artefacts that have no tubular structure, or that are disconnected by the aforementioned high local signal from large vessels. This ``` probMap``` is used as the input to the structural reconstruction stage.
 
-#v(0.25cm)
-#figure(
-  image("../../resources/images/pipeline/attempt3/probmap.png", width: 80%),
-  caption: [Combined evidence map, highlighting the noise reduction by combining the shape and intensity aware steps.],
-) <fig:probmap_map>
+// #v(0.25cm)
+// #figure(
+//   image("../../resources/images/pipeline/attempt3/probmap.png", width: 80%),
+//   caption: [Combined evidence map, highlighting the noise reduction by combining the shape and intensity aware steps.],
+// ) <fig:probmap_map>
 
-=== Step 5: Vessel reconstruction
+==== Step 5: Vessel reconstruction
 
 ```probMap``` provides evidence to the existence of vessels but does not follow them to fill small gaps. To convert the evidence into connected vessel structures, two methods are used: Ridge extraction and reconnection through skeletonization and morphology.
 
@@ -428,24 +511,24 @@ To improve connectivity further, the output of the ridge following step, which i
 // Morphological closing is fast and and reduces the number of endpoints the costly bridging step has to evaluate.
 //TODO: source this claim?
 
-#v(0.25cm)
-#figure(
-  image("../../resources/images/pipeline/attempt3/reconnected.png", width: 80%),
-  caption: [The reconnected vessel map, which corresponds to the final segmentation.],
-) <fig:reconstruction_map>
+// #v(0.25cm)
+// #figure(
+//   image("../../resources/images/pipeline/attempt3/reconnected.png", width: 80%),
+//   caption: [The reconnected vessel map, which corresponds to the final segmentation.],
+// ) <fig:reconstruction_map>
 
 
 
-=== Final segmentation
+==== Output
 
 //The reconstructed and reconnected mask is thresholded at a fixed value of the soft mask (default 0.12 found through hyperparameter sweeping) to produce the final binary segmentation. 
 The binary mask vesselness segmentation is displayed in the 3D viewer. User feedback is provided in the form of the amount of correctly classified elements, and user points vessel intensity mean and standard deviation. Additionally for evaluation purposes there is the possibility of loading a manually segmented DICOM mask for detailed evaluation based on multiple metrics such as DICE, clDICE, vessel length, precision, recall and volume fraction.
 
-#v(0.25cm)
-#figure(
-  image("../../resources/images/pipeline/attempt3/base_seg.png", width: 80%),
-  caption: [Red: final 2D segmentation, overlaid on the starting slice.],
-) <fig:reconstruction_map>
+// #v(0.25cm)
+// #figure(
+//   image("../../resources/images/pipeline/attempt3/base_seg.png", width: 80%),
+//   caption: [Red: final 2D segmentation, overlaid on the starting slice.],
+// ) <fig:reconstruction_map>
 
 #v(0.6cm)
 #figure(
@@ -456,19 +539,13 @@ The binary mask vesselness segmentation is displayed in the 3D viewer. User feed
     labelled-image("../../resources/images/pipeline/attempt3/full_out.png",
                    "B", width: 100%),
   ),
-  caption: [*A*: View of the feedback box with user placed point segmentation performance. *B*: Feedback box when utilizing the evaluation feature to compare with a binary annotated ground truth, with clDice performance measurement, length and other relevant parameters.],
+  caption: [*A*: View of the feedback box as seen after running CollaboratiVessel, with user placed point segmentation performance. *B*: Feedback box when utilizing the evaluation feature to compare predictions with a binary annotated ground truth, providing more advanced metrics than point wise evaluation available without ground truth.],
 ) <fig:feedback_base>
 
-// The threshold is exposed as a parameter for users who wish to trade off recall against precision interactively. 
+// As performance was a key concern during development, it was monitored and characterized, with results visible in @appendix:compute_characterization: memory requirements for the pipeline are large, and failures risk to occur if inference is ran on volumes that result in memory use beyond available resources.
 
 
 
-// #figure(
-//   image("../../resources/images/zoomed_output_region.png", width:90%),
-//   caption: [View of the feedback box with segmentation performance measurement based on the provided subregion for evaluation.],
-// ) <evaluation_window>
-
-As performance was a key concern during development, it was monitored and characterized, with results visible in @appendix:compute_characterization: memory requirements for the pipeline are large, and failures risk to occur if inference is ran on volumes that result in memory use beyond available resources.
 
 // OLD:
 // == Creating a Pipeline
