@@ -42,20 +42,20 @@
     // OSS/Freeware
     table.cell(colspan: 3, fill: luma(230))[*Open source / freeware*],
     [3D Slicer],      [BSD (modified)],               [Yes (Python, C++)],
+    [SimVascular],    [BSD],                          [Yes],
+    [VesselKnife],    [Open source (research)],       [Yes],
+    [VisIt],          [BSD],                          [Yes (Python)],
+    [FIJI / ImageJ],  [GPLv2 / Public domain],        [Yes (Java, macros)],
     [Blender],        [GPLv3],                        [Yes (Python)],
     [Chimera / ChimeraX], [Free academic],            [Yes (Python)],
     [Dream3D],        [BSD],                          [Yes],
-    [FIJI / ImageJ],  [GPLv2 / Public domain],        [Yes (Java, macros)],
     [IMOD],           [GPLv2],                        [Yes],
     [MeshLab],        [GPLv3],                        [Yes],
     [OsiriX (Lite)],  [LGPL (Lite); proprietary (MD)],[Limited],
     [ParaView],       [BSD],                          [Yes (Python)],
-    [SimVascular],    [BSD],                          [Yes],
-    [VesselKnife],    [Open source (research)],       [Yes],
-    [VisIt],          [BSD],                          [Yes (Python)],
 
   ),
-  caption: [Landscape of 3D imaging analysis software relevant to micro-CT vascular work, grouped by licensing model. _Scriptable_ indicates if an extension interface exists.],
+  caption: [Landscape of tools for working with 3D data, which range from intended for medical or biological use to broader 3D analysis of microCT scans, grouped by licensing model. _Scriptable_ indicates if an extension interface exists.],
 ) <3d_software_oss>
 
 
@@ -73,7 +73,7 @@
     [Source-detector distance], [224.999 mm],
     [Source-sample distance], [3.499 mm],
   ),
-  caption: [Acquisition parameters as detailed by Wlodarsk in @wlodarski],
+  caption: [Acquisition parameters as detailed by Wlodarski, pp35 @wlodarski],
 ) <tab:acquisition>
 
 

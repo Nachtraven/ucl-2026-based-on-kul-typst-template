@@ -252,6 +252,7 @@ An alternative to real annotated data is the use of simulated and automatically 
 #linebreak()
 When data is available it may be used directly, although models trained on one imaging protocol, contrast agent, sample batch, or tissue type exhibit degraded performance when applied to data from a different distribution: this is termed domain shift, and is particularly acute in imaging methods containing many adjustable parameters and machine hardware specificities as in CECT imaging. This can require the use of techniques like transfer learning, where a model is first trained on a similar task with large data availability then fine-tuned on a small amount of in-domain data as used for vessels by Tetteh _et al_ @tetteh2020deepvesselnet. Annotated data can also be _augmented_ to artifically increase the available amount and diversity by applying random degradations, elastic deformations and intensity perturbation while preserving the original annotations. 
 
+#v(0.2cm)
 #colorbox(
   title: "Problem 2.",
   color: (
@@ -286,7 +287,7 @@ Deep learning has been applied to vascular segmentation for blood vessel extract
 #linebreak()
 Finally, hybrid approaches offer the interesting property of combining classical extraction methods with deep learning by leveraging input filters on the image to obtain richer features for learning, such as applying vesselness maps to the image before processing, to integrate the priors of the vesselness filtering explicitly into the algorithm and reduce data needs explored for u-Net by Chen _et al_  @vesselness_maps_in_unets. This decouples the structural prior, encoded by the filter, from the learning, allowing the learning element to act as a correction or enhancement stage for the shortcomings of classical methods. This use of classical priors as a feature stage with a form of learning as a correction sets the direction of the present work, with the novel addition of sparse user input as a method for achieving training data acquisition.
 
-#v(0.5cm)
+#v(0.85cm)
 #colorbox(
   title: "Problem 3.",
   color: (
@@ -368,9 +369,9 @@ Beyond loss functions, the evaluation itself can integrate vessel structure: gra
 // OLD: When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features such as tortuosity and branching ratio, is important to consider. As a result, 
 // Given that evaluation should reflect the downstream analyses the segmentation 
 
-Following the analysis above, outputs will be evaluated based on three complementary criteria: *(1)* simple user placed annotation points during the _vessel_ and _background_ point placement step, *(2)* on a voxel level with connectivity aware clDice, measured on a manually annotated binary ground truth and *(3)* on a prediction to ground truth unitary matching between individual vessels to combat the biases of voxel-based methods.
+Following the analysis above, outputs will be evaluated based on three complementary criteria: *(1)* simple user placed annotation points during the _vessel_ and _background_ point placement step, *(2)* on a voxel level with connectivity aware clDice, measured on a manually annotated binary ground truth and *(3)* on a matching between predicted and ground truth on an individual vessel level, to combat the biases of voxel-based methods.
 
-#v(0.5cm)
+#v(0.95cm)
 #colorbox(
   title: "Problem 4.",
   color: (
@@ -398,7 +399,7 @@ The choice of host platform shapes the extraction pipeline and who can use it. A
 
 Candidate platforms used in the CECT community are summarized in @3d_software, with UCLouvain's IMMC specifically using closed-source commercial tools: Avizo, Dragonfly3D and CTan. These offer limited extension development and redistribution, as well as requiring commercial paid licenses in the case of Avizo and CTan. Dragonfly3D presents the distinct advantage of currently having a "free-for-academics" _FreED_ license enabling widespread use in research, but brings with it a licensing challenge: despite being free to use, _FreED_ restricts the redistribution of extensions, preventing the open-source release of derivative work. #footnote["\[The user\] shall not distribute or transfer the Software or Improvements \[...\], without prior written permission \[from Dragonfly3D\]" @DragonflyFreeDLicense].
 
-The lab has prior experience with the extensible and open-source ImageJ/FIJI, but it lacks the established 3D segmentation infrastructure for medical imaging. Standalone vessel-specific tools DeepVesselNet by Tetteh _et al_ @tetteh2020deepvesselnet and SPROUT by He _et al_ @sprout_segmentation_volumetric are not host platforms intended for extension but instead use case specific implementations. 3D Slicer developed from work by Fedorov _et al_ @3Dslicer_paper emerged as the most suitable platform, meeting all three requirements: It can import and export a variety of formats, is open-source under a permissive BSD-style license, widely adopted in the medical imaging field, and supports 3D segmentation workflows with established plugins relevant to vascular analysis such as the Vascular Modeling Toolkit (VMTK) by Izzo _et al_ @vmtk and R-Vessel-X by Affane _et al_ @affane2025rvesselx. Its Extension Manager allows non-technical users to install plugins through a one-click interface without compiling code or managing dependencies, and standard import/export formats including DICOM and binary segmentation ensure interoperability with downstream analysis tools.
+The lab has prior experience with the extensible and open-source ImageJ/FIJI, but it lacks the established 3D segmentation infrastructure for medical imaging. Standalone vessel-specific tools DeepVesselNet by Tetteh _et al_ @tetteh2020deepvesselnet and SPROUT by He _et al_ @sprout_segmentation_volumetric are not platforms intended for extension but instead use case specific implementations. 3D Slicer, developed from work by Fedorov _et al_ @3Dslicer_paper is an open-source platform under a permissive BSD-style license, able to import and export a variety of formats and is widely adopted in the medical imaging field. It also supports 3D segmentation workflows with established plugins relevant to vascular analysis such as the Vascular Modeling Toolkit (VMTK) by Izzo _et al_ @vmtk and R-Vessel-X by Affane _et al_ @affane2025rvesselx. Its Extension Manager allows non-technical users to install plugins through a one-click interface without compiling code or managing dependencies.
 
 
 #pagebreak()
@@ -412,7 +413,7 @@ The lab has prior experience with the extensible and open-source ImageJ/FIJI, bu
   ),
   radius: 4pt,
   width: auto
-)[Existing tools for 3D analysis are split between proprietary paid software, often restricting plugin redistribution, and open-source platforms, neither having bespoke microvascular support. The vasculature extraction pipeline must therefore build on an open-source host software for 3D analysis enabling redistribution: 3D Slicer.]
+)[Existing tools for 3D analysis are split between proprietary paid software, often restricting plugin redistribution, and open-source platforms, neither having bespoke microvascular support. The vasculature extraction pipeline must therefore be built on an open-source host software for 3D analysis, intended for use in research, and enabling redistribution: 3D Slicer.]
 
 
 
@@ -423,7 +424,7 @@ The lab has prior experience with the extensible and open-source ImageJ/FIJI, bu
 
 Several existing tools target vascular segmentation, but few focus on microvasculature at high resolution within an integrated environment. Segmentation-focused tools operate on the image itself: the Vascular Modeling Toolkit (VMTK) @vmtk integrates in 3D Slicer and provides a comprehensive suite for vascular segmentation, centerline extraction, and surface reconstruction, but its methods are oriented toward low resolution, large vessels: arteries, aortas, and major branches. It also relies on seed-based interaction that does not scale to the dense, branching geometry of microvasculature. 
 
-ITKTubeTK developed by Aylward _et al_ @ITKTubeTK_paper_github offers a library of algorithms for tubular-structure segmentation and graph extraction built on the ITK framework, but is packaged as a programming library meaning it requires implementation into a tool or use in code, challenging for non-technical researchers. VesselKnife by Szczypi _et al_ @vesselknife provides an integrated pipeline specifically targeting vessel segmentation, skeletonization, and graph extraction from CECT data but is a standalone application, requiring researchers to leave their existing analysis environment, and is not intended for small vasculature. SimVascular proposed by Updegrove _et al_ @simvascular operates on the outputs of segmentation and extends vascular extraction into simulation, supporting downstream modeling of blood flow, a step laying downstream of this work.
+ITKTubeTK developed by Aylward _et al_ @ITKTubeTK_paper_github offers a library of algorithms for tubular-structure segmentation and graph extraction built on the ITK framework, but is packaged as a programming library meaning it requires implementation into a tool or use in code, challenging for non-technical researchers. VesselKnife by Szczypinski _et al_ @vesselknife provides an integrated pipeline specifically targeting vessel segmentation, skeletonization, and graph extraction from CECT data but is a standalone application, requiring researchers to leave their existing analysis environment, and is not intended for small vasculature. SimVascular proposed by Updegrove _et al_ @simvascular operates on the outputs of segmentation and extends vascular extraction into simulation, supporting downstream modeling of blood flow, a step laying downstream of this work.
 
 #linebreak()
 The landscape of vascular segmentation tools reflects a tension in biomedical imaging: general-purpose deep learning segmentation frameworks offer good performance on the datasets they are trained on, but require large annotated datasets, offer limited interpretability and controllability, and are typically not integrated into the tools researchers commonly use. Classical model-based methods such as Frangi filtering are more transparent and adjustable, built into existing tools and easy to use, but require manual parameter tuning and struggle with complex vascular geometries. Neither pole serves the specific need addressed by this thesis: microvasculature-scale extraction, integrated into a widely-used segmentation environment, with parameters set by principled means rather than expert tuning. This combination is the niche the present work occupies.
@@ -439,7 +440,7 @@ The landscape of vascular segmentation tools reflects a tension in biomedical im
   ),
   radius: 4pt,
   width: auto
-)[Existing pipelines for vasculature extraction either target large vessels (VMTK) or require programming expertise to deploy (ITKTubeTK). Our solution should be tailored to the unique challenges of micro vasculature and integrated into 3D Slicer.] 
+)[Existing pipelines for vasculature extraction either target large vessels (VMTK) or require programming expertise to deploy (ITKTubeTK). The solution should be tailored to the unique challenges of micro vasculature and integrated into a platform.] 
 
 
 

@@ -13,6 +13,7 @@
 
 // TODO: maybe custom heatmap
 #import "./appendices/heatmaps.typ":vessel-heatmap
+#import "./appendices/intro_cect_image_annotations.typ":image-with-circles
 
 // OLD: This chapter documents the development of the 3D Slicer plugin, from the implementation and user interaction, through the method for combining algorithms and the different algorithms explored, and ending in an ablation study to simplify the pipeline and enable usable runtimes and memory use.
 
@@ -43,14 +44,14 @@ Dataset size shaped the development process: to run algorithms on a volume, 3D S
 
 === Subsampling
 
-In order to enable development and inference on smaller regions that fit into memory, as well as enable voxel level annotations to evaluate CollaboratiVessel performance, four datasets were selected and subdivided into a 6x6x6 grid. For each dataset, three subregions were selected: one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision method was chosen as it guarantees a sample at each distance band, while also enabling annotation in a reasonable amount of time with enough context for evaluating vessels. Both small and large vessels land in these areas, gradients are captured and samples present a diversity of noise and edges of volumes.
+To enable development and inference on regions that fit into memory, as well as allow the creation of voxel level annotations to evaluate CollaboratiVessel performance, training and validation sets were created: a validation set was made of four datasets subdivided into a 6x6x6 grid for subsampling. For each, three subregions were selected: one at each distance step from the center as visualized in @fig:annotation_grid. This subdivision method was chosen as it guarantees a sample at each distance band, while also enabling annotation in a reasonable amount of time with enough context for evaluating vessels: samples are obtained from the center of datasets as well as edges, both small and large vessels are represented, gradients are captured and samples present a diversity of noise. The training set was generated in a similar fashion, and discarded once development complete.
 
 
 === Ground truths
 
 Two complementary forms of ground truth are used in this work: user placed vessel points, and a binary voxel level annotation. 
 
-The user placed annotation points are those that guide the algorithm hyperparameters, and performance on these is also shown to the end user during use to provide direct in-the-loop feedback by reporting how many vessel points are correctly classified after the pipeline runs. This method is fast and accessible but is limited when used for development: evaluation is sparse and pointwise, connectivity is ignored entirely, vessel size is not captured, and the inherent 2D nature of point placement makes coverage of small vessels uneven. As a result, binary voxel level annotations were created to enable more granual evaluation of the performance of CollaboratiVessel, and give a common reference to compare against thresholding. 
+The user placed annotation points are those that guide the algorithm hyperparameters, and performance on these is also shown to the end user during use to provide direct in-the-loop feedback by reporting how many vessel points are correctly classified after a run. This method is fast and accessible but is limited when used for development: evaluation is sparse and pointwise, connectivity is ignored entirely, vessel size is not captured, and the inherent 2D nature of point placement makes coverage of small vessels uneven. As a result, binary voxel level annotations were created to enable more granual evaluation of the performance of CollaboratiVessel, and give a common reference to compare against thresholding. 
 
 === Limitations of ground truth
 
@@ -60,7 +61,7 @@ Annotations were produced by a non-domain expert using 3D Slicer's built-in 2D b
 - *Boundary uncertainty*: The brush has a fixed size and is moved by the user, meaning vessels do not necessarily always stop at the same intensity gradient. Vessel edges in the annotation therefore have some noise, which affects Dice-based metrics.
 
 #linebreak()
-Annotation took approximately 60 hours across two rounds, a first blind annotation round done before development and a second after reviewing the outputs of thresholding, the application of a Gaussian smoothing kernel to reduce visual noise and the reviewing of litterature. The second round helped vessels that were missed due to noise, a lack of context during the first round, and the small sizes and low contrast of vessels.
+Annotation took approximately 60 hours across two rounds, a first blind annotation round done before development and a second after reviewing the outputs of thresholding, the application of a Gaussian smoothing kernel to reduce visual noise and the reviewing of litterature. The second round helped identify vessels that were missed due to noise, a lack of context during the first round, and the small sizes and low contrast of vessels.
 
 // Figure:( here is the figure
 // caption: [6x6x6 Grid subsample of tumors used for annotation and performance evaluation, showing the locations of the three subregions selected for annotation at three distances from the center. Full greyscale range visualized.],
@@ -142,7 +143,7 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
     image-with-grid("../../resources/images/vessels_results/w_bar/Run 1 ca-ll-l1_0888.jpg", red, "CA-LL-L1", 6,
       annotations: ((-0.2, -0.2, "1"),(0.8, 0.8, "2"),(2.8, 2.8, "3"))),
   ),
-  caption: [6x6x6 Grid subsample of tumors used for annotation and performance evaluation, showing the locations of the three subregions selected for annotation at three distances from the center. Full greyscale range visualized.],
+  caption: [6x6x6 Grid subsample of tumors annotated for performance evaluation, showing the locations of the three subregions selected for annotation at three distances from the center, illustrating the diversity in tumor staining and vessel contrast as well as coverage of central and edge regions.],
 ) <fig:annotation_grid>
 #v(0.1cm)
 
@@ -156,24 +157,25 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 #pagebreak()
 == Software: 3D Slicer plugin
 //in @sota_sw_for_3d,
-With 3D Slicer selected as the host platform, the following section explores the engineering of the 3D Slicer plugin, including its module structure, the issues encountered during development, and the choices made to keep the plugin redistributable and installable by non-technical users. The 3D Slicer ecosystem is diverse with many existing tools, available plugins with similar goals (vascular extraction) and similar data formats (CT and MRI). These were tested in order to obtain an understanding of potential pitfalls in implementation:
+CollaboratiVessel development effort can be split into two main sections: the 3D Slicer plugin, and data processing logic. With 3D Slicer as the host, the development is explored first. To guide plugin development, plugins with similar stated goals were explored, and their shortcomings analyzed:
 
-- 3D Slicer hangs when executing algorithms, and this execution happens without communication. The OS will ask the user if they wish to stop the program. This cannot be mitigated by the plugin.
+//: this plugin step focuses on the 3D Slicer  engineering of the 3D Slicer plugin, including its module structure, the issues encountered during development, and the choices made to keep the plugin redistributable and installable by non-technical users. The 3D Slicer ecosystem is diverse with many existing tools, available plugins with similar goals (vascular extraction) and similar data formats (CT and MRI). These were tested in order to obtain an understanding of potential pitfalls in implementation:
+
+- 3D Slicer hangs when executing algorithms, as execution blocks the main thread. The OS will ask the user if they wish to stop the program; the user must wait until any logic completes before being able to interact again. This cannot be mitigated by the plugin.
 - User interface (UI) development is restrictive: UI must be in the left corner, and few context menus are available. All UI development was done within these constraints.
-- Execution in Python is single core. In order to better leverage available compute, external libraries implemented in C++ were used. // plugins that aimed to use multiple cores called external libraries
+- Execution in Python is single core. In order to better leverage available compute, external libraries implemented in C++ were used.
 - Machine learning extensions did not come pre-packaged with the model weights and often required a GPU and installation of external software. This work requires no special hardware or external data and works on 3D Slicer cross platform.
 - Errors during installation were not user-friendly enough for a non computer scientist to be able to debug an installation problem. All our required libraries are stated in error messages with the required command to install the library.
-// - The 3D Slicer forums contained ample amounts of users having issues with different plugins
+- Many available plugins were unmaintained, throwing errors during installation or use, or failed to produce outputs. To mitigate this, the plugin is packaged with a known good version of 3D Slicer.
 
-Additionally many available plugins were either unmaintained, throwing errors during installation/use or did not successfully produce outputs; this is despite 3D Slicer having two classes of plugins: "official" via the extension manager @SlicerDocsExtensions (further broken down by maintenance type) and user installable or "non official". To mitigate this potential issue, the plugin is packaged with a known good version of 3D Slicer. 
-
+//; this is despite 3D Slicer having "official" extensions @SlicerDocsExtensions and "non official". 
 
 === Development
 
-With these issues in mind, development of the plugin began: 3D Slicer is multi platform and built around plugins to carry out tasks, communicating using the Medical Reality Markup Language (MRML) @MRML_diagram, where modules read and write to MRML nodes to enable interoperability. These plugins can be implemented in one of three forms: as command line interface (CLI) tools where they may be called as an encapsulated piece of code, the most abstracted way of working with external code or a C++/Scripted (Python) loadable module @SlicerTutorialPerkins. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, ability to use the UI features of 3D Slicer, and having access to the full slicer application interface. Work was carried out in Visual Studio Code under Ubuntu 24.04.
+With these issues in mind, the publicly available 3D Slicer programming guide by Perkins @SlicerTutorialPerkins was consulted. Plugins can be implemented in one of three forms: as command line interface (CLI) tools where they may be called as an encapsulated piece of code, the most abstracted way of working with external code or a C++/Scripted (Python) loadable module. The Scripted loadable approach was selected for its use of Python, lowering the barrier to entry, ability to use the UI features of 3D Slicer, and having access to the full slicer application interface. To enable inter plugin compatibility and fit the 3D Slicer structure, communication uses the Medical Reality Markup Language (MRML) @MRML_diagram, where modules read and write to MRML nodes. //Work was carried out in Visual Studio Code under Ubuntu 24.04.
 
 #linebreak()
-To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs.io/en/latest/user_guide/modules/extensionwizard.html#extension-wizard] was used to generate the required extension boilerplate, and the ScriptedLoadableModule was used as a starting point for the implementation code. 3D Slicer implements a user interface development module in Qt #footnote[https://doc.qt.io/QtInterfaceFramework/], enabling drag and drop creation of UI elements, making it the natural method of developing a seamless UI experience. Although basic, this radically simplifies the process of creating a cross platform UI.
+The extension wizard #footnote[https://slicer.readthedocs.io/en/latest/user_guide/modules/extensionwizard.html#extension-wizard] was used to generate the required extension boilerplate, and the ScriptedLoadableModule was used as a starting point for the implementation code. 3D Slicer implements a user interface development module in Qt #footnote[https://doc.qt.io/QtInterfaceFramework/], enabling drag and drop creation of UI elements, making it the natural method of developing a seamless UI experience. Although basic, this radically simplifies the process of creating a cross platform UI.
 
 
 #let labelled-image(path, label, width: 100%, corner: top + left) = box(width: width)[
@@ -215,25 +217,18 @@ To implement a plugin, the extension wizard #footnote[https://slicer.readthedocs
 
 // COMMENT: The provided data was in JPEG form, an image format that contains no information about pixel spacing between slices, and is lossy. All data was converted to DICOM format with appropriate pixel spacing and formatting: the co-ordinate systems were unified into the standard for 3D Slicer #footnote[https://www.slicer.org/wiki/Coordinate_systems] where voxel indices (IJK) are used in the code. Physical-world coordinates, as commonly used in medical imaging in millimetres (RAS — right/anterior/superior) were used  to offer scale and are saved in the DICOM files. RAS is used by all geometry-aware primitives such as markup points and segmentation transforms. In our usecase, the volumes are isotropic (voxels are squares) meaning that conversion is simple, but care must be taken if the plugin is used for non isotropic data. user points placed by the user are stored in RAS and converted to IJK at the point of pipeline use, ensuring annotations survive resampling or coordinate-space changes
 
-The provided data was stored as JPEG slices, a lossy format that carries no information about physical voxel spacing between slices and introduces spatial frequency noise along the axes of compression. All volumes were converted to DICOM with explicit isotropic spacing of 6 µm per voxel, matching the original acquisition.
+The provided datasets were in JPEG, a lossy format that carries no information about physical voxel spacing between slices and introduces spatial frequency noise along the axes of compression. All volumes were converted to DICOM with explicit isotropic spacing of 6 µm per voxel, matching the original acquisition. Co-ordinate systems were also unified: 3D Slicer uses two coexisting coordinate systems #footnote[https://www.slicer.org/wiki/Coordinate_systems], one for code called IJK that corresponds to voxel indices and one for physical-world coordinates in millimetres (RAS: right, anterior, superior), used by all geometry-aware primitives such as markup points and segmentation transforms. User-placed seeds are stored in RAS and converted to IJK at the point of pipeline use, so annotations survive any intermediate resampling or coordinate-space transform. This also enables subsampling of volumes without loosing volume location in the original sample. 
 
-Co-ordinate systems were also unified: 3D Slicer uses two coexisting coordinate systems #footnote[https://www.slicer.org/wiki/Coordinate_systems], one for code called IJK that corresponds to voxel indices and physical-world coordinates in millimetres (RAS: right, anterior, superior), used by all geometry-aware primitives such as markup points and segmentation transforms. User-placed seeds are stored in RAS and converted to IJK at the point of pipeline use, so annotations survive any intermediate resampling or coordinate-space transform. This also enables subsampling of volumes without loosing volume location in the original sample.
-
-It is important to note that in the present work all volumes are isotropic: anisotropic data would require axis-dependent scaling at every IJK <> RAS conversion, and some modifications to the code flow to handle this difference.
-
+It is important to note that the datasets used were isotropic: anisotropic data would require axis-dependent scaling at every IJK <> RAS conversion, and some modifications to the code flow to handle this difference.
 
 
 
 == User interaction model
 
-Multiple interviews were carried out with different research team members during the work of this thesis. During those concerning the current pipeline of data processing, it was noted that decisions such as hyperparameter selection, intensity windowing and grey value were often made without a principled, replicable and data driven decision method. This poses three problems: *1.* As the selected values are not data driven, decisions and pipelines cannot easily be replicated, and are more fragile; *2.* As the user acts as the evaluator, they induce bias in the subsequent steps *3.* Any user without prior knowledge of the downstream steps will not be able to make a fully informed decision for the hyperparameters to select, requiring iteration and potentially falling into local optima.
+Multiple interviews were carried out with different research team members, from these it was noted that decisions such as hyperparameter selection, intensity windowing and grey value were often made without a principled, replicable and data driven decision method. This poses three problems: *1.* As the selected values are not data driven, decisions and pipelines cannot easily be replicated, and are more fragile; *2.* As the user acts as the evaluator, they induce bias in the subsequent steps *3.* Any user without prior knowledge of the downstream steps will not be able to make a fully informed decision for the hyperparameters to select, requiring iteration and potentially falling into local optima.
 
 #linebreak()
-These issues are addressed by reducing user input to two structured forms:
-
-- *Anchor points* The user places "vessel", "background", and (optionally) "outside" seed points by clicking _add_ in the relevant category and clicking the corresponding location in any of the 2D viewers. These seeds drive the pipeline configuration and seed segmentation performance results are provided in-the-loop as feedback after the pipeline runs.
-
-- *Vessel size and standard deviation*, in voxels. This parameter is easy to estimate visually using the 3D Slicer mouse, and provides the scale context needed for Frangi vesselness and the local intensity probability map.
+These issues are addressed by reducing user input to two structured forms. *Anchor points* where the user places "vessel", "background", and (optionally) "outside" seed points by clicking _add_ in the relevant category and clicking the corresponding location in any of the 2D viewers. These seeds drive the vessel extraction logic and seed segmentation performance results are provided in-the-loop as feedback after the pipeline runs. *Vessel size and standard deviation* in voxels, which estimated using the 3D Slicer data probe, and provides the scale context needed for Frangi vesselness and the local intensity probability map.
 
 #linebreak()
 To preserve this user-provided information across sessions, the structured points are able to be exported and imported to a universal CSV format using RAS coordinates. To avoid file naming and versionning challenges, filenames are automatically constructed from the current volume's series name, description, and timestamp, removing the need for manual organization. Vessel size and standard deviation setting are also saved in the user facing feedback, enabling future replication.
@@ -241,7 +236,8 @@ To preserve this user-provided information across sessions, the structured point
 #figure(
   image("../../resources/software/overview_seed_vessel_param.png", width: 85%),
   caption: [View of the seed annotation and vessel size definition panes. The user may press _add_ and click on the locations in any of the right hand panes to place one or more points. Annotations can be imported or exported in a CSV format with RAS co-ordinates.],
-)
+)<fig:seed_placement>
+#v(0.4cm)
 
 // 1. In order to select thresholds and evaluate the performance of the algorithm "in the loop", as well as offer the user immediate feedback, a system of user anchor points was implemented. These are the first step in the process, and are obtained by having the user click "add" for any of the three categories, followed by placing the point in any of the 2D windows. These "Vessel", "Background" and "outside" co-ordinates can be saved and exported, as well as imported in a universal CSV format. 
 
@@ -250,9 +246,8 @@ To preserve this user-provided information across sessions, the structured point
 
 
 #pagebreak()
-== Creating a pipeline
+== The CollaboratiVessel pipeline
 
-=== Design overview
 // [user points] [vessel size]
 //        ↓           ↓
 // [raw] → [bg-removed] → [Frangi] → [intensity] → [probMap]
@@ -260,80 +255,218 @@ To preserve this user-provided information across sessions, the structured point
 //                               [final mask] ← [reconnect] ← [reconstruct]
 // Mention that rvesselx is a reference for a tool that does stepwise extraction?
 
-Due to the challenges of the data, no single classical method offered satisfactory performance, as has been noted in other vessel extraction tools such as @vesselknife. The final algorithm is a sequential pipeline that combines complementary signals across steps, relying on the underlying assumption that vessels offer a higher signal than surrounding tissue. Shape (tubularity) based on intensity is used through Frangi, and connectivity is increased over pure intensity signals by using the prior that vessels ends connect to eachother and local intensity. Each step iterates and contributes to a probability map; a technique used to paliate memory constraints. 3D Slicer has no method of chunking or streaming large data, meaning that scans and all intermediary work must fit into working memory. 
+No single classical method offers sufficient performance to extract challenging vasculature, as other vessel extraction tools such as vesselknife @vesselknife have shown. As a result, to process data, CollaboratiVessel leverages a combination of different algorithms to extract and combine vessel signal across steps, relying on the underlying assumptions that vessels have a particular shape and have a higher grey value intensity than surrounding tissue. The user first places points using the CollaboratiVessel user interface as seen in @fig:seed_placement, adjusts hyperparameters and then launches the extraction logic, with steps described bellow and visualizations of outputs in Figure 4.4.
+
+//with the principle steps visualized in @fig:CollaboratiVessel_pipeline and @fig:CollaboratiVessel_pipeline2. //To obtain vesselness evidence based on the prior of shape, tubularity is estimated based on intensity through Frangi. For intensity probability, vessel probability is based on the distribution of intensities within a window. These two sources are then extended by rebuilding connectivity through attempting to connect the ends of skeletonized vessels through a minimal cost path. 
+
+//Each step iterates and contributes to a probability map; a technique used to paliate memory constraints.
+
 // COMMENT: Should I mention? Total pipeline runtime varies: 326s/11438550vox or 35087vox/second
 // COMMENT: The pipeline produces both a final binary mask with associated segmentation in the 3D Slicer viewer and a soft probability map intended for development and post-hoc analysis
 
-#figure(
-  image("../../resources/images/thesis_flow_diagram.png", width: 78%),
-  caption: [Pipeline illustrating flow through each stage: (1) user point placement enabling outside masking, (2) configuration of hyperparameters and running of pipeline, triggering (a) Frangi, (b) intensity probability, (c) reconnection and reconstruction, (d) the final segmentation and 3D output],
-) <fig:pipeline_flow>
+// #figure(
+//   image("../../resources/images/thesis_flow_diagram.png", width: 78%),
+//   caption: [Pipeline illustrating the stages: (1) user point placement that enables outside masking, (2) configuration of main hyperparameters and launching pipeline, which triggers the logic steps of (a) Frangi, (b) intensity probability, (c) reconnection and reconstruction, (d) final segmentation, which can then be exported using the built-in 3D Slicer tools. Visualized here: outputs of each step in probability space.],
+// ) <fig:pipeline_flow>
 
-=== Background removal and ROI extraction
+
+#v(0.4cm)
+
+#{
+  show figure: set block(breakable: true)
+  
+  figure(
+    grid(
+      columns: (1fr, 1fr),
+      rows: 2,
+      column-gutter: 0.1em,
+      row-gutter: 0.1em,
+
+      image-with-circles(
+        "../../../resources/images/pipeline/attempt3/base.png",
+        // circles: (
+        //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "a",
+      ),
+
+      image-with-circles(
+        "../../../resources/images/pipeline/attempt3/frangi.png",
+        // circles: (
+        //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "b",
+      ),
+
+      image-with-circles(
+        "../../../resources/images/pipeline/attempt3/intensity.png",
+        corner-label: "c",
+      ),
+      
+      image-with-circles(
+        "../../../resources/images/pipeline/attempt3/probmap.png",
+        // circles: (
+        //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "d",
+      ),
+
+
+      image-with-circles(
+        "../../../resources/images/pipeline/attempt3/probmap_vessels.png",
+        // circles: (
+        //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "e",
+      ),
+
+      image-with-circles(
+        "../../../resources/images/pipeline/attempt3/base_seg.png",
+        // circles: (
+        //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+        // ),
+        corner-label: "f",
+      ),
+
+    ),
+    caption: [CollaboratiVessel vessel probability shown as greyscale at each step of the pipeline, illustrating the iterative refinement leading to the final segmentation. (a) slice after user point placement (b) Frangi, (c) Intensity probability, (d) reconnection and reconstruction, (e and f) segmentation, overlaid on step d and on step a.],
+  )
+} 
+#v(0.25cm)
+
+// #figure(
+//   grid(
+//     columns: (1fr, 1fr),
+//     rows: 2,
+//     column-gutter: 0.4em,
+//     row-gutter: 0.6em,
+
+//     image-with-circles(
+//       "../../../resources/images/pipeline/attempt3/probmap_vessels.png",
+//       // circles: (
+//       //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+//       // ),
+//       corner-label: "e",
+//     ),
+
+//     image-with-circles(
+//       "../../../resources/images/pipeline/attempt3/base_seg.png",
+//       // circles: (
+//       //   (x: 35%, y: 48%, r: 7mm, colour: red, thickness: 0.8pt),
+//       // ),
+//       corner-label: "f",
+//     ),
+//   ),
+//   caption: [Pipeline illustrating flow through each stage: (1) user point placement (2) configuration of hyperparameters and running of pipeline, triggering (a) Frangi, (b) intensity probability, (c) reconnection and reconstruction, (d) the final segmentation, left in 3D and right on a 2D slice.],
+// ) <fig:CollaboratiVessel_pipeline2>
+
+
+
+
+=== Step 1: Background removal and ROI extraction
 
 When looking at a full volume, the sampled tumor is generally surrounded by air or empty space. To prevent the surrounding region from interfering and to reduce computation, if outside points are provided by the user, an initial background filter is applied and the midpoint between the highest outside intensity and the lowest background-seed intensity is used as an intensity cutoff. The voxels below the cutoff are zeroed providing a mask of the data aligned to the sample rather than the bounding box of the scan. 
 
 This removal introduces a high-gradient artificial boundary between zeroed and preserved voxels, which is suppressed using region growing and a mask to avoid Frangi, the gradient sensitive method, from detecting the edge as a tube.  
 
 
-=== Frangi vesselness
+#v(0.25cm)
+#figure(
+  image("../../resources/images/pipeline/attempt3/base_barred.png", width: 80%),
+  caption: [Base image, with area removed during outside masking in yellow.],
+) <fig:base_map>
+
+
+=== Step 2: Frangi vesselness
 // in obtaining the eigenvalues of the local Hessian matrix. A tube manifests as one small and two large negative eigenvalues (curvature is small along the vessel axis and large perpendicular to it).
 
 The Frangi vesselness filter @frangi_og_paper identifies tubular structures on a local scale using the intensity and its change. The implementation of SimpleITK written in C++ is used for efficiency. Frangi is memory hungry due to its multiscale nature, with each scale requiring a full-volume Hessian, resulting in the need for multiples of the original volume to be kept in memory. To address this, the volume is optionally cut into subregions and processed in halo-padded tiles whose halo equals four times the largest vessel standard deviation, ensuring no information is lost at tile edges. The tile outputs are reassembled into a single volume before normalizing and scaling the response into [0, 1] to make thresholds comparable across scans. 
 
+#v(0.25cm)
 #figure(
-  image("../../resources/software/frangi_probability_map.png", width: 80%),
-  caption: [Frangi vesselness map. Intensity corresponds to vesselness probability; user-placed seeds are also visible.],
+  image("../../resources/images/pipeline/attempt3/frangi.png", width: 80%),
+  caption: [Frangi vesselness map: Intenstity corresponds to vesselness probability.],
 ) <fig:frangi_map>
 
 
-=== Localised intensity probability
+=== Step 3: Localised intensity probability
 
-Frangi captures shapes but abstracts away the intensity signal and is sensitive to noise. To re-introduce intensity evidence, a local z-score is computed: for each voxel, the value is compared to the local mean and standard deviation over a window ten times the vessel diameter. Voxels with a value above their local neighbourhood are flagged as vessel candidates.
-
-The score is calibrated against vessel-seed intensities so that the user's annotations score approximately 0.8 in the local-probability map. This makes the output directly comparable to Frangi: both maps are normalised to [0, 1] and represent independent evidence that a voxel is part of a vessel.
+Frangi captures shapes but abstracts away the intensity signal and is sensitive to noise. To re-introduce intensity evidence, a local z-score is computed: for each voxel, the value is compared to the local mean and standard deviation over a window ten times the vessel diameter. Voxels with a value above their local neighbourhood are flagged as vessel candidates. The score is calibrated against vessel-seed intensities so that the user's annotations score approximately 0.8 in the local-probability map. This makes the output directly comparable to Frangi: both maps are normalised to [0, 1] and represent independent evidence that a voxel is part of a vessel.
 
 A known limitation of this localized signal approach is that window regions with high signal vessels can hide legitimate signal from smaller nearby vessels or weaker branches due to the mean being raised. This is one of the reasons the later reconstruction stage needs to be robust to broken or fragmented input, and for the use of both frangi and vesselness combined.
 
+#v(0.25cm)
+#figure(
+  image("../../resources/images/pipeline/attempt3/intensity.png", width: 80%),
+  caption: [Intensity vesselness map.],
+) <fig:intensity_map>
 
-=== Combined evidence map
+=== Step 4: Combined evidence map
 
 The Frangi map and the local intensity probability are multiplied elementwise to produce the combined evidence map: ``` probMap = frangi x P_intensity```
 
 The product is high where both signals agree, providing evidence for tubularity *and* a local intensity difference. It suppresses voxels supported by only one signal. This filters out two common false-positive sources: (i) noise that happens to look tubular to Frangi but has no intensity support, and (ii) bright artefacts that have no tubular structure, or that are disconnected by the aforementioned high local signal from large vessels. This ``` probMap``` is used as the input to the structural reconstruction stage.
 
+#v(0.25cm)
+#figure(
+  image("../../resources/images/pipeline/attempt3/probmap.png", width: 80%),
+  caption: [Combined evidence map, highlighting the noise reduction by combining the shape and intensity aware steps.],
+) <fig:probmap_map>
 
-=== Reconstruction by ridge extraction
+=== Step 5: Vessel reconstruction
 
-```probMap``` provides evidence to the existence of vessels but does not follow them to fill small gaps. To convert the evidence into connected vessel structures, TubeTK's ridge extraction @ITKTubeTK_paper_github is used to follow ridges in the input volume starting from a seed point. This fits a tube model with a smoothly varying radius along the centerline, producing more consistently shaped vessels.
+```probMap``` provides evidence to the existence of vessels but does not follow them to fill small gaps. To convert the evidence into connected vessel structures, two methods are used: Ridge extraction and reconnection through skeletonization and morphology.
 
-Initial ridge extraction starts from the user-placed vessel seeds. To capture vessels not directly seeded by the user, an iterative re-seeding loop proposes new seeds at high-probability voxels not yet visited, then re-runs ridge extraction from them. This is done iteratively for a configurable number of rounds. 
+TubeTK's ridge extraction @ITKTubeTK_paper_github is used to follow ridges in the input volume starting from a seed point. This fits a tube model with a smoothly varying radius along the centerline, producing more consistently shaped vessels. Initial ridge extraction starts from the user-placed vessel seeds. To capture vessels not directly seeded by the user, an iterative re-seeding loop proposes new seeds at high-probability voxels not yet visited, then re-runs ridge extraction from them. This is done iteratively for a configurable number of rounds. 
 // The output is both a binary mask of the final reconstructed vasculature and a soft mask weighted by how many rounds each voxel survived — the soft mask is later useful for threshold-based operating point selection and visualisation.
 
-=== Connectivity restoration
 // reconstruction stage produces a substantially correct but fragmented mask: many vessels are split into several disconnected
 // components due to weak local signal, partial-volume effects, or intermittent staining.
 
-To improve connectivity between the vessel candidates produced by the previous steps, two complementary post-processing steps are used:
+To improve connectivity further, the output of the ridge following step, which identified the continuous vessels that are based on intensity, is followed-up with a more powerful reconnection process: firstly, *Morphological closing* (dilation followed by erosion) merges fragments separated by gaps smaller than 2 voxels, without inflating vessel diameters. This handles the cheap, geometry-only case where two fragments are physically adjacent. Secondly, a powerful *Skeleton based bridging* step identifies disconnected vessel tips via skeletonisation, finds pairs within a maximum gap distance, and routes a minimum-cost path through ```1 - probMap```. A bridge is accepted only if its cost is below a threshold, enforcing a meaningful probability to support connection. This handles larger gaps and avoids spurious reconnections by requiring evidence from the underlying signal.
 
-1. *Morphological closing* (dilation followed by erosion) merges fragments separated by gaps smaller than twice the structuring element radius, without inflating vessel diameters. This handles the cheap, geometry-only case where two fragments are physically adjacent.
-// TODO: revisit the cost aspect
-2. *Skeleton based bridging* identifies disconnected vessel tips via skeletonisation, finds pairs within a maximum gap distance, and routes a minimum-cost path through ```1 - probMap```. A bridge is accepted only if its cost is below a threshold, enforcing a meaningful probability to support connection. This handles larger gaps where closing alone would over-connect, by requiring evidence from the underlying signal.
-
-Morphological closing is fast and and reduces the number of endpoints the costly bridging step has to evaluate.
+// Morphological closing is fast and and reduces the number of endpoints the costly bridging step has to evaluate.
 //TODO: source this claim?
+
+#v(0.25cm)
+#figure(
+  image("../../resources/images/pipeline/attempt3/reconnected.png", width: 80%),
+  caption: [The reconnected vessel map, which corresponds to the final segmentation.],
+) <fig:reconstruction_map>
+
+
 
 === Final segmentation
 
-The reconstructed and reconnected mask is thresholded at a fixed value of the soft mask (default 0.12 found through hyperparameter sweeping) to produce the final binary segmentation. The binary mask is displayed in the 3D viewer alongside the soft mask for visual inspection. User feedback is provided in the form of the amount of correctly classified elements, and user points vessel intensity mean and standard deviation. 
+//The reconstructed and reconnected mask is thresholded at a fixed value of the soft mask (default 0.12 found through hyperparameter sweeping) to produce the final binary segmentation. 
+The binary mask vesselness segmentation is displayed in the 3D viewer. User feedback is provided in the form of the amount of correctly classified elements, and user points vessel intensity mean and standard deviation. Additionally for evaluation purposes there is the possibility of loading a manually segmented DICOM mask for detailed evaluation based on multiple metrics such as DICE, clDICE, vessel length, precision, recall and volume fraction.
+
+#v(0.25cm)
+#figure(
+  image("../../resources/images/pipeline/attempt3/base_seg.png", width: 80%),
+  caption: [Red: final 2D segmentation, overlaid on the starting slice.],
+) <fig:reconstruction_map>
+
+#v(0.6cm)
+#figure(
+  grid(
+    columns: (0.55fr, 1.15fr),
+    labelled-image("../../resources/images/pipeline/attempt3/feedback.png",
+                   "A", width: 100%),
+    labelled-image("../../resources/images/pipeline/attempt3/full_out.png",
+                   "B", width: 100%),
+  ),
+  caption: [*A*: View of the feedback box with user placed point segmentation performance. *B*: Feedback box when utilizing the evaluation feature to compare with a binary annotated ground truth, with clDice performance measurement, length and other relevant parameters.],
+) <fig:feedback_base>
+
 // The threshold is exposed as a parameter for users who wish to trade off recall against precision interactively. 
 
-Additionally for evaluation purposes there is the possibility of loading a manually segmented DICOM mask for detailed evaluation based on multiple metrics such as DICE, clDICE, vessel length, precision, recall and volume fraction.
 
-#figure(
-  image("../../resources/images/zoomed_output_region.png", width:90%),
-  caption: [View of the feedback box with segmentation performance measurement based on the provided subregion for evaluation.],
-) <evaluation_window>
+
+// #figure(
+//   image("../../resources/images/zoomed_output_region.png", width:90%),
+//   caption: [View of the feedback box with segmentation performance measurement based on the provided subregion for evaluation.],
+// ) <evaluation_window>
 
 As performance was a key concern during development, it was monitored and characterized, with results visible in @appendix:compute_characterization: memory requirements for the pipeline are large, and failures risk to occur if inference is ran on volumes that result in memory use beyond available resources.
 
