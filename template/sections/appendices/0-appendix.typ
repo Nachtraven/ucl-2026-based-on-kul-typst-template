@@ -183,21 +183,22 @@ In order to combat memory overflows, SWAP size was increased.
 
 
 #pagebreak()
-== Environmental and CO2 impact of the thesis (TODO: revisit)
+== Environmental and CO2 impact of the thesis //(TODO: revisit)
 
 The main sources of CO2 impact of this thesis are the use of computational resources and the human factor.
 
 1. During the thesis, the laptop of the writer was used: A legion 7i slim with 48GB DDR5, i7-13700H, 8GB RTX4070.
   1. *Production CO2*: The compliance document provided by Lenovo details an estimated carbon footprint of 429g +/- 86g CO2e. For a lifetime of 8 years, and an estimated thesis length of 3 months equivalent full time, this equates to *13.41Kg* CO2e.
   2. *Usage CO2*: The total estimated time dedicated to the coding and writing of the thesis is estimated based on the credits and approximate time investment per credit: 25 credits at 30 hours per credit equates to 750 hours. The laptop was measured over one 2h coding + writing session as using 40.89Wh, equating to a continuous use of 20.45w. This works out to 15.34 kWh, with an estimated Belgian CO2/kWh by the AIB (Association of Issuing Bodies) in 2024 of 131.73 g/kWh, resulting in total emissions of *2.02Kg* CO2.
-  3. *AI Utilization*: The impact of LLMs from large providers such as OpenAI is an ongiong research topic and difficult to measure, on top of which are layered issues like the use of Piccolo, UCLouvains aggregation service. A total of TODO credits were used on Piccolo, with an unknown impact. Claude Code was also used, with a total of 3 separate conversations containing TODO 41 cumulative prompts. The impact of AI use is thus left out of the estimation, with a guesstimate bellow.
+  3. *AI Utilization*: The impact of LLMs from large providers such as OpenAI is an ongiong research topic and difficult to measure, on top of which are layered issues like the use of Piccolo, UCLouvains aggregation service. A total of 1280 credits were used on Piccolo, with an unknown impact. Claude Code was also used, with a total of 3 separate conversations containing 41 cumulative prompts. The impact of AI use is thus left out of the estimation, with a best guess bellow.
 2. The thesis required meetings, for which the main source of CO2 emissions is the travel to/from Louvain-La-Neuve. This travel was done primarily by train, and the amount of travel directly attributable to the thesis was of 21 round trips, with a distance per trip of 93.2Km at an estimated 16.6g CO2e/Km, equating to *32.49Kg* CO2e.
 
 There was minimal extra data storage required to complete this thesis, however it is important to note that the large files handled do incur emissions if duplicated and stored across devices outside othe users own computer.
 
 The prior calculations equate to a total approximate impact of *47.92 Kg CO2e*.
 
-As for AI - a rough impact is estimated using the computer of the writer as a basis: three of the prompts sent to Piccolo and Claude were sent to the largest local qwen instance fitting in the 8GB GPU, and the time to answer as well as power use while answering estimated: for the three prompts, a total of TODO minutes to answer was required, with a power use of TODO
+
+// As for AI - a rough impact is estimated using the computer of the writer as a basis: three of the prompts sent to Piccolo and Claude were sent to the largest local qwen instance fitting in the 8GB GPU, and the time to answer as well as power use while answering estimated: for the three prompts, a total of TODO minutes to answer was required, with a power use of TODO
 
 // TODO: source the above with https://business.engie.be/fr/faq/contrat/emissions-co2/
 // https://www.belgiantrain.be/fr/about-sncb/corporate/2026/sncb-carbon-footprint
@@ -222,7 +223,7 @@ When using Claude Code, multiple events of note occured:
 3. The process of requesting Claude Code to add comments also resulted in a re-organization of the code. Readability improved from the perspective of the writer, but the question of originality remains.
 4. AI assistants were exceptionally relevant and helpful for the creation of diverse data visualizations and graphing, as well as the creation of validation loops and tools.
 
-TODO: talk about the branching effect - using models allows exploring more ideas but requires stronger motivation for the pruning of them & selection process   
+// TODO: talk about the branching effect - using models allows exploring more ideas but requires stronger motivation for the pruning of them & selection process   
 
 == Development computer specifications <pc_specs>
 
@@ -318,7 +319,7 @@ i7-13700, 32GB, T1000 8GB
       numbering: none,
     ),
   ),
-  caption: [CA-RU-R (1) Outer section: *Yellow*: thresholding, *Red*: vessels. Good contrast, more continuous and better defined vessels with some large areas of non vessel-like high valued points that are successfully rejected by the pipeline, detail in @appendix:detailed_results_visuals.],
+  caption: [CA-RU-R (1) Outer section: *Yellow*: thresholding, *Red*: vessels. Good contrast, more continuous and better defined vessels with some large areas of non vessel-like high valued points that are successfully rejected by the pipeline],
 ) <fig:CA-RU-R_222_2d>
 
 #figure(
@@ -433,11 +434,11 @@ i7-13700, 32GB, T1000 8GB
 
 
 
-==== here show the 222 example with the fact that we reject the blobs <appendix:detailed_results_visuals>
+// ==== here show the 222 example with the fact that we reject the blobs <appendix:detailed_results_visuals>
 
-==== here show ca-ll-l1 <appendix:ca-ll-l1_visualizations>
+// ==== here show ca-ll-l1 <appendix:ca-ll-l1_visualizations>
 
-=== Results on large volumes <appendix:results_large>
+// === Results on large volumes <appendix:results_large>
 
 
 == Vessel heatmaps <appendix:vessel_heatmaps>
@@ -504,7 +505,7 @@ i7-13700, 32GB, T1000 8GB
   ),
   // TODO: add an image here of the overall stats?
   caption: [*Heatmaps of vessel volume/vessel length - all predictions*.]
-) <fig:collated_heatmaps>
+) <fig:collated_heatmaps_appendix>
 #v(0.25cm)
 
 
@@ -573,7 +574,7 @@ i7-13700, 32GB, T1000 8GB
   ),
   // TODO: add an image here of the overall stats?
   caption: [*Heatmaps of vessel volume/vessel length - only true predictions*: vessels for thresholding and pipeline are only plotted if they correspond to at least one GT vessel.]
-) <fig:collated_heatmaps_only_true>
+) <fig:collated_heatmaps_only_true_appendix>
 #v(0.25cm)
 
 

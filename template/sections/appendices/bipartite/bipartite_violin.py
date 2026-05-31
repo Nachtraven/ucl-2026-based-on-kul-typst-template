@@ -152,7 +152,7 @@ def render(
     # ── Grid, ticks, labels ───────────────────────────────────────────────────
     ax.set_xticks(x_ticks)
     ax.set_xticklabels(x_labels, fontsize=9, color=PALETTE["text"])
-    ax.set_ylabel("Predictions per GT vessel", fontsize=13, color=PALETTE["text"])
+    ax.set_ylabel("Number of predicted vessels per GT vessel", fontsize=13, color=PALETTE["text"])
     ax.yaxis.set_tick_params(labelsize=8)
     ax.tick_params(colors=PALETTE["text"])
     ax.spines[["top", "right"]].set_visible(False)
@@ -213,12 +213,22 @@ if __name__ == "__main__":
 python template/sections/appendices/bipartite/bipartite_violin.py \
   template/sections/appendices/bipartite/violin_gt_coverage.svg \
   --scans \
-    "CA-RU-R (1)" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv \
-    "CA-RU-R (2)" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv \
-    "CA-LL-R"  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv \
-    "CA-NM-L (1)" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv \
-    "CA-NM-L (2)" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv \
-    "CA-LL-L1" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv \
+    "Sample 1" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv \
+    "Sample 2" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv \
+    "Sample 3"  resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv \
+    "Sample 4" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv \
+    "Sample 5" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv \
+    "Sample 6" resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv \
   --y-cap 15
   
   """
+  
+"""
+  CA-RU-R (1)
+  CA-RU-R (2)
+  CA-LL-R
+  CA-NM-L (1)
+  CA-NM-L (2)
+  CA-LL-L1
+"""
+  

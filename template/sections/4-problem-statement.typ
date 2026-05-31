@@ -1,4 +1,4 @@
-#import "./appendices/graph_results.typ": results-chart
+// #import "./appendices/graph_results.typ": results-chart
 #import "appendices/precision_recall.typ" : xy-curve
 
 // Problem statement: 2 pages, contains general goal, objectives

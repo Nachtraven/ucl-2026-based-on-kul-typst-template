@@ -176,7 +176,7 @@
 // ]
 
 
-#import "./appendices/graph_results.typ": results-chart
+#import "./appendices/graph_results.typ": results-chart, results-chart-lines
 #import "./appendices/DICE_results_graph.typ": draw-dice
 #import "./appendices/precision_recall.typ" : xy-curve
 #import "./appendices/scatterplot.typ" : scatterplot-chart
@@ -443,32 +443,288 @@ Supplemental visualizations of the other tumors, and full comparisons with groun
 
 // From initial observation, we can see what appears to be longer vessels being predicted than the ground truth, with more extensive vessel networks. This is corroborated by our clDice score analysis 
 
-The three qunantitative metrics laid out in @sec:evaluation_criteria evaluation criteria are evaluated bellow on the 6 subvolumes:   
+The three qunantitative metrics laid out in @sec:evaluation_criteria evaluation criteria are examined bellow on the 6 subvolumes: user placed annotation points, voxel level metrics and connectivity metrics.
+
+=== User placed points
+
+
+// Order:
+// CA-RU-R 222
+// CA-RU-R 666
+// CA-LL-R 427
+// CA-NM-L 319
+// CA-NM-L 957
+// CA-LL-L1 498
+
+
+// #figure(
+//   results-chart(
+//     (),  // no raw-column series; everything is a ratio
+//     1.0,
+//     "Fraction of correctly\n  classified points",
+//     derived-series: (
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#003f5c"), label: "Sample 1: CollaboratiVessel - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 8, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#78529b"), label: "Sample 1: CollaboratiVessel - background seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#ef537d"), label: "Sample 1: Threshold - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 89, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#ffa600"), label: "Sample 1: Threshold - background seeds"),
+
+
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 19, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#003f5c"), label: "Sample 2: CollaboratiVessel - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+//         row: 19, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#78529b"), label: "Sample 2: CollaboratiVessel - background seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+//         row: 73, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#ef537d"), label: "Sample 2: Threshold - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+//         row: 73, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#ffa600"), label: "Sample 2: Threshold - background seeds"),
+
+
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 36, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#003f5c"), label: "Sample 3: CollaboratiVessel - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 36, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#78529b"), label: "Sample 3: CollaboratiVessel - background seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 64, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#ef537d"), label: "Sample 3: Threshold - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+//         row: 64, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#ffa600"), label: "Sample 3: Threshold - background seeds"),
+
+
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+//         row: 19, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#003f5c"), label: "Sample 4: CollaboratiVessel - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-NM-L_x+1800_y+1800_z+319_experimentcsv",
+//         row: 19, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#78529b"), label: "Sample 4: CollaboratiVessel - background seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+//         row: 103, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#ef537d"), label: "Sample 4: Threshold - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+//         row: 103, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#ffa600"), label: "Sample 4: Threshold - background seeds"),
+
+
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+//         row: 19, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#003f5c"), label: "Sample 5: CollaboratiVessel - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+//         row: 19, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#78529b"), label: "Sample 5: CollaboratiVessel - background seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+//         row: 90, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#ef537d"), label: "Sample 5: Threshold - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+//         row: 90, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#ffa600"), label: "Sample 5: Threshold - background seeds"),
+
+
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//         row: 219, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#003f5c"), label: "Sample 6: CollaboratiVessel - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/PIPE_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//         row: 219, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#78529b"), label: "Sample 6: CollaboratiVessel - background seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//         row: 94, num: "vessel_seeds_correct", den: "vessel_seeds_total",
+//         colour: rgb("#ef537d"), label: "Sample 6: Threshold - vessel seeds"),
+
+//       (csv: "../../../resources/images/results/vessel_exps_15_may/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+//         row: 94, num: "bg_seeds_correct",     den: "bg_seeds_total",
+//         colour: rgb("#ffa600"), label: "Sample 6: Threshold - background seeds"),
+
+//     )
+//   ),
+//   caption: [Fraction of user-placed vessel and background seed points correctly classified by CollaboratiVessel and thresholding.],
+// )
+
+
+
+#v(2cm)
+#let exp-dir = "../../../resources/images/results/vessel_exps_15_may/"
+
+#figure(
+  results-chart(
+    // ----- samples: each sample has a label and four CSV/row references -----
+    (
+      (
+        label: "Sample 1",
+        series: (
+          pipe-vessel:   (csv: exp-dir + "PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+                          row: 8,  num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          pipe-bg:       (csv: exp-dir + "PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+                          row: 8,  num: "bg_seeds_correct",     den: "bg_seeds_total"),
+          thresh-vessel: (csv: exp-dir + "THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+                          row: 89, num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          thresh-bg:     (csv: exp-dir + "THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+                          row: 89, num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        ),
+      ),
+      (
+        label: "Sample 2",
+        series: (
+          pipe-vessel:   (csv: exp-dir + "PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+                          row: 19,  num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          pipe-bg:       (csv: exp-dir + "PIPE_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+                          row: 19,  num: "bg_seeds_correct",     den: "bg_seeds_total"),
+          thresh-vessel: (csv: exp-dir + "THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+                          row: 73, num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          thresh-bg:     (csv: exp-dir + "THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+                          row: 73, num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        ),
+      ),
+      (
+        label: "Sample 3",
+        series: (
+          pipe-vessel:   (csv: exp-dir + "PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+                          row: 36,  num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          pipe-bg:       (csv: exp-dir + "PIPE_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+                          row: 36,  num: "bg_seeds_correct",     den: "bg_seeds_total"),
+          thresh-vessel: (csv: exp-dir + "THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+                          row: 64, num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          thresh-bg:     (csv: exp-dir + "THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
+                          row: 64, num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        ),
+      ),
+      (
+        label: "Sample 4",
+        series: (
+          pipe-vessel:   (csv: exp-dir + "PIPE_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+                          row: 19,  num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          pipe-bg:       (csv: exp-dir + "PIPE_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+                          row: 19,  num: "bg_seeds_correct",     den: "bg_seeds_total"),
+          thresh-vessel: (csv: exp-dir + "THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+                          row: 103, num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          thresh-bg:     (csv: exp-dir + "THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
+                          row: 103, num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        ),
+      ),
+      (
+        label: "Sample 5",
+        series: (
+          pipe-vessel:   (csv: exp-dir + "PIPE_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+                          row: 19,  num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          pipe-bg:       (csv: exp-dir + "PIPE_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+                          row: 19,  num: "bg_seeds_correct",     den: "bg_seeds_total"),
+          thresh-vessel: (csv: exp-dir + "THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+                          row: 90, num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          thresh-bg:     (csv: exp-dir + "THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
+                          row: 90, num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        ),
+      ),
+      (
+        label: "Sample 6",
+        series: (
+          pipe-vessel:   (csv: exp-dir + "PIPE_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+                          row: 219,  num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          pipe-bg:       (csv: exp-dir + "PIPE_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+                          row: 219,  num: "bg_seeds_correct",     den: "bg_seeds_total"),
+          thresh-vessel: (csv: exp-dir + "THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+                          row: 94, num: "vessel_seeds_correct", den: "vessel_seeds_total"),
+          thresh-bg:     (csv: exp-dir + "THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
+                          row: 94, num: "bg_seeds_correct",     den: "bg_seeds_total"),
+        ),
+      ),
+    ),
+    // ----- series-defs: one entry per bar within a sample -----
+    (
+      (key: "pipe-vessel",   label: "CollaboratiVessel: vessel seeds",    colour: rgb("#003f5c")),
+      (key: "pipe-bg",       label: "CollaboratiVessel: background seeds", colour: rgb("#78529b")),
+      (key: "thresh-vessel", label: "Threshold: vessel seeds",   colour: rgb("#ef537d")),
+      (key: "thresh-bg",     label: "Threshold: background seeds", colour: rgb("#ffa600")),
+    ),
+    1.0,
+    "Fraction of correctly classified points",
+  ),
+  caption: [Fraction of user-placed vessel and background seed points correctly classified by CollaboratiVessel and intensity thresholding.],
+)
+#v(0.25cm)
+
+As can be seen, background points are always fully classified correctly. Vessel points are more variable: with the pipeline higher in most cases, however always missing some predictions. By observing the data on a more granular level, we can learn an interesting first fact that encourages our move from low representative power user placed points towards clDice: the threshold value giving the highest proportion of correctly classified vessel points does not correspond to that with the highest clDice.
+
+
+#let exp-dir = "../../../resources/images/results/vessel_exps_15_may/"
+#figure(
+  results-chart-lines(
+    (
+      (csv: exp-dir + "THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
+        label: "Sample 1",   colour: rgb("#ef537d"), style: "solid"),
+      (csv: exp-dir + "THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
+        label: "Sample 2", colour: rgb("#003f5c"), style: "dashed"),
+    ),
+    x-col: "threshold_value",
+    y-num: "vessel_seeds_correct",
+    y-den: "vessel_seeds_total",
+    x-label: "Threshold value",
+    y-label: "Fraction of vessel seeds correctly classified",
+  ),
+  caption: [Fraction of user-placed vessel seed points classified as vessel by intensity thresholding, as a function of the threshold value, on two subsamples.],
+)
+
+This is obciously a tradeoff between false-positives and false negatives, difficult to balance in a useful way at such a low level.
+
+
 
 === clDice
-To analyze performance quantitatively, we begin by observing clDice, a voxel level metric chosen for its better representation of connectivity and the ratio of correctly classified vessel points (annotation points placed by the user).
+To analyze performance quantitatively, we explore clDice, the voxel level metric chosen for its better representation of connectivity and the ratio of correctly classified vessel points (annotation points placed by the user).
 
-#v(0.25cm)
+#v(0.15cm)
 #let RES = "../../../resources/images/results/new_pipeline_may_15"
 #figure(
   draw-dice(
     (
-      (name: "CA-RU-R (1)", //\n916/901/222
+      (name: "Sample 1", //"CA-RU-R (1)", //\n916/901/222
        tool_csv: "./results.csv", tool_row: 0,
        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv", thr_row: 89),
-      (name: "CA-RU-R (2)",
+      (name: "Sample 2", //"CA-RU-R (2)",
        tool_csv: "./results.csv", tool_row: 1,
        thr_csv:  RES + "/THRESH_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv", thr_row: 73),
-      (name: "CA-LL-R", //\n298/233/427
+      (name: "Sample 3", //"CA-LL-R", //\n298/233/427
        tool_csv: "./results.csv", tool_row: 2,
        thr_csv:  RES + "/THRESH_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv", thr_row: 64),
-      (name: "CA-NM-L (1)", //\n1800/1800/319
+      (name: "Sample 4", //"CA-NM-L (1)", //\n1800/1800/319
        tool_csv: "./results.csv", tool_row: 3,
        thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv", thr_row: 103),
-      (name: "CA-NM-L (2)", //\n900/900/957
+      (name: "Sample 5", //"CA-NM-L (2)", //\n900/900/957
        tool_csv: "./results.csv", tool_row: 4,
        thr_csv:  "../../../resources/images/sweep_experiment/THRESH_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv", thr_row: 90),
-      (name: "CA-LL-L1", //\n559/604/498
+      (name: "Sample 6", //"CA-LL-L1", //\n559/604/498
        tool_csv: "./results.csv", tool_row: 5,
        thr_csv:  RES + "/THRESH_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv", thr_row: 94),
     ),
@@ -479,10 +735,10 @@ To analyze performance quantitatively, we begin by observing clDice, a voxel lev
   ),
   caption: [clDICE comparison of pipeline against thresholding, using the optimal threshold for the highest clDICE. Volume ratio (prediction/ground truth) presented numerically underneath. The results highlight two volumes for which thresholding substantially outperforms the model: these volumes have marked oversegmentation with regard to the ground truth, predicting 1.92 and 4.82 times more voxels respectively. These highlight two volumes for which there is substantial extrapolation, @fig:CA-RU-R_666_2d and @fig:CA-LL-R_2d. Other volumes show closely matched clDICE values, and under segment.]
 )
-#v(0.5cm)
+#v(0.15cm)
 
 
-These clDice scores reveal are interesting from a segmentation perspective, but fail to inform us about the vessels themselves. In order to better understand the vessels predicted by both techniques when compared to the ground truth, we analyze the distributions of vessel length and size#footnote[Detailed results visible in @appendix:vessel_heatmaps]:
+These clDice scores reveal are interesting from a segmentation perspective, but fail to inform us about the vessels themselves. In order to better understand the vessels predicted by both techniques when compared to the ground truth, we analyze the distributions of vessel length and size, initially visualizing all predictions (false positives and true positives) in @fig:collated_heatmaps, then fousing only on true positives in @fig:collated_heatmaps_only_true. #footnote[Detailed results visible in @appendix:vessel_heatmaps]:
 
 
 #v(0.2cm)
@@ -604,17 +860,14 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
 
   ),
   // TODO: add an image here of the overall stats?
-  caption: [*Relationship between vessel volume - vessel length*: all predictions (incl false positives). 
-  A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume predictions with short lengths, indicating blobs, and a generally smaller distribution of vessel sizes. The pipeline shows a tendency of predicting thinner vessels than the ground truth (a lower volume for a given vessel length)
-  
-  *3D*: CA-RU-R (2) thresholding (Yellow) showcasing the small disconnected predictions]
+  caption: [*Relationship between vessel volume - vessel length*: all predictions (incl false positives).  A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume predictions with short lengths, indicating blobs, and a generally smaller distribution of vessel sizes. The pipeline shows a tendency of predicting thinner vessels than the ground truth (a lower volume for a given vessel length). In *3D*: Sample 2 thresholding (Yellow) showcasing the small disconnected predictions]
 ) <fig:collated_heatmaps>
-#v(0.25cm)
+// #v(0.25cm)
 
 
 
 
-#v(0.2cm)
+// #v(0.2cm)
 #figure(
   grid(
     columns: (auto, auto),
@@ -735,16 +988,26 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
     ),
   ),
   // TODO: add an image here of the overall stats?
-  caption: [*Heatmaps of vessel volume/vessel length - only true predictions*: vessels for thresholding and pipeline are only plotted if they correspond to at least one GT vessel, showing that many of the small predictions in thresholding and pipeline are outside of the ground truth.
-  
-  *3D: CA-RU-R (2)* thresholding (Yellow) and vessels (Red) showcasing the pipeline connecting regions that are also captured by thresholding into longer vessels. CA-RU-R is a volume which scored a higher clDice than pipeline, and where pipeline substantially extrapolated. Per sample analysis available in @appendix:vessel_heatmaps]
+  caption: [*Heatmaps of vessel volume/vessel length - only true predictions*: vessels for thresholding and pipeline are only plotted if they correspond to at least one GT vessel, showing that many of the small predictions in thresholding and pipeline are outside of the ground truth. In *3D: Sample 2* thresholding (Green) and CollaboratiVessel (Red) showcasing the pipeline connecting regions that are also captured by thresholding into longer vessels.]
 ) <fig:collated_heatmaps_only_true>
 #v(0.25cm)
 
+@fig:collated_heatmaps_only_true highlights that the pipeline is effectively connecting many small vessels into longer continuous ones. Sample 2 is shown, which had a higher thresholding clDice than pipeline, and where pipeline had false positives. //Per sample analysis available in @appendix:vessel_heatmaps
 
 === Quantifying connectivity 
 
-Beyond vessel size and length, it is interesting to investigate the known issue of voxel level metrics of @fig:dice-detection: vessels are not considered unitary, meaning that it is possible to miss vessels entirely without it being evident in the results, and reconstruction is not captured. To paliate this, a simple bipartite analysis is run: for each prediction, the correspondng contiguous ground truth vessel(s) are identified. This 0 to N matching allows us to identify how many vessels have no GT support, and inversely how many vessels are being connected:
+
+Beyond vessel size and length, it is interesting to investigate the known issue of voxel level metrics laid out in Error calculation Fig 2.4: vessels are not considered unitary, meaning that it is possible to miss vessels entirely without it being evident in the results, and reconstruction is not captured. To paliate this, a vessel level comparison is done using a bipartite analysis: for each predicted contiguous vessel, the corresponding contiguous ground truth vessel(s) are during metric calculation. This 0 to N matching allows us to identify, for each predicted vessel, how many ground truth vessels it touches. @fig:violin  // how many predicted vessels have no ground truth support, and inversely how many vessels are being connected: to obtain an overview, we analyze the matching ratio: the average amount of predicted vessels per ground truth vessels. 
+
+
+#v(0.5cm)
+#figure(
+  image("./appendices/bipartite/violin_gt_coverage.svg", width: 100%),
+  caption: [The distribution of number of predictions to each ground truth vessel: each violin shows how many predictions corresponded to each ground truth vessel. *0* = missed, the segmentation method did not identify the vessel, *1* = match, segmentation overlaps with one ground truth vessel *2+* = fragmented. Dashed line at 1.0 indicates 1:1 correspondence. Dots show individual GT vessels. Yellow horizontal bar marks the mean.]
+)<fig:violin>
+#v(0.5cm)
+
+@fig:violin shows thresholding generally results in a higher amount of predictions per GT vessel, with a wider spread, and more outlier values, indicating a worse matching. Individual runs as seen in as seen in @fig:bipartite_balls_lines and @fig:bipartite_ca-ru-r_222 enable a more granular understanding by thanks to the ability to visualize the amount of predictions:
 
 
 // #v(1.2cm)
@@ -764,29 +1027,150 @@ Beyond vessel size and length, it is interesting to investigate the known issue 
 // #v(0.2cm)
 
 #v(0.5cm)
+#let img-path = "../../../resources/images/results/ca-ll-l1 testing/"
 #figure(
-  image("./appendices/bipartite/bipartite_ca_ll_l1.svg", width: 100%),
-  caption: [*CA-LL-L1* Vessel correspondence, unmatched gt nodes in grey. 28/35 vessels are matched by the pipeline for 20/35 on the ground truth: the pipeline has better vessel sensitivity. Also visible: the ground truth contains many vessels that are detected as individual smaller vessels by the pipeline or thresholding: predictions are still fragmented. 3D views in @appendix:ca-ll-l1_visualizations]
+  
+  grid(
+    columns: (1fr, 1fr, 1fr),
+    rows: 2,
+    column-gutter: 0.1em,
+    row-gutter: 0.1em,
+
+    grid.cell(
+        colspan: 3,
+        image("./appendices/bipartite/bipartite_ca_ll_l1.svg", width: 100%),
+    ),
+
+    // image-with-circles(
+    //   img-path + "base.png",
+    //   width:60%,
+    //   // circles: (
+    //   //   (x: 59%, y: 62%, r: 2.5mm, colour: black, thickness: 1.0pt),
+    //   // ),
+    //   corner-label: "a",
+    //   ),
+    // image-with-circles(
+    //   img-path + "vessels.png",
+    //   width:60%,
+    //   // circles: (
+    //   //   (x: 59%, y: 62%, r: 2.5mm, colour: black, thickness: 1.0pt),
+    //   // ),
+    //   corner-label: "b",
+    //   ),
+    //   image-with-circles(
+    //   img-path + "vessels_thresh.png",
+    //   width:60%,
+    //   // circles: (
+    //   //   (x: 59%, y: 62%, r: 2.5mm, colour: black, thickness: 1.0pt),
+    //   // ),
+    //   corner-label: "c",
+    //   ),
+
+  ),
+  caption: [*Sample 6* correspondence between unitary contiguous CollaboratiVessel predictions (blue), ground truth (green) and thresholding (red). Unmatched vessels are partially transparent.] // Images (a-c): visualization of slices from the source volume, ]
 )<fig:bipartite_balls_lines>
 #v(0.5cm)
 
+@fig:bipartite_balls_lines highlights that CollaboratiVessel succeeds in matching more of the ground truth vessels: 28/35 vessels are matchedagainst 20/35 for the ground truth. This indicated that the pipeline has better vessel sensitivity. Additionally, the ground truth contains many vessels that are detected as individual smaller vessels by CollaboratiVessel or thresholding, visible as many lines exiting a single ground truth vessel: predictions are still fragmented, although CollaboratiVessel is less so. // 3D views in @appendix:ca-ll-l1_visualizations
+
+#v(0.5cm)
 #figure(
   image("./appendices/bipartite/bipartite_ca-ru-r_222.svg", width: 100%),
-  caption: [*CA-RU-R (1)*, Vessel correspondence between pipeline (left), ground truth (center, top 50 by volume), and thresholding (right). Node size encodes vessel volume. Lines show which predicted vessels overlap which GT vessels. The pipeline has better vessel sensitivity, matching more vessels, fragments vessels less as can be seen by the few to n relationships, and has fewer predictions with no support (66 unmatched predictions vs 273). Also visible: the ground truth contains many vessels that are many to one relationships: multiple individual small predictions correspond to one ground truth vessel.]
+  caption: [*Sample 1*, correspondence between unitary contiguous CollaboratiVessel predictions (blue), ground truth (green) and thresholding (red). Unmatched vessels are partially transparent. Thresholding here shows many small predictions matching to few ground truth vessels: thresholding has many disconnections]
 )<fig:bipartite_ca-ru-r_222>
 
-
-
-
-To condense the connectivity quantification into a figure, we analyze the matching ratio: the average amount of predicted vessels per ground truth vessels. 
+In @fig:bipartite_ca-ru-r_222 to comparative advantage of CollaboratiVessel is particularly visible: vessel sensitivity is much higher, identifying 51 of 60 ground truth vessels, and vessels are much less fragmented, as can be seen when compared to thresholding: for each ground truth vessel there are few CollaboratiVessel predictions, against many in thresholding. This was previously visible qualitatively in @fig:CA-RU-R_222_3d and revisited in @fig:CA-RU-R_222_3d_quant to highlight further the benefits of the implemented reconnection step.
 
 
 #v(0.5cm)
+#let img-path = "../../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p1/"
 #figure(
-  image("./appendices/bipartite/violin_gt_coverage.svg", width: 100%),
-  caption: [Per-GT-vessel prediction count distribution: each violin shows the density of how many predictions correspond to each GT vessel. *0* = missed, *1* = clean match, *2+* = fragmented. Dashed line at 1.0 indicates 1:1 correspondence. Dots show individual GT vessels; the horizontal bar marks the mean. Thresholding generally results in a higher amount of predictions per GT vessel, with a wider spread, and more outlier values, indicating a worse matching such as for CA-RU-R (1) as seen in @fig:bipartite_ca-ru-r_222.]
-)<fig:violin>
+  grid(
+    columns: (1fr, 1fr),
+    rows: 2,
+    column-gutter: 0.1em,
+    row-gutter: 0.1em,
+
+    // grid.cell(
+    //     rowspan: 2,
+    //   image-with-circles(
+    //     "../../../resources/images/qualitative_evaluation/CA-RU-R_x_916_y_901_z_222/p2/vessels_w_bar2.png",
+    //     // circles: (
+    //     //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+    //     // ),
+    //     corner-label: "1",
+    //     ), 
+    // // ),
+
+    image-with-circles(
+      img-path + "3d_vessels_only.png",
+      circles: (
+        (x: 22%, y: 12%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 50%, y: 92%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 12%, y: 80%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 31%, y: 85%, r: 6mm, colour: black, thickness: 1.0pt),
+      ),
+      corner-label: "a",
+      ),
+      
+    image-with-circles(
+      img-path + "3d_vessels_thresh.png",
+      circles: (
+        (x: 22%, y: 12%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 50%, y: 92%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 12%, y: 80%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 31%, y: 85%, r: 6mm, colour: black, thickness: 1.0pt),      ),
+      corner-label: "b",
+      ), 
+
+    // image-with-circles(
+    //   img-path + "thr_only.png",
+    //   // circles: (
+    //   //   (x: 20%, y: 45%, r: 9mm, colour: red, thickness: 0.8pt),
+    //   // ),
+    //   corner-label: "2",
+    //   ),
+
+    image-with-circles(
+      img-path + "3d_thresh_only.png",
+      circles: (
+        (x: 22%, y: 12%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 50%, y: 92%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 12%, y: 80%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 31%, y: 85%, r: 6mm, colour: black, thickness: 1.0pt),
+      ),
+      corner-label: "c",
+      ),
+
+    image-with-circles(
+      img-path + "3d_gt.png",
+      circles: (
+        (x: 22%, y: 12%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 50%, y: 92%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 12%, y: 80%, r: 6mm, colour: black, thickness: 1.0pt),
+        (x: 31%, y: 85%, r: 6mm, colour: black, thickness: 1.0pt),      
+        ),
+      corner-label: "d",
+      ),
+
+  ), //CA-RU-R (1)
+  caption: [*Sample 1*, 3D visuals highlighting the many small disconnected predictions of thresholding against CollaboratiVessel, in black: vessels either missed by thresholding, or containing disconnections.], //Circled in black in figures b, d, e: a gap not identified by any method
+) <fig:CA-RU-R_222_3d_quant>
 #v(0.5cm)
+
+
+
+
+=== Evaluation takeaways
+
+Following the evaluation of CollaboratiVessel against thresholding using voxel level clDice and higher order heatmaps and bipartite matching, as well as examining the outputs of CollaboratiVessel in 3D views, it is clear that clDice fails to capture the complexity of predicting vessels with sufficient accuracy for it to be used as a reliable measure of vessel prediction performance. The biases towards vessel size drowns out the real signal of vessel presence. Additionally, clDice completely fails to capture the metrics highlighted in the heatmaps: many small disconnected predictions are not relevant for downstream tasks, but still artifically boost the performance of clDice for thresholding. The bipartite matching also highlights the need for a metric that can evaluate something akin to a reconnection rate: how good a method is at not splitting a continuous prediction into sub predictions.
+
+A worthwhile extension to evaluation would be further development of these vessel level metrics and a procedure for abstracting away the noise induced by manual annotations.
+
+// In order to properly evaluate vessel predictions, it is required at a minimum to evaluate them at the level of structures: evaluation using heatmaps and matching should constitute the jumping off point towards
+
+
+//correspondence between pipeline (left), ground truth (center, top 50 by volume), and thresholding (right). Node size encodes vessel volume. Lines show which predicted vessels overlap which GT vessels. 
 
 // OLD: this was interesting but didn't compile well
 // #figure(
@@ -815,7 +1199,7 @@ To condense the connectivity quantification into a figure, we analyze the matchi
 // OLD: this was interesting but didn't compile well
 
 
-=== Qualitative analysis and ground truth
+// === Qualitative analysis and ground truth
 
 // We begin by analyzing the two volumes with large over-segmentation identified previously: CA-RU-R 687/451/666 and CA-LL-R 298/233/427. These show marked over-segmentation ...
 

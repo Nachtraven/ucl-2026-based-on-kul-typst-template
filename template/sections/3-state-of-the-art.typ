@@ -365,7 +365,7 @@ To integrate some of these issues into the loss, Yukun Zhou _et al._ @CFLoss_los
 #linebreak()
 Beyond loss functions, the evaluation itself can integrate vessel structure: graph-matching compares predicted and reference vascular trees at the level of branches and bifurcations rather than voxels, enabling metrics on the branch-level as explored for vessel level predictions by Suprosanna _et al_ @VesselGraph. In panoptic segmentation proposed by Kirillov _et al_ @panoptic_seg_og, the goal is to not only segment a structure but also individually identify it. Graph inspired methods are used to calculate a score based on the matching between the ground truth and predictions on a per object basis, combatting the issue highlighted by @fig:dice-detection where missed vessels are not weighed appropriately. This comes at the cost of needing predictions to be individual objects, a problem for vessels that are _by nature_ continuous. To combat this, when comparing matching, our metrics will also account for size and allow one to many or many to one matches. Finally, on top of comparing predicted segmentations to a reference, the user placed seed points are also considered informative: if marked a voxel as vessel, the final segmentation should preserve that classification and provide feedback on these points.
 
-==== Evaluation criteria
+==== Evaluation criteria <sec:evaluation_criteria>
 // OLD: When evaluating a segmentation method, consideration of the downstream analysis of its use to extract relevant features such as tortuosity and branching ratio, is important to consider. As a result, 
 // Given that evaluation should reflect the downstream analyses the segmentation 
 

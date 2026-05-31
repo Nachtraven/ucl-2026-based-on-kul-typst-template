@@ -7,7 +7,7 @@
 // #import "appendices/precision_recall_old.typ": pr-curve
 
 
-#import "./appendices/graph_results.typ": results-chart
+// #import "./appendices/graph_results.typ": results-chart
 #import "appendices/precision_recall.typ" : xy-curve
 #import "appendices/sensitivity_analysis.typ" : sensitivity-xy-curve
 
@@ -168,10 +168,10 @@ Annotation took approximately 60 hours across two rounds, a first blind annotati
 #v(0.25cm)
 
 Of the 4 datasets, 6 of the 9 subvolumes were retained for annotation and will henceforth be called:
-- CA-RU-R volumes 2 and 3, referred to as samples 1 and 2
-- CA-LL-R volume 3, referred to as sample 3
-- CA-NM-L volumes 2 and 3, referred to as samples 4 and 5
-- CA-LL-L1 volume 3, referred to as sample 6
+- CA-RU-R volumes 2 and 3, referred to as samples 1 and 2 // 222 666
+- CA-LL-R volume 3, referred to as sample 3 // 427
+- CA-NM-L volumes 2 and 3, referred to as samples 4 and 5 // 319 957
+- CA-LL-L1 volume 3, referred to as sample 6 // 498
 
 #linebreak()
 Discarded volumes correspond to the three volumes that fell entirely outside of the target tumor. 

@@ -40,7 +40,7 @@
   // dutch-summary: include "sections/main-text/dutch-abstract.typ",
   list-of-figures: false,
   list-of-listings: false,
-  abbreviations: include "sections/appendices/list-of-abbreviations-and-symbols.typ",
+  abbreviations: none, // include "sections/appendices/list-of-abbreviations-and-symbols.typ",
   symbols: none,
   appendices: include "sections/appendices/0-appendix.typ", 
   // Make sure that this is the correct logo for the correct master (en/nl)!

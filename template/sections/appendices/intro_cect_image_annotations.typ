@@ -25,12 +25,11 @@
 ]
 
 
-#let image-with-circles(path, circles: (), corner-label: none, label: none, label-colour: red) = block(
-  width: 100%,
+#let image-with-circles(path, circles: (), corner-label: none, label: none, label-colour: red, width: 100%) = block(
   breakable: false,
 )[
   #set align(center + horizon)
-  #image(path, width: 100%)
+  #image(path, width:width)
   #for c in circles {
     let cx = c.at("x")
     let cy = c.at("y")
