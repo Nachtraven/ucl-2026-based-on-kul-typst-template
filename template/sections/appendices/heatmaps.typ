@@ -176,7 +176,7 @@
     // Title
     #if title != none {
       place(left + top,
-        dx: pad-left + plot-w / 2 - 40pt, dy: -2pt,
+        dx: pad-left + plot-w / 2 - 40pt, dy: 8pt,
         box(width: 100pt, align(center,
           text(size: 9pt, weight: "bold", fill: axis-colour)[#title]
         ))

@@ -58,7 +58,7 @@ def render(
     output_svg: str,
     left_method:   str = "pipeline",
     left_variant:  str = "default",
-    left_label:    str = "Pipeline",
+    left_label:    str = "CollaboratiVessel",
     right_method:  str = "threshold",
     right_variant: str = "best_dice",
     right_label:   str = "Threshold",
@@ -189,7 +189,7 @@ if __name__ == "__main__":
                    help="alternating label csv pairs: CA-LL-L1 path1.csv CA-LL-R path2.csv ...")
     p.add_argument("--left-method",   default="pipeline")
     p.add_argument("--left-variant",  default="default")
-    p.add_argument("--left-label",    default="Pipeline")
+    p.add_argument("--left-label",    default="CollaboratiVessel")
     p.add_argument("--right-method",  default="threshold")
     p.add_argument("--right-variant", default="best_dice")
     p.add_argument("--right-label",   default="Threshold")

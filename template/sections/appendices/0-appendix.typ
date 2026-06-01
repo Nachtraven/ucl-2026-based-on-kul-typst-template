@@ -151,7 +151,7 @@
 #pagebreak()
 == Compute characteristics <appendix:compute_characterization>
 // TODO: QUESTION should this even be included?
-The pipeline steps each have their own CPU and memory cost. We divide the processing into three main steps:
+CollaboratiVessel pipeline steps each have their own CPU and memory cost. We divide the processing into three main steps:
 
 1. Initial Frangi inference: multicore thanks to TubeTK, and limited memory use thanks to tiling
 2. Local intensity probability: single core CPU and light on memory as it is iterative on a small subarea.
@@ -319,7 +319,7 @@ i7-13700, 32GB, T1000 8GB
       numbering: none,
     ),
   ),
-  caption: [CA-RU-R (1) Outer section: *Yellow*: thresholding, *Red*: vessels. Good contrast, more continuous and better defined vessels with some large areas of non vessel-like high valued points that are successfully rejected by the pipeline],
+  caption: [CA-RU-R (1) Outer section: *Yellow*: thresholding, *Red*: vessels. Good contrast, more continuous and better defined vessels with some large areas of non vessel-like high valued points that are successfully rejected by CollaboratiVessel],
 ) <fig:CA-RU-R_222_2d>
 
 #figure(
@@ -496,7 +496,7 @@ i7-13700, 32GB, T1000 8GB
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,
@@ -617,7 +617,7 @@ i7-13700, 32GB, T1000 8GB
     vessel-heatmap(
       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 5,
@@ -662,7 +662,7 @@ i7-13700, 32GB, T1000 8GB
     vessel-heatmap(
       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_687_y_451_z_666_experiment.csv",
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 5,
@@ -706,7 +706,7 @@ i7-13700, 32GB, T1000 8GB
     vessel-heatmap(
       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-R_x+298_y+233_z+427_experiment.csv",
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 5,
@@ -717,7 +717,7 @@ i7-13700, 32GB, T1000 8GB
       #image("../../../resources/images/qualitative_evaluation/SLICES CA-LL-R_x_298_y_233_z_427/thresh_vessel.png", width:90%)
       ]) 
   ),
-  caption: [CA-LL-R: Yellow: thresholding, Red: vessels. A challenging example with extrapolation by the pipeline.]
+  caption: [CA-LL-R: Yellow: thresholding, Red: vessels. A challenging example with extrapolation by CollaboratiVessel.]
 ) <fig:heatmap_ca-ll-r>
 
 
@@ -750,7 +750,7 @@ i7-13700, 32GB, T1000 8GB
     vessel-heatmap(
       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+1800_y+1800_z+319_experiment.csv",
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 5,
@@ -794,7 +794,7 @@ i7-13700, 32GB, T1000 8GB
     vessel-heatmap(
       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-NM-L_x+900_y+900_z+957_experiment.csv",
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 5,
@@ -839,7 +839,7 @@ i7-13700, 32GB, T1000 8GB
     vessel-heatmap(
       csv-path: "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-LL-L1_x+559_y+604_z+498_experiment.csv",
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 5,

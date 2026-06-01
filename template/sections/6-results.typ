@@ -279,13 +279,13 @@ A key disadvantage of thresholding is its sensitivity towards the selection of t
       (220.0, "vsize 8\n+/-6"),
       (250.0, "vsize 10\n+/-7"),
     ),    
-    top-axis-label: "Pipeline annotations",
+    top-axis-label: "CollaboratiVessel hyperparameters",
   ),
   caption:[Sensitivity analysis of CollaboratiVessel vessel size and standard deviation when compared to thresholding values, showing: (1) dashed blue, thresholding on a central subsample, with a narrow peak indicative of a narrow distribution of vessel intensities, (2) continuous red, performance on a subsample that contains the outer edge of a dataset, with a much wider spread of vessel intensities, and (3) the stability of CollaboratiVessel when adjusting the vessel size and standard deviation.]
 )<fig:sensitivity_anal>
 #v(0.25cm)
 
-From our sensitivity analysis, we can observe that there may potentially exist parameters that further optimize the performance of the pipline for these two samples, but also that pipeline performance is relatively flat: the quantitative metrics extracted next, done using default parameters, are thus likely close to the local optima for each run.
+From our sensitivity analysis, we can observe that there may potentially exist parameters that further optimize the performance of CollaboratiVessel for these two samples, but also that CollaboratiVessel performance is relatively flat: the quantitative metrics extracted next, done using default parameters, are thus likely close to the local optima for each run.
 
 
 == Qualitative comparisons
@@ -353,11 +353,11 @@ To obtain an understanding of the outputs of CollaboratiVessel when compared to 
       ),
 
   ), //CA-RU-R (1)
-  caption: [*Sample 1*, (1) (2) slice views: in red CollaboratiVessel, in yellow: thresholding, highlighting a large false positive. (a-d) Comparison of 3D Views: (a) pipeline output, (b) pipeline overlaid with thresholding, (c) thresholding alone, with black circle highlighting a large area of false negatives, (d) ground truth.], //Circled in black in figures b, d, e: a gap not identified by any method
+  caption: [*Sample 1*, (1) (2) slice views: in red CollaboratiVessel, in yellow: thresholding, highlighting a large false positive. (a-d) Comparison of 3D Views: (a) CollaboratiVessel output, (b) CollaboratiVessel overlaid with thresholding, (c) thresholding alone, with black circle highlighting a large area of false negatives, (d) ground truth.], //Circled in black in figures b, d, e: a gap not identified by any method
 ) <fig:CA-RU-R_222_3d>
 #v(0.5cm)
 
-In @fig:CA-RU-R_222_3d, thresholding captures large false positive plates, has gaps and holes, and entirely misses the vessels towards the central region (black circle). Pipeline output is more continuous, although conservative on vessel size as can be seen in the overlapped visualization. Ground truth shows the variance introduced by non expert manual annotations using the 3D Slicer tools, highlighting its limitations as a comparison point: vessels are larger, size is somewhat inconsistent and some blob-like shapes are captured. //, and some small thin _smears_ are visible: areas during annotation that may have appeared on one slice to be a vessel, but weren't vessel like in subsequent slices and were not removed.
+In @fig:CA-RU-R_222_3d, thresholding captures large false positive plates, has gaps and holes, and entirely misses the vessels towards the central region (black circle). CollaboratiVessel output is more continuous, although conservative on vessel size as can be seen in the overlapped visualization. Ground truth shows the variance introduced by non expert manual annotations using the 3D Slicer tools, highlighting its limitations as a comparison point: vessels are larger, size is somewhat inconsistent and some blob-like shapes are captured. //, and some small thin _smears_ are visible: areas during annotation that may have appeared on one slice to be a vessel, but weren't vessel like in subsequent slices and were not removed.
 
 
 
@@ -421,11 +421,11 @@ In @fig:CA-RU-R_222_3d, thresholding captures large false positive plates, has g
       ),
 
   ), //CA-RU-R (1)
-  caption: [*Sample 5*: (1) (2) Slice views, in red CollaboratiVessel, in yellow thresholding, showing the under segmentation of CollaboratiVessel (a-d) Comparison of 3D Views: (a) pipeline output, (b) pipeline overlaid with thresholding, black circle highlighting a region with a successful reconnection (c) thresholding alone, black circle highlighting a missed vessel (d) ground truth.],
+  caption: [*Sample 5*: (1) (2) Slice views, in red CollaboratiVessel, in yellow thresholding, showing the under segmentation of CollaboratiVessel (a-d) Comparison of 3D Views: (a) CollaboratiVessel output, (b) CollaboratiVessel overlaid with thresholding, black circle highlighting a region with a successful reconnection (c) thresholding alone, black circle highlighting a missed vessel (d) ground truth.],
 ) <fig:CA-NM-L_957_3d>
 #v(0.5cm)
 
-In @fig:CA-NM-L_957_3d, a high contrast scenario with large vessels, thresholding misses vessels and fails to fully connect the large main vessel. The ground truth also shows that the pipeline is extending vessels beyond where they stop being annotated.
+In @fig:CA-NM-L_957_3d, a high contrast scenario with large vessels, thresholding misses low contrast vessels and fails to fully connect the large main vessel. The ground truth also shows that CollaboratiVessel is extending vessels beyond where they stop being annotated.
 
 
 
@@ -436,7 +436,7 @@ In @fig:CA-NM-L_957_3d, a high contrast scenario with large vessels, thresholdin
 // )
 
 
-Supplemental visualizations of the other tumors, and full comparisons with ground truth may be found in @appendix:results_visuals. // TODO: Visualizations on larger volumes can be found in @appendix:results_large
+// Supplemental visualizations of the other tumors, and full comparisons with ground truth may be found in @appendix:results_visuals. // TODO: Visualizations on larger volumes can be found in @appendix:results_large
 
 #pagebreak()
 == Quantitative comparison
@@ -676,7 +676,7 @@ The three qunantitative metrics laid out in @sec:evaluation_criteria evaluation 
 )
 #v(0.25cm)
 
-As can be seen, background points are always fully classified correctly. Vessel points are more variable: with the pipeline higher in most cases, however always missing some predictions. By observing the data on a more granular level, we can learn an interesting first fact that encourages our move from low representative power user placed points towards clDice: the threshold value giving the highest proportion of correctly classified vessel points does not correspond to that with the highest clDice.
+As can be seen, background points are always fully classified correctly. Vessel points are more variable: with CollaboratiVessel higher in most cases, however always missing some predictions. By observing the data on a more granular level, we can learn an interesting first fact that encourages our move from low representative power user placed points towards clDice: the threshold value giving the highest proportion of correctly classified vessel points does not correspond to that with the highest clDice.
 
 
 #let exp-dir = "../../../resources/images/results/vessel_exps_15_may/"
@@ -733,12 +733,12 @@ To analyze performance quantitatively, we explore clDice, the voxel level metric
     annotate-label: "vol ratio (pred/gt)",
     annotate-digits: 2,
   ),
-  caption: [clDICE comparison of pipeline against thresholding, using the optimal threshold for the highest clDICE. Volume ratio (prediction/ground truth) presented numerically underneath. The results highlight two volumes for which thresholding substantially outperforms the model: these volumes have marked oversegmentation with regard to the ground truth, predicting 1.92 and 4.82 times more voxels respectively. These highlight two volumes for which there is substantial extrapolation, @fig:CA-RU-R_666_2d and @fig:CA-LL-R_2d. Other volumes show closely matched clDICE values, and under segment.]
+  caption: [clDice comparison of CollaboratiVessel against thresholding, using the optimal threshold for the highest clDice. Volume ratio (prediction/ground truth) presented numerically underneath. The results highlight two volumes for which thresholding substantially outperforms the model: these volumes have marked oversegmentation with regard to the ground truth, predicting 1.92 and 4.82 times more voxels respectively. These highlight two volumes for which there is substantial extrapolation, @fig:CA-RU-R_666_2d and @fig:CA-LL-R_2d. Other volumes show closely matched clDice values, and under segment.]
 )
 #v(0.15cm)
 
 
-These clDice scores reveal are interesting from a segmentation perspective, but fail to inform us about the vessels themselves. In order to better understand the vessels predicted by both techniques when compared to the ground truth, we analyze the distributions of vessel length and size, initially visualizing all predictions (false positives and true positives) in @fig:collated_heatmaps, then fousing only on true positives in @fig:collated_heatmaps_only_true. #footnote[Detailed results visible in @appendix:vessel_heatmaps]:
+These clDice scores reveal are interesting from a segmentation perspective, but fail to inform us about the vessels themselves. In order to better understand the vessels predicted by both techniques when compared to the ground truth, we analyze the distributions of vessel length and size, initially visualizing all predictions (false positives and true positives) in @fig:collated_heatmaps, then fousing only on true positives in @fig:collated_heatmaps_only_true. //#footnote[Detailed results visible in @appendix:vessel_heatmaps]:
 
 
 #v(0.2cm)
@@ -758,7 +758,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
       method: "ground_truth", variant: "",
-      title: "Ground Truth",
+      title: "Ground truth",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,           // fix scale so all panels are comparable
@@ -775,7 +775,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
       method: "threshold", variant: "best_dice",
-      title: "Thresholding",
+      title: "Threshold",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,
@@ -792,7 +792,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
       method: "pipeline", variant: "default",
-      title: "Pipeline",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 30,
@@ -860,7 +860,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
 
   ),
   // TODO: add an image here of the overall stats?
-  caption: [*Relationship between vessel volume - vessel length*: all predictions (incl false positives).  A tubular vessel lays on the diagonal, as can be seen in the ground truth and pipeline. Thresholding shows a high density of low volume predictions with short lengths, indicating blobs, and a generally smaller distribution of vessel sizes. The pipeline shows a tendency of predicting thinner vessels than the ground truth (a lower volume for a given vessel length). In *3D*: Sample 2 thresholding (Yellow) showcasing the small disconnected predictions]
+  caption: [*Relationship between vessel volume - vessel length*: all predictions (incl false positives).  A tubular vessel lays on the diagonal, as can be seen in the ground truth and CollaboratiVessel. Thresholding shows a high density of low volume predictions with short lengths, indicating blobs, and a generally smaller distribution of vessel sizes. CollaboratiVessel shows a tendency of predicting thinner vessels than the ground truth (a lower volume for a given vessel length). In *3D*: Sample 2 thresholding (Yellow) showcasing the small disconnected predictions]
 ) <fig:collated_heatmaps>
 // #v(0.25cm)
 
@@ -902,7 +902,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
         "../../../resources/images/results/vessel_exps_15_may/VESSELS_SLICES_CA-RU-R_x_916_y_901_z_222_experiment.csv",
       ),
       method: "threshold", variant: "best_dice",
-      title: "Thresholding with\nmatching GT",
+      title: "Thresholding",
       matched-only: true,
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
@@ -921,7 +921,7 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
       ),
       method: "pipeline", variant: "default",
       matched-only: true,
-      title: "Pipeline with\nmatching GT",
+      title: "CollaboratiVessel",
       x-min: 0.005, x-max: 2.0,
       y-min: 1,     y-max: 5000,
       colour-max: 15,
@@ -988,11 +988,11 @@ These clDice scores reveal are interesting from a segmentation perspective, but 
     ),
   ),
   // TODO: add an image here of the overall stats?
-  caption: [*Heatmaps of vessel volume/vessel length - only true predictions*: vessels for thresholding and pipeline are only plotted if they correspond to at least one GT vessel, showing that many of the small predictions in thresholding and pipeline are outside of the ground truth. In *3D: Sample 2* thresholding (Green) and CollaboratiVessel (Red) showcasing the pipeline connecting regions that are also captured by thresholding into longer vessels.]
+  caption: [*Heatmaps of vessel volume/vessel length - only true predictions*: vessels for thresholding and CollaboratiVessel are only plotted if they correspond to at least one GT vessel, showing that many of the small predictions in thresholding and CollaboratiVessel are outside of the ground truth. In *3D: Sample 2* thresholding (Green) and CollaboratiVessel (Red) showcasing the connection of regions that are also captured by thresholding into longer vessels.]
 ) <fig:collated_heatmaps_only_true>
 #v(0.25cm)
 
-@fig:collated_heatmaps_only_true highlights that the pipeline is effectively connecting many small vessels into longer continuous ones. Sample 2 is shown, which had a higher thresholding clDice than pipeline, and where pipeline had false positives. //Per sample analysis available in @appendix:vessel_heatmaps
+@fig:collated_heatmaps_only_true highlights that CollaboratiVessel is effectively connecting many small vessels into longer continuous ones. Sample 2 is shown, which had a higher thresholding clDice than CollaboratiVessel, and where many false positives were present. //Per sample analysis available in @appendix:vessel_heatmaps
 
 === Quantifying connectivity 
 
@@ -1071,7 +1071,7 @@ Beyond vessel size and length, it is interesting to investigate the known issue 
 )<fig:bipartite_balls_lines>
 #v(0.5cm)
 
-@fig:bipartite_balls_lines highlights that CollaboratiVessel succeeds in matching more of the ground truth vessels: 28/35 vessels are matchedagainst 20/35 for the ground truth. This indicated that the pipeline has better vessel sensitivity. Additionally, the ground truth contains many vessels that are detected as individual smaller vessels by CollaboratiVessel or thresholding, visible as many lines exiting a single ground truth vessel: predictions are still fragmented, although CollaboratiVessel is less so. // 3D views in @appendix:ca-ll-l1_visualizations
+@fig:bipartite_balls_lines highlights that CollaboratiVessel succeeds in matching more of the ground truth vessels: 28/35 vessels are matchedagainst 20/35 for the ground truth. This indicates CollaboratiVessel has better vessel sensitivity. Additionally, the ground truth contains many vessels that are detected as individual smaller vessels by CollaboratiVessel or thresholding, visible as many lines exiting a single ground truth vessel: predictions are still fragmented, although CollaboratiVessel is less so. // 3D views in @appendix:ca-ll-l1_visualizations
 
 #v(0.5cm)
 #figure(

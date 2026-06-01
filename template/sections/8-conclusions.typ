@@ -67,7 +67,7 @@ Despite using libraries constructed with speed in mind for this work, a full C++
 
 
 #linebreak()
-*Extraction performance* could be improved by exploring and implementing an automated configuration of the advanced hyperparameters based on the inference volume size and dimensions. It would also be beneficial to expose more hyperparameters that are currently hard coded, and integrate some method of configuring them automatically, such as with a grid search of parameters based on user placed points. 
+*Extraction performance* could be improved by exploring and implementing an automated configuration of the advanced hyperparameters based on the inference volume size and dimensions. It would also be beneficial to expose more hyperparameters that are currently hard coded, and integrate some method of configuring them automatically, such as with a grid search of parameters based on user placed points. Extra data outside of the current distribution could also be tested, relevant to understand the shift in performance as the task at hand changes.
 
 #linebreak()
 *Improvements in evaluation* such as automated methods for measuring and comparing vessels across methods is a relevant direction to explore, as better metrics enables a better understanding of what contributions matter and how they impact outputs. Developping an algorithm without these metrics forces slow and deliberate step by step exploration of the search space of possible algorithms, as opposed to enabling automatic searching. These improved metrics could also better reflect the downstream tasks which vessel extraction is intended to enable.
